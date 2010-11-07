@@ -9,7 +9,7 @@ case $1 in
 	install)
 		INSTALLATION_GOOD=1
 		while read SOURCE DEST; do
-			if [ -e $HOME/$DEST ]; then
+			if [ -e $HOME/$DEST -a ! -L $HOME/$DEST ]; then
 				INSTALLATION_GOOD=0
 				echo "Conflict with existing file $HOME/$DEST" >&2
 			fi
@@ -18,7 +18,9 @@ case $1 in
 			exit 1
 		fi
 		while read SOURCE DEST; do
-			ln -s $PWD/$SOURCE $HOME/$DEST
+			if [ ! -L $HOME/$DEST ]; then
+				ln -s $PWD/$SOURCE $HOME/$DEST
+			fi
 		done < mappings.txt
 		;;
 	*)

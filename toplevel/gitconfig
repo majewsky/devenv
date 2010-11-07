@@ -1,0 +1,23 @@
+[user]
+	name = Stefan Majewsky
+	email = majewsky@gmx.net
+[alias]
+	br = branch
+	co = checkout
+	st = status
+	ci = commit
+	rb = rebase
+	push = push
+	pull = pull
+	add = add
+	stash = stash
+	lci = lcommit
+	rs = reset
+	di = diff
+[color]
+	ui = true
+[receive]
+	denyDeletes = true
+	denyNonFastForwards = true
+[rebase]
+	stat = true
