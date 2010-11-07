@@ -1,0 +1,19 @@
+LOCALPROFILEREAD="yes"
+test -f /etc/SuSE-release -a -z "$PROFILEREAD" && . /etc/profile || true
+test -s ~/.profile.local && . ~/.profile.local || true
+
+rm -rf $HOME/.adobe
+cp -R $HOME/.adobe_orig $HOME/.adobe
+rm -rf $HOME/.macromedia
+[ -d "$HOME/Downloads" ] && rmdir "$HOME/Downloads"
+
+export EDITOR=vim
+export PAGER="less -R"
+export PATH="/soulianis/bin:$PATH:/sbin:/usr/sbin:/usr/local/sbin"
+
+# some measures (apart from .inputrc's set bell-style none and modprobe's blacklist pcspkr) to disable the system speaker
+xset b 0
+setterm -blength 0
+
+# Python includes
+export PYTHONPATH="$PYTHONPATH:$HOME/Code/co/PyXGraph:$HOME/Code/co/PlottingCanvas:$HOME/Code/co/Iterator:$HOME/Code/co/QuantumMaps"

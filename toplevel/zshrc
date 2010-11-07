@@ -1,0 +1,118 @@
+HISTFILE=~/.histfile
+HISTSIZE=10000
+SAVEHIST=10000
+PROMPT="\$($HOME/bin/prettyprompt)"
+export PRETTYPROMPT_SHELL="zsh"
+setopt appendhistory autocd extendedglob histignoredups incappendhistory noflowcontrol nomatch notify promptsubst
+unsetopt beep
+bindkey -e
+
+test -z "$LOCALPROFILEREAD" && source ~/.profile || true
+
+FPATH="$FPATH:$HOME/.zsh-functions"
+#compinit
+# The following lines were added by compinstall
+#zstyle :compinstall filename '/home/stefan/.zshrc'
+# End of lines added by compinstall
+
+# Aliase für schnellere Verzeichnisnavigation
+# alias -g ...='../..'
+# alias -g ....='../../..'
+# alias -g .....='../../../..'
+# Alias für Detached Launching
+alias -g "\&"="&>/dev/null&|"
+# Aliase für Git-Zugriff aus ~/.gitconfig erstellen
+while read git_line; do
+	if echo $git_line | grep '^\[.*\]$' &>/dev/null; then
+		git_category=$git_line
+	else
+		echo $git_category $git_line
+	fi
+done < $HOME/.gitconfig | grep '^\[alias\]' | cut -d' ' -f2- | sed 's/ = / /' | while read git_alias git_command; do
+	alias $git_alias="git $git_command"
+done
+unset git_line git_category git_alias git_command	
+
+# taken from http://zshwiki.org/home/zle/bindkeys
+# by default: export WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>'
+# we take out the slash, period, angle brackets, dash here.
+export WORDCHARS='*?_[]~=&;!#$%^(){}'
+
+# helper functions for KDE development
+# idea from http://techbase.kde.org/Getting_Started/Increased_Productivity_in_KDE4_with_Scripts/.bashrc
+
+export BUILD_ROOT='/home/majewsky/tmp/build' # the equivalent to $HOME, for build directories
+
+function find_direct_build_dir() { # argument: path to directory
+	# go inside build hierarchy if not in it already
+	if [ "$(relpath "$BUILD_ROOT" "$1" | head -c2)" = ".." ]; then
+		echo -n "$BUILD_ROOT"
+	fi
+	abspath "$1"
+}
+
+function find_direct_source_dir() { # argument: path to directory
+	if [ "$(relpath "$BUILD_ROOT" "$1" | head -c2)" = "./" ]; then
+		echo "$1" | sed "s,^$BUILD_ROOT,,"
+	else
+		echo "$1"
+	fi
+}
+
+function find_build_dir() { # argument: path to directory, check file name (if given, search will automatically ascend in directory hierarchy as long as that file exists there)
+	#TODO: stub
+	find_direct_build_dir "$1"
+}
+
+function chpwd() # no arguments (hook which gets called by cd)
+{
+	export B="$(find_direct_build_dir "$(pwd)")"
+	export S="$(find_direct_source_dir "$(pwd)")"
+	alias _=$B
+}
+chpwd # initialize $B and $S
+
+function cb() { # no arguments
+	cd $B
+}
+
+function cs() { # no arguments
+	cd $S
+}
+
+function cmk() { # all arguments are passed to cmake
+	SOURCE_DIR="$(pwd)"
+	BUILD_DIR="$(find_build_dir "$SOURCE_DIR")"
+	mkdir -p "$BUILD_DIR" || ( echo "Failed to create $BUILD_DIR"; return 1 )
+	cd "$BUILD_DIR"
+	if [ ! -f CMakeCache.txt ]; then
+		cmake -DCMAKE_INSTALL_PREFIX=/usr $@ "$SOURCE_DIR" || ( cd "$SOURCE_DIR"; return 1 )
+	elif [ $# -gt 0 ]; then
+		cmake $@ . || ( cd "$SOURCE_DIR"; return 1 )
+	fi
+	make -j9 || ( cd "$SOURCE_DIR"; return 1 )
+	cd "$SOURCE_DIR"
+}
+
+function cmki() { # all arguments are passed to cmake
+	cmk || return 1
+	SOURCE_DIR="$(pwd)"
+	cd "$BUILD_DIR" || ( echo "Directory $BUILD_DIR does not exist"; return 1 )
+	sudo make install/fast || ( cd "$SOURCE_DIR"; return 1 )
+	# TODO: fallback to "make install" if install/fast target is not available
+	cd "$SOURCE_DIR"
+}
+
+function cmku() { # all arguments are passed to cmake
+	SOURCE_DIR="$(pwd)"
+	cd "$BUILD_DIR" || ( echo "Directory $BUILD_DIR does not exist"; return 1 )
+	sudo make uninstall || ( cd "$SOURCE_DIR"; return 1 )
+	# TODO: fallback to "xargs sudo rm < install_manifest.txt"
+	cd "$SOURCE_DIR"
+}
+
+bindkey '^Z' undo
+
+function psgrep() { # all args are passed to grep
+	ps aux | grep $* | grep -v grep
+}
