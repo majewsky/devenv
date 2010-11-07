@@ -1,4 +1,6 @@
 toplevel/bash_logout .bash_logout
 toplevel/bashrc .bashrc
 toplevel/profile .profile
+toplevel/vimrc .vimrc
 toplevel/zshrc .zshrc
+vim/ .vim

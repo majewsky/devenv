@@ -1,0 +1,19 @@
+let mapleader = ","
+
+function! SwitchSourceHeader()
+  "update!
+  if (expand ("%:e") == "cpp")
+    find %:t:r.h
+  else
+    find %:t:r.cpp
+  endif
+endfunction
+nmap <Leader>s :call SwitchSourceHeader()<CR>
+
+let g:bufExplorerSortBy='name'
+nmap <Leader><Leader> <Leader>be
+
+set autoindent
+set number
+set shiftwidth=4
+set tabstop=4
