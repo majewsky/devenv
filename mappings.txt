@@ -3,6 +3,7 @@ toplevel/bash_logout .bash_logout
 toplevel/bashrc .bashrc
 toplevel/gitconfig .gitconfig
 toplevel/profile .profile
+toplevel/profile.local .profile.local
 toplevel/vimrc .vimrc
 toplevel/zshrc .zshrc
 vim/ .vim
