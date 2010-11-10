@@ -23,6 +23,13 @@ case $1 in
 			fi
 		done < mappings.txt
 		;;
+	dryrun-install)
+		while read SOURCE DEST; do
+			if [ ! -L $HOME/$DEST ]; then
+				echo ln -s $PWD/$SOURCE $HOME/$DEST
+			fi
+		done < mappings.txt
+		;;
 	*)
 		echo "Unknown mode of operation: $1"
 		echo "Syntax: ./setup.sh install"
