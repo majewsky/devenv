@@ -10,11 +10,13 @@ function! SwitchSourceHeader()
 endfunction
 nmap <Leader>s :call SwitchSourceHeader()<CR>
 
+"config and keybindings for BufExplorer plugin
 let g:bufExplorerSortBy='name'
 nmap <Leader><Leader> <Leader>be
 
 set autoindent
 set cindent
+set mouse=a
 set number
 set shiftwidth=4
 set tabstop=4
@@ -24,3 +26,8 @@ nmap <C-Tab> a<C-t><Esc>
 nmap <C-S-Tab> a<C-d><Esc>
 imap <C-Tab> <C-t>
 imap <C-S-Tab> <C-d>
+
+"highlight superfluous whitespace at end of line (except when typing at the end of a line)
+"from http://vim.wikia.com/wiki/Highlight_unwanted_spaces
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+\%#\@<!$/
