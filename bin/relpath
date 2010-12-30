@@ -1,0 +1,50 @@
+#!/bin/bash
+# Usage:
+#     relpath /path/to/foo/bar /path/to/baz -> ../../baz
+#     relpath /path/to/foo /path/to/foo/bar -> ./bar
+# Origin:
+#     http://stackoverflow.com/questions/2564634/bash-convert-absolute-path-into-relative-path-given-a-current-directory
+
+if [[ "$1" == "$2" ]]; then
+    echo "."
+    exit
+fi
+
+IFS="/"
+
+current=($1)
+absolute=($2)
+
+abssize=${#absolute[@]}
+cursize=${#current[@]}
+
+# find first level where paths diverge
+while [[ ${absolute[$level]} == ${current[$level]} ]]; do
+    (( level++ ))
+    if (( level > abssize || level > cursize )); then
+        break
+    fi
+done
+
+# print ".." for each directory from the current path missing in the target path
+for ((i = level; i < cursize; i++)); do
+    if ((i > level)); then
+        newpath=$newpath"/"
+    fi
+    newpath=$newpath".."
+done
+
+# if there are no such dirs, print "." as the base of the path
+if [[ -z $newpath ]]; then
+    newpath="."
+fi
+
+# print directories from the target path missing in the current path
+for ((i = level; i < abssize; i++)); do
+    if [[ -n $newpath ]]; then
+        newpath=$newpath"/"
+    fi
+    newpath=$newpath${absolute[i]}
+done
+
+echo "$newpath"

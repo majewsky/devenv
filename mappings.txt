@@ -6,4 +6,6 @@ toplevel/profile .profile
 toplevel/profile.local .profile.local
 toplevel/vimrc .vimrc
 toplevel/zshrc .zshrc
+bin/abspath bin/abspath
+bin/relpath bin/relpath
 vim/ .vim

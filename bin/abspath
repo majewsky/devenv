@@ -1,0 +1,21 @@
+#!/bin/bash
+# Usage: Given a (relative or absolute) path as its only parameter, print the corresponding absolute path with all "." and ".." removed, and always with leading and trailing slash.
+if [ "$(echo "$1" | head -c1)" = "/" ]; then
+	thepath="$1"
+else
+	thepath="$(pwd)/$1"
+fi
+# regexps from left to right: remove trailing slash, "." directories in the middle, and at the end
+thepath="$(echo "$thepath" | sed -e 's,/$,,' -e 's,/\./,/,' -e 's,/\.$,,')"
+theoldpath=""
+# strip ".." directories, thereby also removing the previous component
+until [ "$thepath" = "$theoldpath" ]; do
+	theoldpath="$thepath"
+	thepath="$(echo "$thepath" | sed -e 's,/[^/][^/]*/*\.\.,,')"
+done
+# if we removed everything (e.g. for cwd = /home/foo and call "abspath ../.."), print a slash
+if [ "$thepath" = "" -o "$(echo "$thepath" | head -c3)" = "/.." ]; then
+	echo "/"
+else
+	echo "$thepath/"
+fi

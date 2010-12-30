@@ -22,6 +22,7 @@ case $1 in
 				ln -s $PWD/$SOURCE $HOME/$DEST
 			fi
 		done < mappings.txt
+		g++ -o $HOME/bin/prettyprompt $PWD/bin/prettyprompt.cpp
 		;;
 	dryrun-install)
 		while read SOURCE DEST; do
@@ -29,6 +30,7 @@ case $1 in
 				echo ln -s $PWD/$SOURCE $HOME/$DEST
 			fi
 		done < mappings.txt
+		echo g++ -o $HOME/bin/prettyprompt $PWD/bin/prettyprompt.cpp
 		;;
 	*)
 		echo "Unknown mode of operation: $1"
