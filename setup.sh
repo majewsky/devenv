@@ -23,6 +23,11 @@ case $1 in
 			fi
 		done < mappings.txt
 		g++ -o $HOME/bin/prettyprompt $PWD/bin/prettyprompt.cpp
+		mkdir -p $HOME/build/kfullscreenrunner
+		cd $HOME/build/kfullscreenrunner
+		cmake -DCMAKE_INSTALL_PREFIX=$HOME $HOME/bin/kfullscreenrunner
+		make -j2
+		make install/fast
 		;;
 	dryrun-install)
 		while read SOURCE DEST; do
