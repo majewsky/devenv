@@ -15,6 +15,7 @@ let g:bufExplorerSortBy='name'
 nmap <Leader><Leader> <Leader>be
 
 set autoindent
+set background=dark
 set cindent
 set mouse=a
 set number
@@ -31,3 +32,8 @@ imap <C-S-Tab> <C-d>
 "from http://vim.wikia.com/wiki/Highlight_unwanted_spaces
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+\%#\@<!$/
+
+"map :W to :w
+com W w
+com Wq wq
+com WQ wq
