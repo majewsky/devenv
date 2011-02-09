@@ -14,6 +14,8 @@
 	lci = lcommit
 	rs = reset
 	di = diff
+[branch]
+	autosetuprebase = always
 [color]
 	ui = true
 [receive]

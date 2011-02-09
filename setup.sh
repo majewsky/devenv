@@ -22,12 +22,15 @@ case $1 in
 				ln -s $PWD/$SOURCE $HOME/$DEST
 			fi
 		done < mappings.txt
+		# compile prettyprompt
 		GXX_EXTRA_ARGS=""
 		[ -d /usr/include/qt4 ] && GXX_EXTRA_ARGS="-I/usr/include/qt4"
 		g++ $GXX_EXTRA_ARGS -lQtCore -o $HOME/bin/prettyprompt $PWD/bin/prettyprompt.cpp
-		mkdir -p $HOME/build/kfullscreenrunner
-		cd $HOME/build/kfullscreenrunner
-		cmake -DCMAKE_INSTALL_PREFIX=$HOME $HOME/bin/kfullscreenrunner
+		# compile kfullscreenrunner
+		ORIGPWD=$PWD
+		mkdir -p $ORIGPWD/build/kfullscreenrunner
+		cd $ORIGPWD/build/kfullscreenrunner
+		cmake -DCMAKE_INSTALL_PREFIX=$HOME $ORIGPWD/bin/kfullscreenrunner
 		make -j2
 		make install/fast
 		;;
@@ -37,7 +40,9 @@ case $1 in
 				echo ln -s $PWD/$SOURCE $HOME/$DEST
 			fi
 		done < mappings.txt
-		echo g++ -o $HOME/bin/prettyprompt $PWD/bin/prettyprompt.cpp
+		GXX_EXTRA_ARGS=""
+		[ -d /usr/include/qt4 ] && GXX_EXTRA_ARGS="-I/usr/include/qt4"
+		echo g++ $GXX_EXTRA_ARGS -lQtCore -o $HOME/bin/prettyprompt $PWD/bin/prettyprompt.cpp
 		;;
 	*)
 		echo "Unknown mode of operation: $1"

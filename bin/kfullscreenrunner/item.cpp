@@ -61,7 +61,8 @@ void KfsrItem::setApplication(const QString& appname)
 	//FIXME: This query has to make some assumptions about how well-formed application entries look like, in order to work with the hardcoded appnames.
 	//FIXME: IMO this query depends on the locale.
 	static const QString query = QString::fromLatin1("(Type == 'Application') and (GenericName != '') and exist Exec and ('%1' == Name)");
-	const KService::List services = KServiceTypeTrader::self()->query("Application", query.arg(appname));
+	static const QString query2 = QString::fromLatin1("(Type == 'Application') and (GenericName != '') and exist Exec and ('%1' ~ Name)");
+	const KService::List services = KServiceTypeTrader::self()->query("Application", query.arg(appname)) + KServiceTypeTrader::self()->query("Application", query2.arg(appname));
 	if (services.isEmpty())
 		return;
 	m_service = services.value(0);

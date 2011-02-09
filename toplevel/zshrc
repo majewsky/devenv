@@ -3,7 +3,7 @@ HISTSIZE=10000
 SAVEHIST=10000
 PROMPT="\$($HOME/bin/prettyprompt)"
 export PRETTYPROMPT_SHELL="zsh"
-setopt appendhistory autocd extendedglob histignoredups incappendhistory noflowcontrol nomatch notify promptsubst
+setopt appendhistory autocd correct extendedglob histignoredups incappendhistory noflowcontrol nomatch notify promptsubst
 unsetopt beep
 bindkey -e
 
