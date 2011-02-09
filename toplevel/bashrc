@@ -10,5 +10,5 @@ test -s ~/.alias && . ~/.alias || true
 test -z "$LOCALPROFILEREAD" && source ~/.profile || true
 if [[ -n $PS1 ]]; then
 	PS1="\$($HOME/bin/prettyprompt)"
-	export PRETTYPROMPT_SHELL="bash"
 fi
+export PRETTYPROMPT_SHELL="bash"

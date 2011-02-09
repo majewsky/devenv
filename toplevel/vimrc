@@ -17,6 +17,7 @@ nmap <Leader><Leader> <Leader>be
 set autoindent
 set background=dark
 set cindent
+set hlsearch
 set mouse=a
 set number
 set shiftwidth=4

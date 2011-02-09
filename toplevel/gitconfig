@@ -11,9 +11,10 @@
 	pull = pull
 	add = add
 	stash = stash
-	lci = lcommit
 	rs = reset
 	di = diff
+	mg = merge
+	show = show
 [branch]
 	autosetuprebase = always
 [color]

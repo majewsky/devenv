@@ -10,6 +10,7 @@ rm -rf $HOME/.macromedia
 export EDITOR=vim
 export PAGER="less -R"
 export PATH="/soulianis/bin:$PATH:/sbin:/usr/sbin:/usr/local/sbin"
+export KDEDIRS="/usr/local/:$KDEDIRS"
 
 # some measures (apart from .inputrc's set bell-style none and modprobe's blacklist pcspkr) to disable the system speaker
 xset b 0

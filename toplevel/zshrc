@@ -29,9 +29,9 @@ while read git_line; do
 		echo $git_category $git_line
 	fi
 done < $HOME/.gitconfig | grep '^\[alias\]' | cut -d' ' -f2- | sed 's/ = / /' | while read git_alias git_command; do
-	alias $git_alias="git $git_command"
+	alias $git_alias="git $git_alias"
 done
-unset git_line git_category git_alias git_command	
+unset git_line git_category git_alias git_command
 
 # taken from http://zshwiki.org/home/zle/bindkeys
 # by default: export WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>'
@@ -41,7 +41,7 @@ export WORDCHARS='*?_[]~=&;!#$%^(){}'
 # helper functions for KDE development
 # idea from http://techbase.kde.org/Getting_Started/Increased_Productivity_in_KDE4_with_Scripts/.bashrc
 
-export BUILD_ROOT='/home/majewsky/tmp/build' # the equivalent to $HOME, for build directories
+export BUILD_ROOT="$HOME/tmp/build" # the equivalent to $HOME, for build directories
 
 function find_direct_build_dir() { # argument: path to directory
 	# go inside build hierarchy if not in it already
@@ -64,11 +64,9 @@ function find_build_dir() { # argument: path to directory, check file name (if g
 	find_direct_build_dir "$1"
 }
 
-function chpwd() # no arguments (hook which gets called by cd)
-{
+function chpwd() { # no arguments (hook; is called by cd)
 	export B="$(find_direct_build_dir "$(pwd)")"
 	export S="$(find_direct_source_dir "$(pwd)")"
-	alias _=$B
 }
 chpwd # initialize $B and $S
 
@@ -81,38 +79,54 @@ function cs() { # no arguments
 }
 
 function cmk() { # all arguments are passed to cmake
-	SOURCE_DIR="$(pwd)"
-	BUILD_DIR="$(find_build_dir "$SOURCE_DIR")"
-	mkdir -p "$BUILD_DIR" || ( echo "Failed to create $BUILD_DIR"; return 1 )
-	cd "$BUILD_DIR"
-	if [ ! -f CMakeCache.txt ]; then
-		cmake -DCMAKE_INSTALL_PREFIX=/usr $@ "$SOURCE_DIR" || ( cd "$SOURCE_DIR"; return 1 )
+	mkdir -p $B || ( echo "Failed to create $B"; return 1 )
+	cd $B
+	if [ ! -f CMakeCache.txt -a -f $S/CMakeLists.txt ]; then
+		cmake $@ $S || ( cd $S; return 1 )
 	elif [ $# -gt 0 ]; then
-		cmake $@ . || ( cd "$SOURCE_DIR"; return 1 )
+		cmake $@ . || ( cd $S; return 1 )
 	fi
-	make -j9 || ( cd "$SOURCE_DIR"; return 1 )
-	cd "$SOURCE_DIR"
+	make -j3 || ( cd $S; return 1 )
+	cd $S
 }
 
 function cmki() { # all arguments are passed to cmake
-	cmk || return 1
-	SOURCE_DIR="$(pwd)"
-	cd "$BUILD_DIR" || ( echo "Directory $BUILD_DIR does not exist"; return 1 )
-	sudo make install/fast || ( cd "$SOURCE_DIR"; return 1 )
+	cmk $@ || return 1
+	cd $B || ( echo "Directory $B does not exist"; return 1 )
+	sudo make install/fast -j3 || ( cd $S; return 1 )
 	# TODO: fallback to "make install" if install/fast target is not available
-	cd "$SOURCE_DIR"
+	cd $S
 }
 
-function cmku() { # all arguments are passed to cmake
-	SOURCE_DIR="$(pwd)"
-	cd "$BUILD_DIR" || ( echo "Directory $BUILD_DIR does not exist"; return 1 )
-	sudo make uninstall || ( cd "$SOURCE_DIR"; return 1 )
+function cmku() {
+	cd $B || ( echo "Directory $BUILD_DIR does not exist"; return 1 )
+	sudo make uninstall || ( cd $S; return 1 )
 	# TODO: fallback to "xargs sudo rm < install_manifest.txt"
-	cd "$SOURCE_DIR"
+	cd $S
 }
 
+function qmk() { # all arguments are passed to qmake
+	mkdir -p $B || ( echo "Failed to create $B"; return 1 )
+	cd $B
+	if [ ! -f Makefile -a -f $S/*.pro ]; then
+		qmake $@ $S || ( cd $S; return 1 )
+	elif [ $# -gt 0 ]; then
+		qmake $@ $S || ( cd $S; return 1 )
+	fi
+	make -j3 || ( cd $S; return 1 )
+	cd $S
+}
+
+function mk() { # all arguments are passed to make
+	cd $B || return 1
+	[ -f Makefile ] || ( echo "Error: No Makefile present."; cd $S; return 1 )
+	make -j3 $@ || ( cd $S; return 1 )
+	cd $S
+}
+
+# key bindings
 bindkey '^Z' undo
 
-function psgrep() { # all args are passed to grep
+function psgrep() { # all arguments passed to grep
 	ps aux | grep $* | grep -v grep
 }
