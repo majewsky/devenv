@@ -5,8 +5,8 @@ if [ ! -d .git -o ! -f mappings.txt ]; then
 	exit 1
 fi
 
-case $1 in
-	install)
+install_core()
+{
 		INSTALLATION_GOOD=1
 		while read SOURCE DEST; do
 			if [ -e $HOME/$DEST -a ! -L $HOME/$DEST ]; then
@@ -26,13 +26,26 @@ case $1 in
 		GXX_EXTRA_ARGS=""
 		[ -d /usr/include/qt4 ] && GXX_EXTRA_ARGS="-I/usr/include/qt4"
 		g++ $GXX_EXTRA_ARGS -lQtCore -o $HOME/bin/prettyprompt $PWD/bin/prettyprompt.cpp
-		# compile kfullscreenrunner
-		ORIGPWD=$PWD
-		mkdir -p $ORIGPWD/build/kfullscreenrunner
-		cd $ORIGPWD/build/kfullscreenrunner
-		cmake -DCMAKE_INSTALL_PREFIX=$HOME $ORIGPWD/bin/kfullscreenrunner
-		make -j2
-		make install/fast
+}
+
+install_gui()
+{
+	# compile kfullscreenrunner
+	ORIGPWD=$PWD
+	mkdir -p $ORIGPWD/build/kfullscreenrunner
+	cd $ORIGPWD/build/kfullscreenrunner
+	cmake -DCMAKE_INSTALL_PREFIX=$HOME $ORIGPWD/bin/kfullscreenrunner
+	make -j2
+	make install/fast
+}
+
+case $1 in
+	install-core)
+		install_core
+		;;
+	install-gui)
+		install_core
+		install_gui
 		;;
 	dryrun-install)
 		while read SOURCE DEST; do
@@ -46,6 +59,6 @@ case $1 in
 		;;
 	*)
 		echo "Unknown mode of operation: $1"
-		echo "Syntax: ./setup.sh install"
+		echo "Syntax: ./setup.sh [install-core|install-gui|dryrun-install]"
 esac
 
