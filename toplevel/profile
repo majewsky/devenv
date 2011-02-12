@@ -18,3 +18,7 @@ setterm -blength 0
 
 # Python includes
 export PYTHONPATH="$PYTHONPATH:$HOME/Code/co/PyXGraph:$HOME/Code/co/PlottingCanvas:$HOME/Code/co/Iterator:$HOME/Code/co/QuantumMaps"
+
+# KDE installation
+export KDEDIRS="/usr/local/:$KDEDIRS"
+export LD_LIBRARY_PATH="/usr/local/lib/:$LD_LIBRARY_PATH"

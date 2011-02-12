@@ -130,4 +130,5 @@ void KfsrView::showEvent(QShowEvent* event)
 {
 	Q_UNUSED(event)
 	setFocus(Qt::OtherFocusReason);
+	setWindowState(Qt::WindowActive | Qt::WindowMaximized);
 }

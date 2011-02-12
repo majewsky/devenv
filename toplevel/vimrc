@@ -1,4 +1,6 @@
+filetype plugin off
 let mapleader = ","
+let g:C_MapLeader = ","
 
 function! SwitchSourceHeader()
   "update!
@@ -19,10 +21,12 @@ set autoindent
 set background=dark
 set cindent
 set hlsearch
+set linebreak
 set mouse=a
 set number
 set shiftwidth=4
 set tabstop=4
+syntax enable
 
 "use tab key for indentation
 nmap <C-Tab> a<C-t><Esc>
