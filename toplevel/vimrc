@@ -28,11 +28,8 @@ set shiftwidth=4
 set tabstop=4
 syntax enable
 
-"use tab key for indentation
-nmap <C-Tab> a<C-t><Esc>
-nmap <C-S-Tab> a<C-d><Esc>
-imap <C-Tab> <C-t>
-imap <C-S-Tab> <C-d>
+"remove highlighting of search matches
+noremap <Leader> :nohl<CR>:redraw<CR><Leader>
 
 "highlight superfluous whitespace at end of line (except when typing at the end of a line)
 "from http://vim.wikia.com/wiki/Highlight_unwanted_spaces
