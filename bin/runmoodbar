@@ -1,0 +1,13 @@
+#!/bin/bash
+NUMCPU="$(grep ^processor /proc/cpuinfo | wc -l)"
+
+find . -type f -regextype posix-awk -iregex '.*\.(mp3|ogg|flac|wma)' | while read i ; do
+	if [ `jobs -p | wc -l` -ge $NUMCPU ] ; then
+		wait
+	fi
+	TEMP="${i%.*}.mood"
+	OUTF=`echo "$TEMP" | sed 's#\(.*\)/\([^,]*\)#\1/.\2#'`
+	if [ ! -e "$OUTF" ] ; then
+		moodbar -o "$OUTF" "$i" &
+	fi
+done
