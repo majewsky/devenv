@@ -1,6 +1,6 @@
 HISTFILE=~/.histfile
-HISTSIZE=10000
-SAVEHIST=10000
+HISTSIZE=100000
+SAVEHIST=100000
 PROMPT="\$($HOME/bin/prettyprompt)"
 export PRETTYPROMPT_SHELL="zsh"
 setopt autocd noautoparamslash autopushd nobeep nobgnice correct extendedglob noflowcontrol globdots histexpiredupsfirst histignoredups nohup incappendhistory interactive longlistjobs monitor nopromptcr promptsubst pushdminus pushdsilent pushdtohome rcquotes recexact zle
