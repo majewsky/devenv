@@ -3,7 +3,7 @@ HISTSIZE=100000
 SAVEHIST=100000
 PROMPT="\$($HOME/bin/prettyprompt)"
 export PRETTYPROMPT_SHELL="zsh"
-setopt autocd noautoparamslash autopushd nobeep nobgnice correct extendedglob noflowcontrol globdots histexpiredupsfirst histignoredups nohup incappendhistory interactive longlistjobs monitor nopromptcr promptsubst pushdminus pushdsilent pushdtohome rcquotes recexact zle
+setopt autocd noautoparamslash autopushd nobeep nobgnice correct extendedglob noflowcontrol globdots histexpiredupsfirst histignoredups nohup incappendhistory longlistjobs nopromptcr promptsubst pushdminus pushdsilent pushdtohome rcquotes recexact
 #setopt appendhistory autocd correct extendedglob histignoredups incappendhistory noflowcontrol nomatch notify promptsubst
 unsetopt beep
 bindkey -e
@@ -22,7 +22,7 @@ bindkey "^[[2~" yank                    # Insert
 bindkey "^[[3~" delete-char             # Del
 bindkey "^[[5~" up-line-or-history      # PageUp
 bindkey "^[[6~" down-line-or-history    # PageDown
-bindkey "^[e"   expand-cmd-path         # C-e for expanding path of typed command.
+bindkey "^E"    expand-cmd-path         # C-e for expanding path of typed command.
 bindkey "^[[A"  up-line-or-search       # Up arrow for back-history-search.
 bindkey "^[[B"  down-line-or-search     # Down arrow for fwd-history-search.
 bindkey " "     magic-space             # Do history expansion on space.
@@ -158,3 +158,13 @@ bindkey '^Z' undo
 function psgrep() { # all arguments passed to grep
 	ps aux | grep $* | grep -v grep
 }
+
+rationalise-dot() {
+	if [[ $LBUFFER = *.. ]]; then
+		LBUFFER+=/..
+	else
+		LBUFFER+=.
+	fi
+}
+zle -N rationalise-dot
+bindkey . rationalise-dot

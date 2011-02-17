@@ -16,7 +16,7 @@ nmap <Leader>s :call SwitchSourceHeader()<CR>
 let g:bufExplorerSortBy='name'
 nmap <Leader><Leader> <Leader>be
 
-filetype plugin on
+"filetype plugin on
 set autoindent
 set background=dark
 set cindent
