@@ -1,4 +1,4 @@
-LOCALPROFILEREAD="yes"
+export LOCALPROFILEREAD="yes"
 test -f /etc/SuSE-release -a -z "$PROFILEREAD" && . /etc/profile || true
 test -s ~/.profile.local && . ~/.profile.local || true
 
@@ -17,7 +17,7 @@ xset b 0
 setterm -blength 0
 
 # Python includes
-export PYTHONPATH="$PYTHONPATH:$HOME/Code/co/PyXGraph:$HOME/Code/co/PlottingCanvas:$HOME/Code/co/Iterator:$HOME/Code/co/QuantumMaps"
+export PYTHONPATH="$PYTHONPATH:$HOME/Code/python/PyXGraph:$HOME/Code/python/PlottingCanvas:$HOME/Code/python/Iterator:$HOME/Code/python/QuantumMaps"
 
 # KDE installation
 export KDEDIRS="/usr/local/:$KDEDIRS"
