@@ -1,6 +1,5 @@
 export LOCALPROFILEREAD="yes"
 test -f /etc/SuSE-release -a -z "$PROFILEREAD" && . /etc/profile || true
-test -s ~/.profile.local && . ~/.profile.local || true
 
 rm -rf $HOME/.adobe
 cp -R $HOME/.adobe_orig $HOME/.adobe
@@ -10,7 +9,8 @@ rm -rf $HOME/.macromedia
 export EDITOR=vim
 export PAGER="less -R"
 [ -e /soulianis ] && export PATH="/soulianis/bin:$PATH:/sbin:/usr/sbin:/usr/local/sbin"
-export KDEDIRS="/usr/local/:$KDEDIRS"
+# add home directory path
+export PATH="$HOME/bin:$PATH"
 
 # some measures (apart from .inputrc's set bell-style none and modprobe's blacklist pcspkr) to disable the system speaker
 xset b 0

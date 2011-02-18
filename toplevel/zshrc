@@ -9,6 +9,7 @@ unsetopt beep
 bindkey -e
 
 test -z "$LOCALPROFILEREAD" && source ~/.profile || true
+test -s ~/.profile.local && . ~/.profile.local || true
 
 FPATH="$FPATH:$HOME/.zsh-functions"
 autoload compinit
@@ -64,7 +65,8 @@ unset git_line git_category git_alias git_command
 # taken from http://zshwiki.org/home/zle/bindkeys
 # by default: export WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>'
 # we take out the slash, period, angle brackets, dash here.
-export WORDCHARS='*?_[]~=&;!#$%^(){}'
+# EDIT: also the equality sign, to have an intermediate break point in "--system=threedisks"
+export WORDCHARS='*?_[]~&;!#$%^(){}'
 
 # helper functions for KDE development
 # idea from http://techbase.kde.org/Getting_Started/Increased_Productivity_in_KDE4_with_Scripts/.bashrc
