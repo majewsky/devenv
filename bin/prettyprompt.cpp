@@ -176,7 +176,7 @@ int main(int argc, char** argv)
 	char buffer[bufferLength];
 	gethostname(buffer, 1024);
 	QByteArray hostname(buffer);
-	const QByteArray username(getenv("LOGNAME"));
+	const QByteArray username(getenv("LOGNAME")), term(getenv("TERM"));
 	const QStringList cwdParts = QDir::current().absolutePath().split(QChar('/'));
 	const QByteArray shellName(getenv("PRETTYPROMPT_SHELL"));
 	int shellLevel = atoi(getenv("SHLVL"), 1);
@@ -210,16 +210,15 @@ int main(int argc, char** argv)
 	printf(
 		 "\e[%sm%s\e[0m"   //username
 		"@\e[%sm%s\e[0m"   //hostname
+		"-%s"              //terminal (esp. for identifying screen)
 		" %s%s\n"          //cwd, extra info from repo reader
 		, usernameColor, username.data()
 		, hostnameColor, hostname.data()
+		, term.data()
 		, repoReader->printablePath().data(), repoReader->extraInfo().data()
 	);
 	//print shell name and shell level
-	if (shellLevel == 1)
-		printf("%s$ ", shellName.data());
-	else
-		printf("%s level %i$ ", shellName.data(), shellLevel);
+	printf("%s%i$ ", shellName.data(), shellLevel);
 	//cleanup
 	delete repoReader;
 	return 0;
