@@ -2,7 +2,7 @@ export LOCALPROFILEREAD="yes"
 test -f /etc/SuSE-release -a -z "$PROFILEREAD" && . /etc/profile || true
 
 rm -rf $HOME/.adobe
-cp -R $HOME/.adobe_orig $HOME/.adobe
+[ -d "$HOME/.adobe_orig" ] && cp -R $HOME/.adobe_orig $HOME/.adobe
 rm -rf $HOME/.macromedia
 [ -d "$HOME/Downloads" ] && rmdir "$HOME/Downloads"
 
@@ -13,7 +13,7 @@ export PAGER="less -R"
 export PATH="$HOME/bin:$PATH"
 
 # some measures (apart from .inputrc's set bell-style none and modprobe's blacklist pcspkr) to disable the system speaker
-xset b 0
+[ x"$DISPLAY" != x ] && xset b 0
 setterm -blength 0
 
 # Python includes
