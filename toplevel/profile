@@ -22,3 +22,7 @@ export PYTHONPATH="$PYTHONPATH:$HOME/Code/python/PyXGraph:$HOME/Code/python/Plot
 # KDE installation
 export KDEDIRS="/usr/local/:$KDEDIRS"
 export LD_LIBRARY_PATH="/usr/local/lib/:$LD_LIBRARY_PATH"
+
+# aliases
+alias ack='ack --group --color' # always adjust for screen display, even if writing to pipe
+alias less='less -R'            # recognise color characters
