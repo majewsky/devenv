@@ -29,7 +29,7 @@ set tabstop=4
 syntax enable
 
 "remove highlighting of search matches
-noremap <Leader> :nohl<CR>:redraw<CR><Leader>
+noremap <Leader> :nohl<CR>:<BS>
 
 "highlight superfluous whitespace at end of line (except when typing at the end of a line)
 "from http://vim.wikia.com/wiki/Highlight_unwanted_spaces
