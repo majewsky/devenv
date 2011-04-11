@@ -176,6 +176,8 @@ int main(int argc, char** argv)
 	char buffer[bufferLength];
 	gethostname(buffer, 1024);
 	QByteArray hostname(buffer);
+	if (hostname.endsWith(".site")) //I don't want this prefix
+		hostname = hostname.left(hostname.length() - 5);
 	const QByteArray username(getenv("LOGNAME")), term(getenv("TERM"));
 	const QStringList cwdParts = QDir::current().absolutePath().split(QChar('/'));
 	const QByteArray shellName(getenv("PRETTYPROMPT_SHELL"));
@@ -197,6 +199,8 @@ int main(int argc, char** argv)
 	}
 	else if (hostname == "maximegalon")
 		hostnameColor = "0;31";
+	else if (hostname == "preliumtarn")
+		hostnameColor = "0;35";
 	else if (hostname == "vserver3190")
 		hostname = "bethselamin.de";
 	//find repos etc.
