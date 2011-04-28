@@ -15,6 +15,7 @@
 	di = diff
 	mg = merge
 	show = show
+	dt = difftool
 [branch]
 	autosetuprebase = always
 [color]
@@ -28,3 +29,7 @@
 	insteadOf = kde:
 [url "git@git.kde.org:"]
 	pushInsteadOf = kde:
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false
