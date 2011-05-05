@@ -25,18 +25,24 @@ set linebreak
 set mouse=a
 set number
 set shiftwidth=4
+set smarttab
 set tabstop=4
 syntax enable
 
 "remove highlighting of search matches
 noremap <Leader> :nohl<CR>:<BS>
+"after repeating commands, put the cursor at the start of the change
+map . .`[
 
 "highlight superfluous whitespace at end of line (except when typing at the end of a line)
 "from http://vim.wikia.com/wiki/Highlight_unwanted_spaces
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+\%#\@<!$/
+"highlight tab characters
+highlight Tab ctermbg=darkgray guibg=darkgray
+match Tab /\t/
 
-"map :W to :w
-com W w
-com Wq wq
-com WQ wq
+"formatting style for Python code in our working group
+autocmd FileType python setlocal expandtab smarttab
+autocmd FileType python setlocal tabstop=4 softtabstop=4
+autocmd FileType python map <F5> :w<CR>:!python "%"<CR>
