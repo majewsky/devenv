@@ -43,6 +43,6 @@ highlight Tab ctermbg=darkgray guibg=darkgray
 match Tab /\t/
 
 "formatting style for Python code in our working group
-autocmd FileType python setlocal expandtab smarttab
+autocmd FileType python setlocal expandtab smarttab nocindent
 autocmd FileType python setlocal tabstop=4 softtabstop=4
 autocmd FileType python map <F5> :w<CR>:!python "%"<CR>
