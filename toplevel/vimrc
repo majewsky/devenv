@@ -1,14 +1,18 @@
+set t_Co=256
+let g:gardener_light_comments=1
+colo gardener
+
 filetype plugin off
 let mapleader = ","
 let g:C_MapLeader = ","
 
 function! SwitchSourceHeader()
-  "update!
-  if (expand ("%:e") == "cpp")
-    find %:t:r.h
-  else
-    find %:t:r.cpp
-  endif
+	"update!
+	if (expand ("%:e") == "cpp")
+		find %:t:r.h
+	else
+		find %:t:r.cpp
+	endif
 endfunction
 nmap <Leader>s :call SwitchSourceHeader()<CR>
 
@@ -35,20 +39,25 @@ noremap <Leader> :nohl<CR>:<BS>
 "after repeating commands, put the cursor at the start of the change
 map . .`[
 
-" "highlight superfluous whitespace at end of line (except when typing at the end of a line)
-" "from http://vim.wikia.com/wiki/Highlight_unwanted_spaces
-" highlight ExtraWhitespace ctermbg=red guibg=red
-" match ExtraWhitespace /\s\+\%#\@<!$/
-" "highlight tab characters
-" highlight Tab ctermbg=darkgray guibg=darkgray
-" match Tab /\t/
-
-highlight MyTab ctermbg=235
+" highlight interesting whitespace (TODO: autocmd BufWinEnter is an ugly hack;
+" setting the colorscheme in newly-created windows seems to wipe the highlight
+" list)
+highlight MyTab ctermbg=red
 match MyTab /^\t\+/
-highlight MySpace ctermbg=238
+highlight MySpace ctermbg=red
 2match MySpace /\s\+$/
+
+if hostname() == "ptpcp11"
+	autocmd BufWinEnter * highlight MyTab ctermbg=242
+	autocmd BufWinEnter * highlight MySpace ctermbg=245
+else
+	autocmd BufWinEnter * highlight MyTab ctermbg=235
+	autocmd BufWinEnter * highlight MySpace ctermbg=238
+endif
 
 "formatting style for Python code in our working group
 autocmd FileType python setlocal expandtab smarttab nocindent tabstop=4 softtabstop=4
 autocmd FileType python map <F5> :w<CR>:!python "%"<CR>
 autocmd FileType changelog setlocal expandtab smarttab tabstop=4 softtabstop=4
+autocmd FileType tex map <F5> :w<CR>:wa<CR>:make<CR>
+autocmd FileType tex map <F6> :!xdg-open %<.pdf &>/dev/null &disown<CR><CR>

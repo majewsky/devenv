@@ -1,4 +1,3 @@
-export LOCALPROFILEREAD="yes"
 test -f /etc/SuSE-release -a -z "$PROFILEREAD" && . /etc/profile || true
 
 rm -rf $HOME/.adobe
@@ -8,20 +7,23 @@ rm -rf $HOME/.macromedia
 
 export EDITOR=vim
 export PAGER="less -R"
-[ -e /soulianis ] && export PATH="/soulianis/bin:$PATH:/sbin:/usr/sbin:/usr/local/sbin"
-# add home directory path
-export PATH="$HOME/bin:$PATH"
+
+if [ -z "$LOCALPROFILEREAD" ]; then
+	[ -e /soulianis ] && export PATH="/soulianis/bin:$PATH:/sbin:/usr/sbin:/usr/local/sbin"
+	# add home directory path
+	export PATH="$HOME/bin:$PATH"
+
+	# Python includes
+	export PYTHONPATH="$PYTHONPATH:$HOME/Code/python/PyXGraph:$HOME/Code/python/PlottingCanvas:$HOME/Code/python/Iterator:$HOME/Code/python/QuantumMaps"
+
+	# KDE installation
+	export KDEDIRS="/usr/local/:$KDEDIRS"
+	export LD_LIBRARY_PATH="/usr/local/lib/:$LD_LIBRARY_PATH"
+fi
 
 # some measures (apart from .inputrc's set bell-style none and modprobe's blacklist pcspkr) to disable the system speaker
 [ x"$DISPLAY" != x ] && xset b 0
 setterm -blength 0
-
-# Python includes
-export PYTHONPATH="$PYTHONPATH:$HOME/Code/python/PyXGraph:$HOME/Code/python/PlottingCanvas:$HOME/Code/python/Iterator:$HOME/Code/python/QuantumMaps"
-
-# KDE installation
-export KDEDIRS="/usr/local/:$KDEDIRS"
-export LD_LIBRARY_PATH="/usr/local/lib/:$LD_LIBRARY_PATH"
 
 # aliases
 alias ack='ack --group --color' # always adjust for screen display, even if writing to pipe
@@ -31,3 +33,7 @@ alias less='less -R'            # recognise color characters
 if [ "$TERM" = "xterm" ]; then
 	export TERM=xterm-256color
 fi
+
+
+# this must always be at the end
+export LOCALPROFILEREAD="yes"

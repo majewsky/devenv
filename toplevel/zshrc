@@ -8,7 +8,7 @@ setopt autocd noautoparamslash autopushd nobeep nobgnice correct extendedglob no
 unsetopt beep
 bindkey -e
 
-test -z "$LOCALPROFILEREAD" && source ~/.profile || true
+source ~/.profile
 test -s ~/.profile.local && . ~/.profile.local || true
 
 FPATH="$FPATH:$HOME/.zsh-functions"
@@ -177,7 +177,7 @@ bindkey . rationalise-dot
 bindkey -M isearch . self-insert
 
 # ignore hidden files and temporary files as long as possible
-zstyle ':completion:*:complete:*:(all-|)files' ignored-patterns '?*~' '.*' \
-	'?*.(o|aux|bbl|blg|idx|ilg|ind|lof|nav|snm|toc|vrb|pyc)' \
-	'?*.(log|out)(e:'\''test -e ${REPLY:r}.tex'\'':)' # TODO: does not work
-zstyle ':completion:*:complete:*:(local|path)-directories' ignored-patterns '(*/.*|.*)' # TODO: does not really work either
+#zstyle ':completion:*:complete:*:(all-|)files' ignored-patterns '?*~' '.*' \
+#	'?*.(o|aux|bbl|blg|idx|ilg|ind|lof|nav|snm|toc|vrb|pyc)' \
+#	'?*.(log|out)(e:'\''test -e ${REPLY:r}.tex'\'':)' # TODO: does not work
+#zstyle ':completion:*:complete:*:(local|path)-directories' ignored-patterns '(*/.*|.*)' # TODO: does not really work either
