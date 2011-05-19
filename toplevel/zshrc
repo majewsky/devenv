@@ -149,8 +149,7 @@ function qmk() { # all arguments are passed to qmake
 
 function mk() { # all arguments are passed to make
 	if lamake show root &> /dev/null; then
-		if lamake; then; else return 1; fi
-		if [ ! -d $B ]; then return 0; fi
+		if lamake $@; then return 0; else return 1; fi
 	fi
 	cd $B || return 1
 	[ -f Makefile ] || ( echo "Error: No Makefile present."; cd $S; return 1 )

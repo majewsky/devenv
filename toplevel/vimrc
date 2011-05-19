@@ -55,9 +55,11 @@ else
 	autocmd BufWinEnter * highlight MySpace ctermbg=238
 endif
 
-"formatting style for Python code in our working group
+"formatting style for Python code and changelogs in our working group
 autocmd FileType python setlocal expandtab smarttab nocindent tabstop=4 softtabstop=4
 autocmd FileType python map <F5> :w<CR>:!python "%"<CR>
 autocmd FileType changelog setlocal expandtab smarttab tabstop=4 softtabstop=4
+
 autocmd FileType tex map <F5> :w<CR>:wa<CR>:make<CR>
 autocmd FileType tex map <F6> :!xdg-open %<.pdf &>/dev/null &disown<CR><CR>
+autocmd FileType tex setlocal nocindent
