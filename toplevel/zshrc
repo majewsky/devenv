@@ -58,7 +58,7 @@ while read git_line; do
 		echo $git_category $git_line
 	fi
 done < $HOME/.gitconfig | grep '^\[alias\]' | cut -d' ' -f2- | sed 's/ = / /' | while read git_alias git_command; do
-	alias $git_alias="git $git_alias"
+	alias $git_alias="git $git_command"
 done
 unset git_line git_category git_alias git_command
 

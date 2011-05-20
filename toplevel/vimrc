@@ -1,7 +1,3 @@
-set t_Co=256
-let g:gardener_light_comments=1
-colo gardener
-
 filetype plugin off
 let mapleader = ","
 let g:C_MapLeader = ","
@@ -39,20 +35,30 @@ noremap <Leader> :nohl<CR>:<BS>
 "after repeating commands, put the cursor at the start of the change
 map . .`[
 
-" highlight interesting whitespace (TODO: autocmd BufWinEnter is an ugly hack;
-" setting the colorscheme in newly-created windows seems to wipe the highlight
-" list)
-highlight MyTab ctermbg=red
-match MyTab /^\t\+/
-highlight MySpace ctermbg=red
-2match MySpace /\s\+$/
+" setup color scheme, highlight interesting whitespace 
+" TODO: autocmd BufWinEnter is an ugly hack; setting the colorscheme in
+" newly-created windows seems to wipe the highlight list)
 
-if hostname() == "ptpcp11"
-	autocmd BufWinEnter * highlight MyTab ctermbg=242
-	autocmd BufWinEnter * highlight MySpace ctermbg=245
+set t_Co=256
+
+if hostname() == "maximegalon"	
+	colo transparent
 else
-	autocmd BufWinEnter * highlight MyTab ctermbg=235
-	autocmd BufWinEnter * highlight MySpace ctermbg=238
+	let g:gardener_light_comments=1
+	colo gardener
+
+	highlight MyTab ctermbg=red
+	match MyTab /^\t\+/
+	highlight MySpace ctermbg=red
+	2match MySpace /\s\+$/
+
+	if hostname() == "ptpcp11"
+		autocmd BufWinEnter * highlight MyTab ctermbg=242
+		autocmd BufWinEnter * highlight MySpace ctermbg=245
+	else
+		autocmd BufWinEnter * highlight MyTab ctermbg=235
+		autocmd BufWinEnter * highlight MySpace ctermbg=238
+	endif
 endif
 
 "formatting style for Python code and changelogs in our working group
