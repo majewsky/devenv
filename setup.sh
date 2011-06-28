@@ -22,10 +22,6 @@ install_core()
 				ln -s $PWD/$SOURCE $HOME/$DEST
 			fi
 		done < mappings.txt
-		# compile prettyprompt
-		GXX_EXTRA_ARGS=""
-		[ -d /usr/include/qt4 ] && GXX_EXTRA_ARGS="-I/usr/include/qt4"
-		g++ $GXX_EXTRA_ARGS -lQtCore -o $HOME/bin/prettyprompt $PWD/bin/prettyprompt.cpp
 }
 
 install_gui()
@@ -53,9 +49,6 @@ case $1 in
 				echo ln -s $PWD/$SOURCE $HOME/$DEST
 			fi
 		done < mappings.txt
-		GXX_EXTRA_ARGS=""
-		[ -d /usr/include/qt4 ] && GXX_EXTRA_ARGS="-I/usr/include/qt4"
-		echo g++ $GXX_EXTRA_ARGS -lQtCore -o $HOME/bin/prettyprompt $PWD/bin/prettyprompt.cpp
 		;;
 	*)
 		echo "Unknown mode of operation: $1"

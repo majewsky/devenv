@@ -11,6 +11,6 @@ source ~/.profile || true
 test -s ~/.profile.local && . ~/.profile.local || true
 
 if [[ -n $PS1 ]]; then
-	PS1="\$($HOME/bin/prettyprompt)"
+	PS1="\$($HOME/.devenv/bin/prettyprompt.py)"
 fi
 export PRETTYPROMPT_SHELL="bash"
