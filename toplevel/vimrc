@@ -41,7 +41,7 @@ map . .`[
 
 set t_Co=256
 
-if hostname() == "maximegalon"	
+if hostname() == "maximegalon.site"
 	colo transparent
 else
 	let g:gardener_light_comments=1

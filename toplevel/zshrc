@@ -112,7 +112,11 @@ function cmk() { # all arguments are passed to cmake
 	mkdir -p $B || ( echo "Failed to create $B"; return 1 )
 	cd $B
 	if [ ! -f CMakeCache.txt -a -f $S/CMakeLists.txt ]; then
-		cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo $@ $S || ( cd $S; return 1 )
+		if dialog --yesno "No CMake cache found. Initialize cmake now?" 5 50; then
+			cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo $@ $S || ( cd $S; return 1 )
+		else
+			touch CMakeCache.txt # suppress future questions
+		fi
 	elif [ $# -gt 0 ]; then
 		cmake $@ . || ( cd $S; return 1 )
 	fi
@@ -123,7 +127,12 @@ function cmk() { # all arguments are passed to cmake
 function cmki() { # all arguments are passed to cmake
 	cmk $@ || return 1
 	cd $B || ( echo "Directory $B does not exist"; return 1 )
-	sudo make install/fast -j3 || ( cd $S; return 1 )
+	if grep '^install/fast' Makefile &>/dev/null; then
+		CMKI_TARGET=install/fast
+	else
+		CMKI_TARGET=install
+	fi
+	sudo make $CMKI_TARGET -j3 || ( cd $S; return 1 )
 	# TODO: fallback to "make install" if install/fast target is not available
 	cd $S
 }
