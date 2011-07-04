@@ -1,6 +1,7 @@
 ./ .devenv
 toplevel/bash_logout .bash_logout
 toplevel/bashrc .bashrc
+toplevel/commit-template .commit-template
 toplevel/gitconfig .gitconfig
 toplevel/profile .profile
 toplevel/profile.local .profile.local

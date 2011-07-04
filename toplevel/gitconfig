@@ -33,3 +33,5 @@
 	tool = vimdiff
 [difftool]
 	prompt = false
+[commit]
+	template = /home/stefan/.commit-template
