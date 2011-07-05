@@ -120,7 +120,7 @@ function cmk() { # all arguments are passed to cmake
 	elif [ $# -gt 0 ]; then
 		cmake $@ . || ( cd $S; return 1 )
 	fi
-	make -j3 || ( cd $S; return 1 )
+	make -j$(($NUMCPUCORES + 1)) || ( cd $S; return 1 )
 	cd $S
 }
 
@@ -132,7 +132,7 @@ function cmki() { # all arguments are passed to cmake
 	else
 		CMKI_TARGET=install
 	fi
-	sudo make $CMKI_TARGET -j3 || ( cd $S; return 1 )
+	sudo make $CMKI_TARGET -j$(($NUMCPUCORES + 1)) || ( cd $S; return 1 )
 	# TODO: fallback to "make install" if install/fast target is not available
 	cd $S
 }
@@ -152,7 +152,7 @@ function qmk() { # all arguments are passed to qmake
 	elif [ $# -gt 0 ]; then
 		qmake $@ $S || ( cd $S; return 1 )
 	fi
-	make -j3 || ( cd $S; return 1 )
+	make -j$(($NUMCPUCORES + 1)) || ( cd $S; return 1 )
 	cd $S
 }
 
@@ -162,7 +162,7 @@ function mk() { # all arguments are passed to make
 	fi
 	cd $B || return 1
 	[ -f Makefile ] || ( echo "Error: No Makefile present."; cd $S; return 1 )
-	make -j3 $@ || ( cd $S; return 1 )
+	make -j$(($NUMCPUCORES + 1)) $@ || ( cd $S; return 1 )
 	cd $S
 }
 

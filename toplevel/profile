@@ -7,6 +7,7 @@ rm -rf $HOME/.macromedia
 
 export EDITOR=vim
 export PAGER="less -R"
+export NUMCPUCORES="$(grep '^core id' /proc/cpuinfo | sort -g | uniq | wc -l)"
 
 if [ -z "$LOCALPROFILEREAD" ]; then
 	[ -e /soulianis ] && export PATH="/soulianis/bin:$PATH:/sbin:/usr/sbin:/usr/local/sbin"
