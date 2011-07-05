@@ -118,29 +118,44 @@ ssw("@" + colored(hostname, hostnameColor))
 ssw("-" + os.environ["TERM"] + " ")
 
 # check if cwd is in a repo?
-cwd = op.realpath(os.getcwd())
-isRepo = False
-
 try:
-    repoBase, repoPath, repoStatus = recognizeGitRepo(cwd)
-    isRepo = True
-except NotARepoException:
+    cwd = op.realpath(os.getcwd())
+    isRepo = False
+
     try:
-        repoBase, repoPath, repoStatus = recognizeSvnRepo(cwd)
+        repoBase, repoPath, repoStatus = recognizeGitRepo(cwd)
         isRepo = True
     except NotARepoException:
-        pass
+        try:
+            repoBase, repoPath, repoStatus = recognizeSvnRepo(cwd)
+            isRepo = True
+        except NotARepoException:
+            pass
 
-# print cwd and repo status (if any)
-if not isRepo:
-    ssw(colored(cwd, "1;36"))
-else:
-    if repoPath == "":
-        ssw(colored(repoBase, "1;36"))
+    # print cwd and repo status (if any)
+    if not isRepo:
+        ssw(colored(cwd, "1;36"))
     else:
-        repoPath = repoPath.rstrip("/")
-        ssw(colored(repoBase + "/", "0;36") + colored(repoPath, "1;36"))
-    ssw(" " + repoStatus)
+        if repoPath == "":
+            ssw(colored(repoBase, "1;36"))
+        else:
+            repoPath = repoPath.rstrip("/")
+            ssw(colored(repoBase + "/", "0;36") + colored(repoPath, "1;36"))
+        ssw(" " + repoStatus)
+except OSError:
+    # could not stat cwd; has probably been deleted
+    cwd = os.environ.get("PWD")
+    # find last existing parent directory and display similar to repo, but with red alert color
+    basePath, subPath = cwd, ""
+    while not op.exists(basePath):
+        basePath, newSubDir = op.split(basePath)
+        subPath = op.join(newSubDir, subPath)
+    subPath = subPath.rstrip("/")
+    if subPath == "":
+        ssw(colored(basePath, "1;36"))
+    else:
+        ssw(colored(basePath + "/", "1;36") + colored(subPath, "1;31"))
+    ssw(" " + colored("could not stat cwd", "1;41"))
 
 # final prompt: shell name and shell level
 shellName = os.environ["PRETTYPROMPT_SHELL"]
