@@ -165,6 +165,7 @@ function mk() { # all arguments are passed to make
 	make -j$(($NUMCPUCORES + 1)) $@ || ( cd $S; return 1 )
 	cd $S
 }
+alias mkk="mk -k"
 
 # key bindings
 bindkey '^Z' undo
