@@ -1,6 +1,4 @@
 filetype plugin off
-let mapleader = ","
-let g:C_MapLeader = ","
 
 function! SwitchSourceHeader()
 	"update!
@@ -10,11 +8,11 @@ function! SwitchSourceHeader()
 		find %:t:r.cpp
 	endif
 endfunction
-nmap <Leader>s :call SwitchSourceHeader()<CR>
+nmap ,s :call SwitchSourceHeader()<CR>
 
 "config and keybindings for BufExplorer plugin
 let g:bufExplorerSortBy='name'
-nmap <Leader><Leader> <Leader>be
+nmap ,, <Leader>be
 
 "filetype plugin on
 set autoindent
@@ -30,10 +28,15 @@ set smarttab
 set tabstop=4
 syntax enable
 
-"remove highlighting of search matches
-noremap <Leader> :nohl<CR>:<BS>
-"after repeating commands, put the cursor at the start of the change
+" remove highlighting of search matches
+noremap , :nohl<CR>:<BS>
+" after repeating commands, put the cursor at the start of the change
 map . .`[
+" after adjusting indentation in visual mode, restore selection for further changes
+vnoremap > >gv
+vnoremap < <gv
+" disable q: command for opening the command line window
+map q: <Nop>
 
 " setup color scheme, highlight interesting whitespace 
 " TODO: autocmd BufWinEnter is an ugly hack; setting the colorscheme in
@@ -44,21 +47,19 @@ set t_Co=256
 if hostname() == "maximegalon.site"
 	colo transparent
 else
+	if hostname() == "ptpcp11"
+		autocmd ColorScheme * highlight MyTab ctermbg=242
+		autocmd ColorScheme * highlight MySpace ctermbg=245
+	else
+		autocmd ColorScheme * highlight MyTab ctermbg=235
+		autocmd ColorScheme * highlight MySpace ctermbg=238
+	endif
+
 	let g:gardener_light_comments=1
 	colo gardener
 
-	highlight MyTab ctermbg=red
-	match MyTab /^\t\+/
-	highlight MySpace ctermbg=red
-	2match MySpace /\s\+$/
-
-	if hostname() == "ptpcp11"
-		autocmd BufWinEnter * highlight MyTab ctermbg=242
-		autocmd BufWinEnter * highlight MySpace ctermbg=245
-	else
-		autocmd BufWinEnter * highlight MyTab ctermbg=235
-		autocmd BufWinEnter * highlight MySpace ctermbg=238
-	endif
+	autocmd Syntax * syntax match MyTab /^\t\+/
+	autocmd Syntax * syntax match MySpace /\s\+$/
 endif
 
 "formatting style for Python code and changelogs in our working group
