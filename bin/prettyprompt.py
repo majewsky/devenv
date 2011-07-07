@@ -118,7 +118,7 @@ ssw("@" + colored(hostname, hostnameColor))
 ssw("-" + os.environ["TERM"] + " ")
 
 # find root build directory (used for displaying cwd inside build tree in condensed form)
-buildRoot = os.environ["BUILD_ROOT"]
+buildRoot = op.realpath(os.environ["BUILD_ROOT"])
 
 # find cwd, does it exist?
 try:
