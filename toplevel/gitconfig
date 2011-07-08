@@ -34,4 +34,4 @@
 [difftool]
 	prompt = false
 [commit]
-	template = /home/stefan/.commit-template
+	template = ~/.commit-template
