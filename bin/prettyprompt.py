@@ -4,7 +4,10 @@ import pwd, os, os.path as op, socket, sys, subprocess as sp
 
 def catFile(file):
     """ Returns the content of the given file. No exception handling. """
-    return "".join(open(file).readlines())
+    try:
+        return "".join(open(file).readlines())
+    except IOError:
+        return ""
 
 def colored(string, color):
     """ Wraps a string in terminal escape sequences to activate given color. """
@@ -48,7 +51,7 @@ def recognizeGitRepo(path):
         commit = catFile(op.join(gitDir, refSpec)).strip()
         if commit == "":
             packedRefs = open(op.join(gitDir, "packed-refs")).readlines()
-            packedRefs = map(str.strip(), packedRefs)
+            packedRefs = map(str.strip, packedRefs)
             for packedRef in packedRefs:
                 if packedRef.endswith(refSpec):
                     commit = packedRef[0:40]
