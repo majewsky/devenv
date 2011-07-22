@@ -49,7 +49,7 @@ def recognizeGitRepo(path):
         branchSpec = "branch " + branch
         # read corresponding file to find commit
         commit = catFile(op.join(gitDir, refSpec)).strip()
-        if commit == "":
+        if commit == "" and op.exists(op.join(gitDir, "packed-refs")):
             packedRefs = open(op.join(gitDir, "packed-refs")).readlines()
             packedRefs = map(str.strip, packedRefs)
             for packedRef in packedRefs:
@@ -61,7 +61,12 @@ def recognizeGitRepo(path):
         branchSpec = colored("no branch", "1;41")
         commit = headRef
 
-    return basePath, subPath, "on %s at %s" % (branchSpec, commit[0:7])
+    if commit == "": # before initial commit
+        branchSpec = colored(branchSpec + " before initial commit", "1;30")
+        extraInfo = "on %s" % (branchSpec)
+    else:
+        extraInfo = "on %s at %s" % (branchSpec, commit[0:7])
+    return basePath, subPath, extraInfo
 
 def recognizeSvnRepo(path):
     """ Like recognizeGitRepo, but for SVN repos. Repo status message looks like
