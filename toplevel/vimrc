@@ -67,3 +67,6 @@ autocmd FileType changelog setlocal expandtab smarttab tabstop=4 softtabstop=4
 autocmd FileType tex map <F5> :w<CR>:wa<CR>:make<CR>
 autocmd FileType tex map <F6> :!xdg-open %<.pdf &>/dev/null &disown<CR><CR>
 autocmd FileType tex setlocal nocindent
+
+" enable pair matching for angle brackets (e.g. C++ templates)
+autocmd FileType cpp setlocal matchpairs+=<:>
