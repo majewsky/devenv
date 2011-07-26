@@ -71,8 +71,6 @@ export WORDCHARS='*?_[]~&;!#$%^(){}'
 # helper functions for KDE development
 # idea from http://techbase.kde.org/Getting_Started/Increased_Productivity_in_KDE4_with_Scripts/.bashrc
 
-export BUILD_ROOT="$HOME/tmp/build" # the equivalent to $HOME, for build directories
-
 function find_direct_build_dir() { # argument: path to directory
 	# go inside build hierarchy if not in it already
 	if [ "$(relpath "$BUILD_ROOT" "$1" | head -c2)" = ".." ]; then
