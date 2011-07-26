@@ -25,6 +25,8 @@
 	denyNonFastForwards = true
 [rebase]
 	stat = true
+[url "git@ptpcp11:"]
+	insteadOf = cpg:
 [url "git://anongit.kde.org/"]
 	insteadOf = kde:
 [url "git@git.kde.org:"]
