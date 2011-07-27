@@ -49,11 +49,11 @@ else
 	autocmd ColorScheme * highlight MySpace ctermbg=238
 endif
 
-if hostname() == "maximegalon.site"
-	colo transparent
-else
+if hostname() == "ptpcp11"
 	let g:gardener_light_comments=1
 	colo gardener
+else
+	colo transparent
 endif
 
 autocmd Syntax * syntax match MyTab /^\t\+/
