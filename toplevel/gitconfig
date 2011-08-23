@@ -25,12 +25,13 @@
 	denyNonFastForwards = true
 [rebase]
 	stat = true
-[url "git@ptpcp11:"]
+[url "git@ptpcp4:"]
 	insteadOf = cpg:
 [url "git://anongit.kde.org/"]
 	insteadOf = kde:
 [url "git@git.kde.org:"]
 	pushInsteadOf = kde:
+	pushInsteadOf = git://anongit.kde.org/
 [diff]
 	tool = vimdiff
 [difftool]
