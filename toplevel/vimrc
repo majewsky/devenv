@@ -26,6 +26,8 @@ set number
 set shiftwidth=4
 set smarttab
 set tabstop=4
+set wildmode=longest:full
+set wildmenu
 syntax enable
 
 " remove highlighting of search matches
