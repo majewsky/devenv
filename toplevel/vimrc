@@ -20,6 +20,7 @@ set background=dark
 set cindent
 set hlsearch
 set incsearch
+set laststatus=2
 set linebreak
 set mouse=a
 set number
@@ -39,6 +40,9 @@ vnoremap > >gv
 vnoremap < <gv
 " disable q: command for opening the command line window
 map q: <Nop>
+" change mouse mode with function keys
+nmap <F9> :set mouse=<CR>
+nmap <F10> :set mouse=a<CR>
 
 " setup color scheme, highlight interesting whitespace
 set t_Co=256
