@@ -101,9 +101,13 @@ def toInt(string, default):
 # start printing
 ssw = sys.stdout.write
 
-# print username
+# print username (with different color for some contexts)
 username = pwd.getpwuid(os.getuid())[0]
-usernameColor = {"root": "0;1;41"}.get(username, "0")
+usernameColor = {
+    "root": "0;1;41",
+    "majewsky": "0;37",
+    "stefan": "0;32",
+}.get(username, "0")
 ssw(colored(username, usernameColor))
 
 # print hostname with different color for most hosts
@@ -120,10 +124,17 @@ hostnameColor = {
     "maximegalon": "0;31",
     "preliumtarn": "0;35"
 }.get(hostname, "0;33")
-ssw("@" + colored(hostname, hostnameColor))
+if hostname.startswith("ptpcp"):
+    ssw("@" + colored("ptpcp", "0;37") + colored(hostname[5:], hostnameColor))
+else:
+    ssw("@" + colored(hostname, hostnameColor))
 
 # print terminal (esp. for identifiying screen)
-ssw("-" + os.environ["TERM"] + " ")
+termName = os.environ["TERM"]
+if termName == "xterm-256color":
+    ssw(" ")
+else:
+    ssw("-" + termName + " ")
 
 # find root build directory (used for displaying cwd inside build tree in condensed form)
 buildRoot = op.realpath(os.environ["BUILD_ROOT"])
@@ -186,8 +197,10 @@ shellName = os.environ["PRETTYPROMPT_SHELL"]
 shellLevel = toInt(os.environ["SHLVL"], 1)
 if "zsh" in shellName:
     shellLevel += 1
+bold = lambda x: colored(x, "1")
+shortenedShellName = { "zsh": bold("Z"), "bash": bold("B") }.get(shellName, shellName)
 
-ssw("\n%s%i$ " % (shellName, shellLevel))
+ssw("\n%s%i$ " % (shortenedShellName, shellLevel))
 
 # DEBUG
 ssw("\n")
