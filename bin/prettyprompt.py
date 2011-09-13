@@ -197,8 +197,7 @@ shellName = os.environ["PRETTYPROMPT_SHELL"]
 shellLevel = toInt(os.environ["SHLVL"], 1)
 if "zsh" in shellName:
     shellLevel += 1
-bold = lambda x: colored(x, "1")
-shortenedShellName = { "zsh": bold("Z"), "bash": bold("B") }.get(shellName, shellName)
+shortenedShellName = { "zsh": "Z", "bash": "B" }.get(shellName, shellName)
 
 ssw("\n%s%i$ " % (shortenedShellName, shellLevel))
 
