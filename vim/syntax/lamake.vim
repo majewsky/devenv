@@ -10,9 +10,11 @@ endif
 syn keyword lamakeStatement use at set
 syn keyword lamakeEntityDecl begin end
 syn keyword lamakeEntityType target group
+syn match lamakeComment "^\s*#\+.*$"
 
 let b:current_syntax = "lamake"
 
 hi def link lamakeStatement Operator
 hi def link lamakeEntityDecl Type
 hi def link lamakeEntityType Type
+hi def link lamakeComment Comment
