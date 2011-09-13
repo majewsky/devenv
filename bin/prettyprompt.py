@@ -101,16 +101,8 @@ def toInt(string, default):
 # start printing
 ssw = sys.stdout.write
 
-# print username (with different color for some contexts)
+# find username and hostname
 username = pwd.getpwuid(os.getuid())[0]
-usernameColor = {
-    "root": "0;1;41",
-    "majewsky": "0;37",
-    "stefan": "0;32",
-}.get(username, "0")
-ssw(colored(username, usernameColor))
-
-# print hostname with different color for most hosts
 hostname = socket.gethostname()
 if hostname.endswith(".site"):
     hostname = hostname[:-5]
@@ -119,15 +111,30 @@ elif hostname.endswith(".local"):
 elif hostname == "vserver3190":
     hostname = "bethselamin.de"
 
-hostnameColor = {
-    "magrathea":   "0;32",
-    "maximegalon": "0;31",
-    "preliumtarn": "0;35"
-}.get(hostname, "0;33")
-if hostname.startswith("ptpcp"):
-    ssw("@" + colored("ptpcp", "0;37") + colored(hostname[5:], hostnameColor))
+# don't print username for known hosts
+commonHosts = {
+    "magrathea":   ("stefan", "0;32"),
+    "maximegalon": ("stefan", "0;31"),
+    "preliumtarn": ("stefan", "0;35"),
+    "ptpcp11":     ("majewsky", "0;33")
+}
+if hostname in commonHosts:
+    commonUser, hostnameColor = commonHosts[hostname]
+    printUsername = username != commonUser
 else:
-    ssw("@" + colored(hostname, hostnameColor))
+    hostnameColor = "0;33"
+    printUsername = True
+
+# print username (with different color for some contexts)
+if printUsername:
+    usernameColor = { "root": "0;1;41" }.get(username, "0")
+    ssw(colored(username, usernameColor) + "@")
+
+# print hostname with different color for most hosts
+if hostname.startswith("ptpcp"):
+    ssw(colored("ptpcp", "0;37") + colored(hostname[5:], hostnameColor))
+else:
+    ssw(colored(hostname, hostnameColor))
 
 # print terminal (esp. for identifiying screen)
 termName = os.environ["TERM"]
