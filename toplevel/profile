@@ -8,7 +8,7 @@ rm -rf $HOME/.macromedia
 export EDITOR=vim
 export PAGER="less -R"
 export NUMCPUCORES="$(grep '^core id' /proc/cpuinfo | sort -g | uniq | wc -l)"
-export BUILD_ROOT="$HOME/tmp/build" # the equivalent to $HOME, for build directories
+export BUILD_ROOT="$(readlink -f "$HOME/tmp/build")" # the equivalent to $HOME, for build directories
 
 if [ -z "$LOCALPROFILEREAD" ]; then
 	[ -e /soulianis ] && export PATH="/soulianis/bin:$PATH:/sbin:/usr/sbin:/usr/local/sbin"
