@@ -152,10 +152,13 @@ else:
 buildRoot = op.realpath(os.environ["BUILD_ROOT"])
 
 # method to shorten home directory to "~"
-def replaceHome(path):
+def stripHome(path):
     h = os.environ.get("HOME")
+    hh = h + "/"
+    if path.startswith(hh):
+        return path[len(hh):]
     if path.startswith(h):
-        return "~" + path[len(h):]
+        return path[len(h):]
     else:
         return path
 
@@ -173,9 +176,9 @@ except OSError:
         subPath = op.join(newSubDir, subPath)
     subPath = subPath.rstrip("/")
     if subPath == "":
-        ssw(colored(replaceHome(basePath), "1;36"))
+        ssw(colored(stripHome(basePath), "1;36"))
     else:
-        ssw(colored(replaceHome(basePath) + "/", "1;36") + colored(subPath, "1;31"))
+        ssw(colored(stripHome(basePath) + "/", "1;36") + colored(subPath, "1;31"))
     ssw(" " + colored("could not stat cwd", "1;41"))
 
 # is cwd in build tree? -> if so, print and process source dir instead
@@ -203,25 +206,29 @@ if cwdExists:
     if isBuildDir:
         ssw(buildDirMarker + " ")
     if not isRepo:
-        ssw(colored(replaceHome(cwd), "1;36"))
+        ssw(colored(stripHome(cwd), "1;36"))
     else:
         if repoPath == "":
-            ssw(colored(replaceHome(repoBase), "1;36"))
+            ssw(colored(stripHome(repoBase), "1;36"))
         else:
             repoPath = repoPath.rstrip("/")
-            ssw(colored(replaceHome(repoBase) + "/", "0;36") + colored(repoPath, "1;36"))
+            ssw(colored(stripHome(repoBase) + "/", "0;36") + colored(repoPath, "1;36"))
         ssw(" " + repoStatus)
 
 # how many actual characters have been written?
 colorSpecRx = "\033\\[[^m]*m"
-printedLen = len("".join(re.split(colorSpecRx, stdoutBuffer)))
+printedStr = "".join(re.split(colorSpecRx, stdoutBuffer))
+printedLen = len(printedStr)
+if not printedStr.endswith(" "):
+    ssw(" ")
+    printedLen += 1
 # draw separation line using terminal width
 try:
     termWidth = int(sys.argv[1])
 except:
     termWidth = 0
 if printedLen < termWidth:
-    ssw(" " + colored("-" * (termWidth - printedLen - 1), "1"))
+    ssw(colored("-" * (termWidth - printedLen - 1), "1"))
 
 # final prompt: shell name and shell level
 shellName = os.environ["PRETTYPROMPT_SHELL"]
