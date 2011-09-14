@@ -228,7 +228,7 @@ try:
 except:
     termWidth = 0
 if printedLen < termWidth:
-    ssw(colored("-" * (termWidth - printedLen - 1), "1"))
+    ssw(colored("-" * (termWidth - printedLen), "1"))
 
 # final prompt: shell name and shell level
 shellName = os.environ["PRETTYPROMPT_SHELL"]
