@@ -151,6 +151,14 @@ else:
 # find root build directory (used for displaying cwd inside build tree in condensed form)
 buildRoot = op.realpath(os.environ["BUILD_ROOT"])
 
+# method to shorten home directory to "~"
+def replaceHome(path):
+    h = os.environ.get("HOME")
+    if path.startswith(h):
+        return "~" + path[len(h):]
+    else:
+        return path
+
 # find cwd, does it exist?
 try:
     cwd = op.realpath(os.getcwd())
@@ -165,9 +173,9 @@ except OSError:
         subPath = op.join(newSubDir, subPath)
     subPath = subPath.rstrip("/")
     if subPath == "":
-        ssw(colored(basePath, "1;36"))
+        ssw(colored(replaceHome(basePath), "1;36"))
     else:
-        ssw(colored(basePath + "/", "1;36") + colored(subPath, "1;31"))
+        ssw(colored(replaceHome(basePath) + "/", "1;36") + colored(subPath, "1;31"))
     ssw(" " + colored("could not stat cwd", "1;41"))
 
 # is cwd in build tree? -> if so, print and process source dir instead
@@ -195,13 +203,13 @@ if cwdExists:
     if isBuildDir:
         ssw(buildDirMarker + " ")
     if not isRepo:
-        ssw(colored(cwd, "1;36"))
+        ssw(colored(replaceHome(cwd), "1;36"))
     else:
         if repoPath == "":
-            ssw(colored(repoBase, "1;36"))
+            ssw(colored(replaceHome(repoBase), "1;36"))
         else:
             repoPath = repoPath.rstrip("/")
-            ssw(colored(repoBase + "/", "0;36") + colored(repoPath, "1;36"))
+            ssw(colored(replaceHome(repoBase) + "/", "0;36") + colored(repoPath, "1;36"))
         ssw(" " + repoStatus)
 
 # how many actual characters have been written?
