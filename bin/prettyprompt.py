@@ -98,8 +98,13 @@ def toInt(string, default):
     except ValueError: # not a number literal
         return int(default)
 
-# start printing
-ssw = sys.stdout.write
+# start writing, define shorthand for sys.stdout.write
+stdoutBuffer = ""
+def ssw(string):
+    string = str(string)
+    global stdoutBuffer
+    stdoutBuffer += string
+    sys.stdout.write(string)
 
 # find username and hostname
 username = pwd.getpwuid(os.getuid())[0]
@@ -198,6 +203,17 @@ if cwdExists:
             repoPath = repoPath.rstrip("/")
             ssw(colored(repoBase + "/", "0;36") + colored(repoPath, "1;36"))
         ssw(" " + repoStatus)
+
+# how many actual characters have been written?
+colorSpecRx = "\033\\[[^m]*m"
+printedLen = len("".join(re.split(colorSpecRx, stdoutBuffer)))
+# draw separation line using terminal width
+try:
+    termWidth = int(sys.argv[1])
+except:
+    termWidth = 0
+if printedLen < termWidth:
+    ssw(" " + "-" * (termWidth - printedLen - 2))
 
 # final prompt: shell name and shell level
 shellName = os.environ["PRETTYPROMPT_SHELL"]
