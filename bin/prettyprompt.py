@@ -1,6 +1,6 @@
 #!/usr/bin/python2
 
-import pwd, os, os.path as op, socket, sys, subprocess as sp
+import os, os.path as op, pwd, re, socket, sys, subprocess as sp
 
 def catFile(file):
     """ Returns the content of the given file. No exception handling. """
@@ -62,7 +62,7 @@ def recognizeGitRepo(path):
         commit = headRef
 
     if commit == "": # before initial commit
-        branchSpec = colored(branchSpec + " before initial commit", "1;30")
+        branchSpec = branchSpec + colored(" before initial commit", "1;30")
         extraInfo = "on %s" % (branchSpec)
     else:
         extraInfo = "on %s at %s" % (branchSpec, commit[0:7])
@@ -221,7 +221,7 @@ try:
 except:
     termWidth = 0
 if printedLen < termWidth:
-    ssw(" " + "-" * (termWidth - printedLen - 2))
+    ssw(" " + "-" * (termWidth - printedLen - 1))
 
 # final prompt: shell name and shell level
 shellName = os.environ["PRETTYPROMPT_SHELL"]
