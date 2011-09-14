@@ -1,6 +1,9 @@
 [user]
 	name = Stefan Majewsky
 	email = majewsky@gmx.net
+[advice]
+	statusHints = false
+	detachedHead = false
 [alias]
 	br = branch
 	co = checkout
@@ -20,11 +23,19 @@
 	autosetuprebase = always
 [color]
 	ui = true
+[commit]
+	template = ~/.commit-template
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false
 [receive]
 	denyDeletes = true
 	denyNonFastForwards = true
 [rebase]
 	stat = true
+[rerere]
+	enabled = true
 [url "git@ptpcp4:"]
 	insteadOf = cpg:
 [url "git://anongit.kde.org/"]
@@ -32,9 +43,3 @@
 [url "git@git.kde.org:"]
 	pushInsteadOf = kde:
 	pushInsteadOf = git://anongit.kde.org/
-[diff]
-	tool = vimdiff
-[difftool]
-	prompt = false
-[commit]
-	template = ~/.commit-template
