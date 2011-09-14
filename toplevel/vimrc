@@ -55,12 +55,8 @@ else
 	autocmd ColorScheme * highlight MySpace ctermbg=238
 endif
 
-if hostname() == "ptpcp11"
-	let g:gardener_light_comments=1
-	colo gardener
-else
-	colo transparent
-endif
+let g:gardener_light_comments=1
+colo gardener-transparent
 
 autocmd Syntax * syntax match MyTab /^\t\+/
 autocmd Syntax * syntax match MySpace /\s\+$/
