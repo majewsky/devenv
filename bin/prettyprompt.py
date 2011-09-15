@@ -185,7 +185,7 @@ except OSError:
 rel = op.relpath(cwd, buildRoot)
 isBuildDir = not rel.startswith("..")
 if isBuildDir:
-    cwd = "/" + rel
+    cwd = op.normpath("/" + rel)
 
 # check if cwd is in a repo?
 if cwdExists:
