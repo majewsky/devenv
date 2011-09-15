@@ -1,7 +1,10 @@
 HISTFILE=~/.histfile
 HISTSIZE=100000
 SAVEHIST=100000
-PROMPT="\$($HOME/.devenv/bin/prettyprompt.py $COLUMNS 2>/dev/null)"
+__reset_columns() {
+	PROMPT="\$($HOME/.devenv/bin/prettyprompt.py $COLUMNS 2>/dev/null)"
+}
+__reset_columns
 export PRETTYPROMPT_SHELL="zsh"
 setopt autocd noautoparamslash autopushd nobeep nobgnice correct extendedglob noflowcontrol globdots histexpiredupsfirst histignoredups nohup incappendhistory longlistjobs nopromptcr promptsubst pushdminus pushdsilent pushdtohome rcquotes recexact
 #setopt appendhistory autocd correct extendedglob histignoredups incappendhistory noflowcontrol nomatch notify promptsubst
