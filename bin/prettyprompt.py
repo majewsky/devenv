@@ -149,7 +149,9 @@ else:
     ssw("-" + termName + " ")
 
 # find root build directory (used for displaying cwd inside build tree in condensed form)
-buildRoot = op.realpath(os.environ["BUILD_ROOT"])
+buildRoot = os.environ["BUILD_ROOT"]
+if buildRoot != "":
+    buildRoot = op.realpath(buildRoot)
 
 # method to shorten home directory to "~"
 def stripHome(path):
@@ -182,10 +184,13 @@ except OSError:
     ssw(" " + colored("could not stat cwd", "1;41"))
 
 # is cwd in build tree? -> if so, print and process source dir instead
-rel = op.relpath(cwd, buildRoot)
-isBuildDir = not rel.startswith("..")
-if isBuildDir:
-    cwd = op.normpath("/" + rel)
+if buildRoot == "":
+    isBuildDir = False
+else:
+    rel = op.relpath(cwd, buildRoot)
+    isBuildDir = not rel.startswith("..")
+    if isBuildDir:
+        cwd = op.normpath("/" + rel)
 
 # check if cwd is in a repo?
 if cwdExists:
