@@ -30,6 +30,7 @@ fi
 # aliases
 alias ack='ack --group --color' # always adjust for screen display, even if writing to pipe
 alias less='less -R'            # recognise color characters
+alias m=mpc
 
 # 256 color support in Konsole
 if [ "$TERM" = "xterm" ]; then
