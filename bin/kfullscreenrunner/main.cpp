@@ -18,10 +18,11 @@
 
 #include "view.h"
 
-#include <KAboutData>
-#include <KApplication>
-#include <KCmdLineArgs>
-#include <KLocalizedString>
+#include <cstdio>
+#include <KDE/KAboutData>
+#include <KDE/KCmdLineArgs>
+#include <KDE/KLocalizedString>
+#include <KDE/KUniqueApplication>
 
 int main(int argc, char** argv)
 {
@@ -32,8 +33,14 @@ int main(int argc, char** argv)
 		KAboutData::License_GPL, ki18n("Copyright 2010 Stefan Majewsky")
 	);
 	KCmdLineArgs::init(argc, argv, &about);
-	KApplication app;
+	KUniqueApplication::addCmdLineOptions();
 
+	if (!KUniqueApplication::start()) {
+		fprintf(stderr, "KFullscreenRunner is already running!\n");
+		return 0;
+	}
+
+	KUniqueApplication app;
 	new KfsrView;
 	return app.exec();
 }
