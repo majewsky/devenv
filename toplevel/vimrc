@@ -20,6 +20,7 @@ set background=dark
 set cindent
 set hlsearch
 set incsearch
+set ignorecase smartcase
 set laststatus=2
 set linebreak
 set mouse=a
