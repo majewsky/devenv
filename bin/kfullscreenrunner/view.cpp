@@ -70,9 +70,9 @@ KfsrView::KfsrView()
 	QList<QStringPair> hardcodedAssociations;
 	hardcodedAssociations << QStringPair("Konqueror", "k");
 	hardcodedAssociations << QStringPair("Firefox", "f");
+	hardcodedAssociations << QStringPair("Chromium", "c");
 	hardcodedAssociations << QStringPair("Konsole", "o");
 	hardcodedAssociations << QStringPair("KMail", "m");
-	hardcodedAssociations << QStringPair("KOrganizer", "c");
 	hardcodedAssociations << QStringPair("Amarok", "a");
 	//create items
 	foreach (const QStringPair& association, hardcodedAssociations)

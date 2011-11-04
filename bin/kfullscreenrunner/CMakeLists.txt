@@ -12,6 +12,6 @@ set(kfullscreenrunner_SRCS
 )
 
 kde4_add_executable(kfullscreenrunner ${kfullscreenrunner_SRCS})
-target_link_libraries(kfullscreenrunner ${KDE4_PLASMA_LIBS})
+target_link_libraries(kfullscreenrunner ${KDE4_PLASMA_LIBS} ${KDE4_KIO_LIBS})
 
 install(TARGETS kfullscreenrunner ${INSTALL_TARGETS_DEFAULT_ARGS})

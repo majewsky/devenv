@@ -49,7 +49,7 @@ KfsrItem::KfsrItem(QGraphicsItem* parent)
 {
 	QGraphicsLinearLayout* layout = new QGraphicsLinearLayout(Qt::Vertical, this);
 	layout->addItem(m_iconWidget);
-	m_iconWidget->setPreferredIconSize(QSizeF(128, 128));
+	m_iconWidget->setPreferredIconSize(QSizeF(192, 192));
 	m_iconWidget->setTextBackgroundColor(Qt::white);
 	m_iconWidget->setDrawBackground(true);
 	connect(m_iconWidget, SIGNAL(hoverChanged(bool)), SLOT(setShowShortcut(bool)));
