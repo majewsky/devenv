@@ -33,9 +33,7 @@ fi
 alias ack='ack --group --color' # always adjust for screen display, even if writing to pipe
 alias less='less -R'            # recognise color characters
 alias m=mpc
-if which ncmpc &>/dev/null; then; else
-	alias ncmpc=ncmpcpp
-fi
+which ncmpc &>/dev/null || alias ncmpc=ncmpcpp
 if [ -e /etc/SuSE-release ];then
 	alias z='sudo zypper'
 fi

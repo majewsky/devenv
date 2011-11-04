@@ -27,8 +27,8 @@ bindkey "^[[3~" delete-char             # Del
 bindkey "^[[5~" up-line-or-history      # PageUp
 bindkey "^[[6~" down-line-or-history    # PageDown
 bindkey "^E"    expand-cmd-path         # C-e for expanding path of typed command.
-bindkey "^[[A"  up-line-or-search       # Up arrow for back-history-search.
-bindkey "^[[B"  down-line-or-search     # Down arrow for fwd-history-search.
+bindkey "^[[A"  history-beginning-search-backward       # Up arrow for back-history-search.
+bindkey "^[[B"  history-beginning-search-forward        # Down arrow for fwd-history-search.
 bindkey " "     magic-space             # Do history expansion on space.
 case "$TERM" in
         linux|screen)
