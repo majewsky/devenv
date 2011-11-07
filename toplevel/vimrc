@@ -15,6 +15,10 @@ nmap ,s :call SwitchSourceHeader()<CR>
 let g:bufExplorerSortBy='name'
 nmap ,, <Leader>be
 
+"prevent V-s from being mapped by surround plugin
+" (the plugin would just display a deprecation warning anyway)
+vnoremap s s
+
 "filetype plugin on
 set autoindent
 set background=dark
