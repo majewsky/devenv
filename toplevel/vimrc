@@ -53,6 +53,9 @@ nmap <F10> :set mouse=a<CR>
 
 " setup color scheme, highlight interesting whitespace
 set t_Co=256
+if $TERM == "xterm-256color"
+	let g:ConqueTerm_TERM = 'xterm-256color'
+endif
 
 if hostname() == "ptpcp11"
 	autocmd ColorScheme * highlight MyTab ctermbg=242
