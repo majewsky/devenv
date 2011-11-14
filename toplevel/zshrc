@@ -65,6 +65,9 @@ done < $HOME/.gitconfig | grep '^\[alias\]' | cut -d' ' -f2- | sed 's/ = / /' | 
 done
 unset git_line git_category git_alias git_command
 
+# misc. Aliase (hier anstelle von .profile wegen Verwendung von zsh-Funktionen)
+alias qg="qgit --all &>/dev/null &|"
+
 # taken from http://zshwiki.org/home/zle/bindkeys
 # by default: export WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>'
 # we take out the slash, period, angle brackets, dash here.
