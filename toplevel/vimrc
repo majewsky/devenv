@@ -3,10 +3,14 @@ filetype plugin on
 
 function! SwitchSourceHeader()
 	"update!
-	if (expand ("%:e") == "cpp")
-		find %:t:r.h
+	if (expand ("%:e") == "h")
+		if (filereadable(expand("%:t:r") . ".c"))
+			find %:t:r.c
+		else
+			find %:t:r.cpp
+		endif
 	else
-		find %:t:r.cpp
+		find %:t:r.h
 	endif
 endfunction
 nmap ,s :call SwitchSourceHeader()<CR>
@@ -23,6 +27,7 @@ vnoremap s s
 set autoindent
 set background=dark
 set cindent
+set fo=tcroq
 set hlsearch
 set incsearch
 set ignorecase smartcase

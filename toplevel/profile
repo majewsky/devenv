@@ -15,7 +15,7 @@ if [ -z "$LOCALPROFILEREAD" ]; then
 		export PATH="$PATH:/sbin:/usr/sbin:/usr/local/sbin"
 	fi
 	# add home directory path
-	export PATH="$HOME/bin:$PATH"
+	export PATH="$PATH:$HOME/bin"
 
 	# Python includes
 	export PYTHONPATH="$PYTHONPATH:$HOME/Code/python/PyXGraph:$HOME/Code/python/PlottingCanvas:$HOME/Code/python/Iterator:$HOME/Code/python/QuantumMaps"
