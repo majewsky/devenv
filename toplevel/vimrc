@@ -37,7 +37,7 @@ set mouse=a
 set number
 set shiftwidth=4
 set smarttab
-set statusline=%<%f\ [%H%M%R%Y]\ %#Search#%{fugitive#statusline()}%*%=\ %-14.(%l,%c%V%)\ %P
+set statusline=%<%f\ %#Search#\ %Y%M%R\ %*\ %{fugitive#statusline()}%=\ %-14.(%l,%c%V%)\ %P
 set tabstop=4
 set wildmode=longest:full
 set wildmenu
