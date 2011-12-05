@@ -64,9 +64,8 @@ alias qg="qgit --all &>/dev/null &|"
 
 # taken from http://zshwiki.org/home/zle/bindkeys
 # by default: export WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>'
-# we take out the slash, period, angle brackets, dash here.
-# EDIT: also the equality sign, to have an intermediate break point in "--system=threedisks"
-export WORDCHARS='*?_[]~&;!#$%^(){}'
+# we take out the slash, period, angle brackets here.
+export WORDCHARS='*?_-[]~=&;!#$%^(){}'
 
 # helper functions for KDE development
 # idea from http://techbase.kde.org/Getting_Started/Increased_Productivity_in_KDE4_with_Scripts/.bashrc
