@@ -19,6 +19,8 @@
 	mg = merge
 	show = show
 	dt = difftool
+	cy = cherry
+	cyp = cherry-pick
 [branch]
 	autosetuprebase = always
 [color]
