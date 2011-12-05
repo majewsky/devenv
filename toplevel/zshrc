@@ -54,16 +54,10 @@ esac
 # Alias für Detached Launching
 alias -g "\&"="&>/dev/null&|"
 # Aliase für Git-Zugriff aus ~/.gitconfig erstellen
-while read git_line; do
-	if echo $git_line | grep '^\[.*\]$' &>/dev/null; then
-		git_category=$git_line
-	else
-		echo $git_category $git_line
-	fi
-done < $HOME/.gitconfig | grep '^\[alias\]' | cut -d' ' -f2- | sed 's/ = / /' | while read git_alias git_command; do
+perl -n -e '$c=$1if/^\[(.*)\]/;print join("\t",($c,$1,$2))if/^\s*(\w*?)\s*=\s*([^=]*$)/;' < $HOME/.gitconfig | grep '^alias\b' | cut -f2- | while read git_alias git_command; do
 	alias $git_alias="git $git_command"
 done
-unset git_line git_category git_alias git_command
+unset git_alias git_command
 
 # misc. Aliase (hier anstelle von .profile wegen Verwendung von zsh-Funktionen)
 alias qg="qgit --all &>/dev/null &|"
