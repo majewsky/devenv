@@ -1,31 +1,31 @@
-# ==[ Subject: One line only short meaningful description for logs ]===|
+#===[ Subject: One line only short meaningful description for logs ]===|
 
-# ==[ Blank: Follow the Subject with a blank line, do NOT remove ]=====|
+#===[ Blank: Follow the Subject with a blank line, do NOT remove ]=====|
 
-# ==[ Details: Describe what changed and explain why it changed]=======|
+#===[ Details: Describe what changed and explain why it changed ]======|
 
 
-# ==[ Fields: Uncomment and edit where applicable ]====================|
+#===[ Fields: Uncomment and edit where applicable ]====================|
 #
-# --[ Close bug in bugs.kde.org as fixed ]-----------------------------|
+#---[ Close bug in bugs.kde.org as fixed ]-----------------------------|
 #BUG: <bug number>
 #FIXED-IN: <optional release version>
 #
-# --[ Add to release changelog optionally close wish in bugs.kde.org ]-|
+#---[ Add to release changelog optionally close wish in bugs.kde.org ]-|
 #FEATURE: <optional bug number>
 #FIXED-IN: <optional release version>
 #
-# --[ Copy commit message to a bug or wish in bugs.kde.org ]-----------|
+#---[ Copy commit message to a bug or wish in bugs.kde.org ]-----------|
 #CCBUG: <bug number>
 #
-# --[ Copy commit message to an email address ]------------------------|
+#---[ Copy commit message to an email address ]------------------------|
 #CCMAIL: <email>
 #
-# --[ Close a review on git.reviewboard.kde.org as submitted ]---------|
+#---[ Close a review on git.reviewboard.kde.org as submitted ]---------|
 #REVIEW: <review number>
 #
-# --[ Notify documentation team of user visible changes ]--------------|
+#---[ Notify documentation team of user visible changes ]--------------|
 #GUI:
 #
-# --[ Notify Commit Digest team of something interesting ]-------------|
+#---[ Notify Commit Digest team of something interesting ]-------------|
 #DIGEST:
