@@ -4,13 +4,13 @@ filetype plugin on
 function! SwitchSourceHeader()
 	"update!
 	if (expand ("%:e") == "h")
-		if (filereadable(expand("%:t:r") . ".c"))
-			find %:t:r.c
+		if (filereadable(expand("%:r") . ".c"))
+			find %:r.c
 		else
-			find %:t:r.cpp
+			find %:r.cpp
 		endif
 	else
-		find %:t:r.h
+		find %:r.h
 	endif
 endfunction
 nmap ,s :call SwitchSourceHeader()<CR>
