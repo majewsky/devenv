@@ -5,6 +5,13 @@ function FixCommentsListForCLang()
 	" add :/// to comments, but make sure that it has a higher priority than
 	set comments-=:// comments+=:///,://
 endfunction
+com FixCommentsListForCLang call FixCommentsListForCLang()
+
+function LowColor()
+	set t_Co=8
+	colo default
+endfunction
+com LowColor call LowColor()
 
 function! SwitchSourceHeader()
 	"update!
