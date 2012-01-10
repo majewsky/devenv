@@ -157,12 +157,24 @@ function mk() { # all arguments are passed to make
 	if lamake show root &> /dev/null; then
 		if lamake $@; then return 0; else return 1; fi
 	fi
+	if [ -d .tup ]; then
+		if tup upd; then return 0; else return 1; fi
+	fi
 	cd $B || return 1
 	[ -f Makefile ] || ( echo "Error: No Makefile present."; cd $S; return 1 )
 	make -j$(($NUMCPUCORES + 1)) $@ || ( cd $S; return 1 )
 	cd $S
 }
 alias mkk="mk -k"
+
+function tup()
+{
+	if [ $# -eq 0 ]; then
+		env tup upd
+	else
+		env tup $@
+	fi
+}
 
 # key bindings
 bindkey '^Z' undo
