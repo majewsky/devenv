@@ -1,6 +1,11 @@
 call pathogen#infect()
 filetype plugin on
 
+function FixCommentsListForCLang()
+	" add :/// to comments, but make sure that it has a higher priority than
+	set comments-=:// comments+=:///,://
+endfunction
+
 function! SwitchSourceHeader()
 	"update!
 	if (expand ("%:e") == "h")
@@ -17,7 +22,6 @@ nmap ,s :call SwitchSourceHeader()<CR>
 
 "config and keybindings for BufExplorer plugin
 let g:bufExplorerSortBy='name'
-nmap ,, <Leader>be
 
 "prevent V-s from being mapped by surround plugin
 " (the plugin would just display a deprecation warning anyway)

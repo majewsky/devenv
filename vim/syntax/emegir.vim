@@ -1,0 +1,1 @@
+/home/stefan/Code/emegir/spec/utils/syntax.vim
