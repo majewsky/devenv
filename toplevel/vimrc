@@ -55,9 +55,9 @@ set wildmenu
 syntax enable
 
 " remove highlighting of search matches
-noremap , :nohl<CR>:<BS>
+nmap , :let @/=""<CR>:<BS>
 " after repeating commands, put the cursor at the start of the change
-map . .`[
+nmap . .`[
 " after adjusting indentation in visual mode, restore selection for further changes
 vnoremap > >gv
 vnoremap < <gv
