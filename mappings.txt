@@ -3,6 +3,7 @@ toplevel/bash_logout .bash_logout
 toplevel/bashrc .bashrc
 toplevel/commit-template .commit-template
 toplevel/gitconfig .gitconfig
+toplevel/gitignore .gitignore
 toplevel/profile .profile
 toplevel/profile.local .profile.local
 toplevel/vimrc .vimrc

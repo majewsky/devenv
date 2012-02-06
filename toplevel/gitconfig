@@ -27,6 +27,8 @@
 	ui = true
 [commit]
 	template = ~/.commit-template
+[core]
+	excludesfile = ~/.gitignore
 [diff]
 	tool = vimdiff
 [difftool]
