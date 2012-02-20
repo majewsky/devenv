@@ -76,9 +76,16 @@ def recognizeSvnRepo(path):
     """
     basePath = op.realpath(path)
     subPath = ""
-    # find SVN repo
-    if not op.exists(op.join(basePath, ".svn")):
-        raise NotARepoException
+    # find SVN repo (NOTE: Old SVN repos have .svn dirs at every level, but
+    # newer repos only have one .svn directory at the top, just like Git.
+    # This code should recognize both patterns.
+    while not op.exists(op.join(basePath, ".svn")):
+        # ascend in directory hierarchy if possible
+        basePath, newSubDir = op.split(basePath)
+        subPath = op.join(newSubDir, subPath)
+        # root directory reached? -> not in Git repo
+        if newSubDir == "":
+            raise NotARepoException
     while op.exists(op.join(op.dirname(basePath), ".svn")):
         # ascend in directory hierarchy as far as possible
         basePath, newSubDir = op.split(basePath)
