@@ -18,11 +18,16 @@ if [ -z "$LOCALPROFILEREAD" ]; then
 	export PATH="$PATH:$HOME/bin"
 
 	# Python includes
-	export PYTHONPATH="$PYTHONPATH:$HOME/Code/python/PyXGraph:$HOME/Code/python/PlottingCanvas:$HOME/Code/python/Iterator:$HOME/Code/python/QuantumMaps"
+	export PYTHONPATH="$PYTHONPATH:$HOME/Code/python/path"
 
 	# KDE installation
 	export KDEDIRS="/usr/local/:$KDEDIRS"
 	export LD_LIBRARY_PATH="/usr/local/lib/:$LD_LIBRARY_PATH"
+
+	# uninstalled manpages
+	if [ -d $HOME/.man ]; then
+		export MANPATH=$HOME/.man:$MANPATH
+	fi
 fi
 
 # some measures (apart from .inputrc's set bell-style none and modprobe's blacklist pcspkr) to disable the system speaker

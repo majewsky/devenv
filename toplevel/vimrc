@@ -1,17 +1,38 @@
 call pathogen#infect()
+filetype indent on
 filetype plugin on
 
-function FixCommentsListForCLang()
+function! IdentifySyntax()
+    return synIDattr(synID(line("."),col("."),1), "name")
+endfunction
+function! IdentifyHighlight()
+    return synIDattr(synIDtrans(synID(line("."),col("."),1)), "name")
+endfunction
+function! Identify()
+    let l_syn = IdentifySyntax()
+    let l_hi  = IdentifyHighlight()
+    if l_hi != "" && l_hi != "Normal" && l_hi != l_syn
+        return l_syn . " -> " . l_hi
+    else
+        return l_syn
+    endif
+endfunction
+
+com! IdentifySyntax echo IdentifySyntax()
+com! IdentifyHighlight echo IdentifyHighlight()
+com! Identify echo Identify()
+
+function! FixCommentsListForCLang()
 	" add :/// to comments, but make sure that it has a higher priority than
 	set comments-=:// comments+=:///,://
 endfunction
-com FixCommentsListForCLang call FixCommentsListForCLang()
+com! FixCommentsListForCLang call FixCommentsListForCLang()
 
-function LowColor()
+function! LowColor()
 	set t_Co=8
-	colo default
+	colo torte
 endfunction
-com LowColor call LowColor()
+com! LowColor call LowColor()
 
 function! SwitchSourceHeader()
 	"update!
@@ -38,12 +59,14 @@ vnoremap s s
 set autoindent
 set background=dark
 set cindent
+set cinoptions=L0,l1,(0,W4
 set fo=tcroq
 set hlsearch
 set incsearch
 set ignorecase smartcase
 set laststatus=2
 set linebreak
+set list listchars=trail:·,nbsp:·,tab:\ \ 
 set mouse=a
 set number
 set shiftwidth=4
@@ -67,25 +90,14 @@ map q: <Nop>
 nmap <F9> :set mouse=<CR>
 nmap <F10> :set mouse=a<CR>
 
-" setup color scheme, highlight interesting whitespace
+" setup color scheme
 set t_Co=256
 if $TERM == "xterm-256color"
 	let g:ConqueTerm_TERM = 'xterm-256color'
 endif
 
-if hostname() == "ptpcp11"
-	autocmd ColorScheme * highlight MyTab ctermbg=242
-	autocmd ColorScheme * highlight MySpace ctermbg=245
-else
-	autocmd ColorScheme * highlight MyTab ctermbg=235
-	autocmd ColorScheme * highlight MySpace ctermbg=238
-endif
-
 let g:gardener_light_comments=1
 colo gardener-transparent
-
-autocmd Syntax * syntax match MyTab /^\t\+/
-autocmd Syntax * syntax match MySpace /\s\+$/
 
 "formatting style for Python code and changelogs in our working group
 autocmd FileType python setlocal expandtab smarttab nocindent tabstop=4 softtabstop=4
@@ -97,4 +109,9 @@ autocmd FileType tex map <F6> :!xdg-open %<.pdf &>/dev/null &disown<CR><CR>
 autocmd FileType tex setlocal nocindent
 
 " enable pair matching for angle brackets (e.g. C++ templates)
-autocmd FileType cpp setlocal matchpairs+=<:>
+autocmd FileType cpp setlocal matchpairs+=<:> commentstring=//\ %s
+
+autocmd BufReadPost * DetectIndent
+
+autocmd Syntax      * hi clear SpecialKey | hi link SpecialKey LineNr
+autocmd Colorscheme * hi clear SpecialKey | hi link SpecialKey LineNr
