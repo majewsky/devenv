@@ -128,7 +128,7 @@ commonHosts = {
     "magrathea":   ("stefan", "0;32"),
     "maximegalon": ("stefan", "0;31"),
     "preliumtarn": ("stefan", "0;35"),
-    "ptpcp11":     ("majewsky", "0;33")
+    "oglaroon":    ("stefan", "0;35"),
 }
 if hostname in commonHosts:
     commonUser, hostnameColor = commonHosts[hostname]

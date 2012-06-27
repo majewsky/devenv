@@ -3,3 +3,4 @@
 *.pyc
 doc/tags
 .tup
+configure.tup

@@ -70,7 +70,7 @@ set list listchars=trail:·,nbsp:·,tab:\ \
 set mouse=a
 set number
 set shiftwidth=4
-set smarttab
+set expandtab smarttab
 set statusline=%<%f\ %#Search#\ %Y%M%R\ %*\ %{fugitive#statusline()}%=\ %-14.(%l,%c%V%)\ %P
 set tabstop=4
 set wildmode=longest:full
