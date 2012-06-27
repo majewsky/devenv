@@ -180,7 +180,7 @@ function tup()
 bindkey '^Z' undo
 
 function psgrep() { # all arguments passed to grep
-	ps aux | grep $* | grep -v grep
+	ps aux | sed -n '1p;/sed -n/d;/'"$1"'/p'
 }
 
 rationalise-dot() {
@@ -199,4 +199,4 @@ bindkey -M isearch . self-insert
 #	'?*.(o|aux|bbl|blg|idx|ilg|ind|lof|nav|snm|toc|vrb|pyc)' \
 #	'?*.(log|out)(e:'\''test -e ${REPLY:r}.tex'\'':)' # TODO: does not work
 #zstyle ':completion:*:complete:*:(local|path)-directories' ignored-patterns '(*/.*|.*)' # TODO: does not really work either
-leosay() { mplayer -prefer-ipv4 http://www.leo.org/dict/audio_en/$1.mp3 }
+leosay() { for arg in $@; do mplayer -prefer-ipv4 http://www.leo.org/dict/audio_en/$arg.mp3; done }
