@@ -105,67 +105,12 @@ function cs() { # no arguments
 	cd $S
 }
 
-function cmk() { # all arguments are passed to cmake
-	mkdir -p $B || ( echo "Failed to create $B"; return 1 )
-	cd $B
-	if [ ! -f CMakeCache.txt -a -f $S/CMakeLists.txt ]; then
-		if dialog --yesno "No CMake cache found. Initialize cmake now?" 5 50; then
-			cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo $@ $S || ( cd $S; return 1 )
-		else
-			touch CMakeCache.txt # suppress future questions
-		fi
-	elif [ $# -gt 0 ]; then
-		cmake $@ . || ( cd $S; return 1 )
-	fi
-	make -j$(($NUMCPUCORES + 1)) || ( cd $S; return 1 )
-	cd $S
-}
-
-function cmki() { # all arguments are passed to cmake
-	cmk $@ || return 1
-	cd $B || ( echo "Directory $B does not exist"; return 1 )
-	if grep '^install/fast' Makefile &>/dev/null; then
-		CMKI_TARGET=install/fast
-	else
-		CMKI_TARGET=install
-	fi
-	sudo make $CMKI_TARGET -j$(($NUMCPUCORES + 1)) || ( cd $S; return 1 )
-	# TODO: fallback to "make install" if install/fast target is not available
-	cd $S
-}
-
-function cmku() {
-	cd $B || ( echo "Directory $BUILD_DIR does not exist"; return 1 )
-	sudo make uninstall || ( cd $S; return 1 )
-	# TODO: fallback to "xargs sudo rm < install_manifest.txt"
-	cd $S
-}
-
-function qmk() { # all arguments are passed to qmake
-	mkdir -p $B || ( echo "Failed to create $B"; return 1 )
-	cd $B
-	if [ ! -f Makefile -a -f $S/*.pro ]; then
-		qmake $@ $S || ( cd $S; return 1 )
-	elif [ $# -gt 0 ]; then
-		qmake $@ $S || ( cd $S; return 1 )
-	fi
-	make -j$(($NUMCPUCORES + 1)) || ( cd $S; return 1 )
-	cd $S
-}
-
-function mk() { # all arguments are passed to make
-	if lamake show root &> /dev/null; then
-		if lamake $@; then return 0; else return 1; fi
-	fi
-	if [ -d .tup ]; then
-		if tup upd; then return 0; else return 1; fi
-	fi
-	cd $B || return 1
-	[ -f Makefile ] || ( echo "Error: No Makefile present."; cd $S; return 1 )
-	make -j$(($NUMCPUCORES + 1)) $@ || ( cd $S; return 1 )
-	cd $S
-}
-alias mkk="mk -k"
+alias cmk='build.pl cmake'
+alias cmki='build.pl cmake_install'
+alias cmku='build.pl cmake_uninstall'
+alias qmk='build.pl qmake'
+alias mk='build.pl make'
+alias mkk='build.pl make -k'
 
 function tup()
 {
@@ -199,4 +144,5 @@ bindkey -M isearch . self-insert
 #	'?*.(o|aux|bbl|blg|idx|ilg|ind|lof|nav|snm|toc|vrb|pyc)' \
 #	'?*.(log|out)(e:'\''test -e ${REPLY:r}.tex'\'':)' # TODO: does not work
 #zstyle ':completion:*:complete:*:(local|path)-directories' ignored-patterns '(*/.*|.*)' # TODO: does not really work either
+
 leosay() { for arg in $@; do mplayer -prefer-ipv4 http://www.leo.org/dict/audio_en/$arg.mp3; done }

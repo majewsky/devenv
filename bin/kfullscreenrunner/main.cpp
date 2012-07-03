@@ -41,6 +41,7 @@ int main(int argc, char** argv)
 	}
 
 	KUniqueApplication app;
+	QApplication::setStyle("oxygen");
 	new KfsrView;
 	return app.exec();
 }
