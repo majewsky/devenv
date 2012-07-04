@@ -1,0 +1,45 @@
+#!/usr/bin/perl
+use strict; use warnings;
+
+# Build.pm is in the same directory as this file (modulo symlinks!)
+BEGIN {
+    use File::Spec;
+    use lib (File::Spec->splitpath(readlink $0))[1];
+}
+
+use Build;
+use Cwd;
+
+sub cwd_to_source {
+    return new Build::Source(Cwd::cwd());
+}
+
+if (@ARGV) {
+    if (command_word_match('configure', $ARGV[0])) {
+        cwd_to_source()->configure(@ARGV[1..$#ARGV]) or exit 1;
+    }
+    elsif (command_word_match('install', $ARGV[0])) {
+        cwd_to_source()->install() or exit 1;
+    }
+    elsif (command_word_match('make', $ARGV[0])) {
+        cwd_to_source()->build(@ARGV[1..$#ARGV]) or exit 1;
+    }
+    else {
+        cwd_to_source()->build(@ARGV) or exit 1;
+    }
+}
+else {
+    cwd_to_source()->update() or exit 1;
+}
+
+# Returns true if $input is not empty and $word starts with $input. Examples:
+#    command_word_match('foobar', 'qux')       -> false (nothing near a match)
+#    command_word_match('foobar', 'foobar')    -> true  (exact match)
+#    command_word_match('foobar', 'foobarbaz') -> false (too much input)
+#    command_word_match('foobar', 'foo')       -> true  ($word starts with $input)
+#    command_word_match('foobar', '' or undef) -> false (special case)
+sub command_word_match {
+    my ($word, $input) = @_;
+    return 0 unless $input;
+    return substr($word, 0, length($input)) eq $input;
+}

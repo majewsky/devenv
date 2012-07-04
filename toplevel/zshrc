@@ -22,38 +22,34 @@ compinit
 # End of lines added by compinstall
 
 # Keybindings für Sondertasten
-bindkey "^[[2~" yank                    # Insert
-bindkey "^[[3~" delete-char             # Del
+bindkey "^[[2~" yank		    # Insert
+bindkey "^[[3~" delete-char	     # Del
 bindkey "^[[5~" up-line-or-history      # PageUp
 bindkey "^[[6~" down-line-or-history    # PageDown
-bindkey "^E"    expand-cmd-path         # C-e for expanding path of typed command.
+bindkey "^E"    expand-cmd-path	 # C-e for expanding path of typed command.
 bindkey "^[[A"  history-beginning-search-backward       # Up arrow for back-history-search.
-bindkey "^[[B"  history-beginning-search-forward        # Down arrow for fwd-history-search.
-bindkey " "     magic-space             # Do history expansion on space.
+bindkey "^[[B"  history-beginning-search-forward	# Down arrow for fwd-history-search.
+bindkey " "     magic-space	     # Do history expansion on space.
 case "$TERM" in
-        linux|screen)
-                bindkey "^[[1~" beginning-of-line       # Pos1
-                bindkey "^[[4~" end-of-line             # End
-        ;;
-        *xterm*|(dt|k)term)
-                bindkey "^[[H"  beginning-of-line       # Pos1
-                bindkey "^[[F"  end-of-line             # End
-                bindkey "^[[7~" beginning-of-line       # Pos1
-                bindkey "^[[8~" end-of-line             # End
-        ;;
-        rxvt|Eterm)
-                bindkey "^[[7~" beginning-of-line       # Pos1
-                bindkey "^[[8~" end-of-line             # End
-        ;;
+	linux|screen)
+		bindkey "^[[1~" beginning-of-line       # Pos1
+		bindkey "^[[4~" end-of-line	     # End
+	;;
+	*xterm*|(dt|k)term)
+		bindkey "^[[H"  beginning-of-line       # Pos1
+		bindkey "^[[F"  end-of-line	     # End
+		bindkey "^[[7~" beginning-of-line       # Pos1
+		bindkey "^[[8~" end-of-line	     # End
+	;;
+	rxvt|Eterm)
+		bindkey "^[[7~" beginning-of-line       # Pos1
+		bindkey "^[[8~" end-of-line	     # End
+	;;
 esac
 
-# Aliase für schnellere Verzeichnisnavigation
-# alias -g ...='../..'
-# alias -g ....='../../..'
-# alias -g .....='../../../..'
-# Alias für Detached Launching
+# alias for detached launching
 alias -g "\&"="&>/dev/null&|"
-# Aliase für Git-Zugriff aus ~/.gitconfig erstellen
+# create aliases for Git commands from ~/.gitconfig
 perl -n -e '$c=$1if/^\[(.*)\]/;print join("\t",($c,$1,$2))if/^\s*(\w*?)\s*=\s*([^=]*$)/;' < $HOME/.gitconfig | grep '^alias\b' | cut -f2- | while read git_alias git_command; do
 	alias $git_alias="git $git_command"
 done
@@ -70,50 +66,39 @@ export WORDCHARS='*?_-[]~=&;!#$%^(){}'
 # helper functions for KDE development
 # idea from http://techbase.kde.org/Getting_Started/Increased_Productivity_in_KDE4_with_Scripts/.bashrc
 
-function find_direct_build_dir() { # argument: path to directory
-	# go inside build hierarchy if not in it already
-	if [ "$(relpath "$BUILD_ROOT" "$1" | head -c2)" = ".." ]; then
-		echo -n "$BUILD_ROOT"
-	fi
-	abspath "$1"
-}
-
-function find_direct_source_dir() { # argument: path to directory
-	if [ "$(relpath "$BUILD_ROOT" "$1" | head -c2)" = "./" ]; then
-		echo "$1" | sed "s,^$BUILD_ROOT,,"
-	else
-		echo "$1"
-	fi
-}
-
-function find_build_dir() { # argument: path to directory, check file name (if given, search will automatically ascend in directory hierarchy as long as that file exists there)
-	#TODO: stub
-	find_direct_build_dir "$1"
-}
-
 function chpwd() { # no arguments (hook; is called by cd)
-	export B="$(find_direct_build_dir "$(pwd)")"
-	export S="$(find_direct_source_dir "$(pwd)")"
+	local RELPATH="$(relpath "$BUILD_ROOT" "$PWD")"
+	if [ "${RELPATH:0:2}" = .. ]; then
+		export B="$BUILD_ROOT$PWD"
+		export S="$PWD"
+	else
+		export B="$PWD"
+		export S="/$RELPATH"
+	fi
 }
 chpwd # initialize $B and $S
 
-function cb() { # no arguments
-	cd $B
+function cb() { cd $B }
+function cs() { cd $S }
+
+# NOTE: The actual configuring, building and installing is done by `b` nowadays.
+#       Only running applications in `b` buckets is handled here, because
+#       environment variables need to be changed for that.
+
+function run() {
+	if [ $# -lt 2 ]; then
+		echo 'need bucket and command' >&2
+		return 1
+	fi
+	local BUCKET="$HOME/buckets/$1"; shift
+	if [ -f "$BUCKET/run.sh" ]; then
+		PATH="$BUCKET/bin:$PATH" env LD_LIBRARY_PATH="$BUCKET/lib:$LD_LIBRARY_PATH" sh "$BUCKET/run.sh" $@
+	else
+		PATH="$BUCKET/bin:$PATH" env LD_LIBRARY_PATH="$BUCKET/lib:$LD_LIBRARY_PATH" $@
+	fi
 }
 
-function cs() { # no arguments
-	cd $S
-}
-
-alias cmk='build.pl cmake'
-alias cmki='build.pl cmake_install'
-alias cmku='build.pl cmake_uninstall'
-alias qmk='build.pl qmake'
-alias mk='build.pl make'
-alias mkk='build.pl make -k'
-
-function tup()
-{
+function tup() {
 	if [ $# -eq 0 ]; then
 		env tup upd
 	else
@@ -121,7 +106,6 @@ function tup()
 	fi
 }
 
-# key bindings
 bindkey '^Z' undo
 
 function psgrep() { # all arguments passed to grep

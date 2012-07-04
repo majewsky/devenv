@@ -115,3 +115,13 @@ autocmd BufReadPost * DetectIndent
 
 autocmd Syntax      * hi clear SpecialKey | hi link SpecialKey LineNr
 autocmd Colorscheme * hi clear SpecialKey | hi link SpecialKey LineNr
+
+hi link perlStatement PreCondit
+autocmd Syntax perl call PerlCustomSyntax()
+function! PerlCustomSyntax()
+    syn keyword perlStatementFlow carp cluck croak confess
+    syn keyword perlOperatorNew new
+    syn keyword perlConstructor new contained containedin=perlSubName
+    hi link perlOperatorNew perlOperator
+    hi link perlConstructor perlOperator
+endfunction

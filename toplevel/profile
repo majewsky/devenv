@@ -8,14 +8,22 @@ rm -rf $HOME/.macromedia
 export EDITOR=vim
 export PAGER="less -R"
 export NUMCPUCORES="$(grep '^core id' /proc/cpuinfo | sort -g | uniq | wc -l)"
-export BUILD_ROOT="$(readlink -f "$HOME/tmp/build")" # the equivalent to $HOME, for build directories
+if [ -d /home/tmp/build ]; then
+	export BUILD_ROOT=/home/tmp/build
+else
+	export BUILD_ROOT="$(readlink -f "$HOME/tmp/build")" # the equivalent to $HOME, for build directories
+fi
 
 if [ -z "$LOCALPROFILEREAD" ]; then
 	if [ -e /etc/SuSE-release ]; then
 		export PATH="$PATH:/sbin:/usr/sbin:/usr/local/sbin"
 	fi
+	if grep ID=arch /etc/os-release &> /dev/null; then
+		export PATH="$PATH:/usr/bin/vendor_perl"
+	fi
 	# add home directory path
 	export PATH="$PATH:$HOME/bin"
+	[ -d /usr/bin/vendor_perl ] && export PATH="$PATH:/usr/bin/vendor_perl"
 
 	# Python includes
 	export PYTHONPATH="$PYTHONPATH:$HOME/Code/python/path"
@@ -27,6 +35,14 @@ if [ -z "$LOCALPROFILEREAD" ]; then
 	# uninstalled manpages
 	if [ -d $HOME/.man ]; then
 		export MANPATH=$HOME/.man:$MANPATH
+	fi
+
+	if [ -d $HOME/perl5 ]; then
+		export PERL_LOCAL_LIB_ROOT="$HOME/perl5"
+		export PERL_MB_OPT="--install_base $HOME/perl5"
+		export PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"
+		export PERL5LIB="$HOME/perl5/lib/perl5/i686-linux-thread-multi:$HOME/perl5/lib/perl5"
+		export PATH="$HOME/perl5/bin:$PATH"
 	fi
 fi
 

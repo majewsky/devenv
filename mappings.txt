@@ -8,8 +8,7 @@ toplevel/profile .profile
 toplevel/profile.local .profile.local
 toplevel/vimrc .vimrc
 toplevel/zshrc .zshrc
-bin/build.pl bin/build.pl
-bin/abspath bin/abspath
+bin/b bin/b
 bin/relpath bin/relpath
 bin/runmoodbar bin/runmoodbar
 vim/ .vim
