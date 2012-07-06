@@ -13,16 +13,36 @@ use Cwd;
 sub cwd_to_source {
     return new Build::Source(Cwd::cwd());
 }
+sub cwd_to_bucket {
+    my $cwd = Cwd::cwd();
 
-if (@ARGV) {
-    if (command_word_match('configure', $ARGV[0])) {
-        cwd_to_source()->configure(@ARGV[1..$#ARGV]) or exit 1;
+    # TODO: code duplication with Build::Source::new()
+    my @bucket_paths = <$Build::Config::bucket_dir/*>;
+    for my $bucket_name (@bucket_paths) {
+        next unless -d $bucket_name;
+        if (startswith($cwd, $bucket_name)) {
+            # we are inside this bucket
+            $bucket_name =~ s{^.*/}{};
+            return new Build::Bucket($bucket_name);
+        }
     }
-    elsif (command_word_match('install', $ARGV[0])) {
+
+    # we are not in any bucket -> assume this is a source tree
+    return cwd_to_source()->bucket();
+}
+
+if (@ARGV && $ARGV[0]) {
+    if (startswith('configure', $ARGV[0])) {
+        cwd_to_source()->force_configure(@ARGV[1..$#ARGV]) or exit 1;
+    }
+    elsif (startswith('install', $ARGV[0])) {
         cwd_to_source()->install() or exit 1;
     }
-    elsif (command_word_match('make', $ARGV[0])) {
+    elsif (startswith('make', $ARGV[0])) {
         cwd_to_source()->build(@ARGV[1..$#ARGV]) or exit 1;
+    }
+    elsif (startswith('run', $ARGV[0])) {
+        exit 1 unless cwd_to_bucket()->run_command(@ARGV[1..$#ARGV]) == 0;
     }
     else {
         cwd_to_source()->build(@ARGV) or exit 1;
@@ -32,13 +52,8 @@ else {
     cwd_to_source()->update() or exit 1;
 }
 
-# Returns true if $input is not empty and $word starts with $input. Examples:
-#    command_word_match('foobar', 'qux')       -> false (nothing near a match)
-#    command_word_match('foobar', 'foobar')    -> true  (exact match)
-#    command_word_match('foobar', 'foobarbaz') -> false (too much input)
-#    command_word_match('foobar', 'foo')       -> true  ($word starts with $input)
-#    command_word_match('foobar', '' or undef) -> false (special case)
-sub command_word_match {
+# Returns true if $input is not empty and $word starts with $input.
+sub startswith {
     my ($word, $input) = @_;
     return 0 unless $input;
     return substr($word, 0, length($input)) eq $input;

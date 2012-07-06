@@ -122,6 +122,40 @@ sub add_source {
     return 1;
 }
 
+sub run_command {
+    my ($self, @command) = @_;
+    my $path = $self->{path};
+
+    my $env_path = $ENV{PATH} // '';
+    my $env_ldlp = $ENV{LD_LIBRARY_PATH} // '';
+    my $env_pkgp = $ENV{PKG_CONFIG_PATH} // '';
+    my $env_qtpp = $ENV{QT_PLUGIN_PATH} // '';
+    my $env_xdgd = $ENV{XDG_DATA_DIRS} // '';
+    my $env_xdgc = $ENV{XDG_CONFIG_DIRS} // '';
+    my %new_env = (
+        PATH            => "$path/bin:$env_path",
+        LD_LIBRARY_PATH => "$path/lib:$env_ldlp",
+        PKG_CONFIG_PATH => "$path/lib/pkgconfig:$path/share/pkgconfig:$env_pkgp",
+        QT_PLUGIN_PATH  => "$path/lib/kde5/plugins:$path/lib/kde4/plugins", # :$env_qtpp", --> not in KF5
+        KDEDIR          => $path,
+        KDEDIRS         => $path,
+        ACLOCAL         => "aclocal -I $path/share/aclocal",
+        XDG_DATA_DIRS   => "$path/share:$env_xdgd",
+        XDG_CONFIG_DIRS => "$path/etc/xdg:$env_xdgc",
+    );
+
+    my %old_env;
+    while (my ($name, $value) = each %new_env) {
+        $old_env{$name} = $ENV{$name};
+        $ENV{$name} = $value;
+    }
+    my $exit_code = system(@command);
+    while (my ($name, $value) = each %old_env) {
+        $ENV{$name} = $value;
+    }
+    return $exit_code;
+}
+
 package Build::Source;
 
 use Carp;
@@ -152,7 +186,7 @@ sub new {
         $tree_root = $path;
         print "This source tree is not in any bucket. Add it to one?\n\n";
         print "\tBucket identifier: ";
-        chomp ($tree_bucket = <>);
+        chomp ($tree_bucket = <STDIN>);
         print "\n";
         $tree_bucket = new Build::Bucket($tree_bucket);
         $tree_bucket->add_source($tree_root);
@@ -165,6 +199,8 @@ sub new {
     } => $class;
 }
 
+sub bucket { +shift->{bucket} }
+
 sub method {
     my ($self) = @_;
     return $self->{method} //= $self->_find_method();
@@ -174,26 +210,41 @@ sub _find_method {
     my ($self) = @_;
     my $root = $self->{root};
 
-    return 'cmake'  if -f "$root/CMakeLists.txt";
-    return 'qmake'  if <$root/*.pro>;
-    return 'make-s' if -f "$root/Makefile" or -f "$self->{path}/Makefile";
+    return 'cmake'   if -f "$root/CMakeLists.txt";
+    return 'qmake'   if <$root/*.pro>;
+    return 'amake-s' if -f "$root/autogen.sh" or -f "$root/configure";
+    return 'make-s'  if -f "$root/Makefile" or -f "$self->{path}/Makefile";
 }
 
 sub is_configured {
     my ($self) = @_;
     my $method = $self->method;
 
+    # builds in source tree
     return 1 if $method eq 'make-s';
+    if ($method eq 'amake-s') {
+        return -f "$self->{root}/Makefile";
+    }
 
+    # out-of-source builds
     my $build_root = Build::Functions::build_dir($self->{root});
     return -f "$build_root/Makefile";
+}
+
+sub force_configure {
+    my ($self, @args) = @_;
+    $self->{force_configure} = 1;
+    $self->configure(@args);
+    $self->{force_configure} = 0;
 }
 
 sub configure { # first of three building steps
     my ($self, @args) = @_;
 
     # already configured and no args given? -> nothing to do, return success
-    return 1 if $self->is_configured and @args == 0;
+    unless ($self->{force_configure}) {
+        return 1 if $self->is_configured and @args == 0;
+    }
 
     my $method = $self->method;
     my $build_root = Build::Functions::build_dir($self->{root});
@@ -205,12 +256,11 @@ sub configure { # first of three building steps
             unshift @args, '-DCMAKE_BUILD_TYPE=RelWithDebInfo';
             # install prefix is pushed instead of unshifted because we don't
             # want @args to override it
-            push @args, '-DCMAKE_INSTALL_PREFIX=' . $self->{bucket}->path;
+            push @args, '-DCMAKE_INSTALL_PREFIX=' . $self->bucket->path;
         }
         Build::Functions::mkpath($build_root) or die 'could not create build root';
         chdir $build_root;
-        use Data::Dumper; print Dumper(['cmake', @args, $self->{root}]);
-        my $exit_code = system('cmake', @args, $self->{root});
+        my $exit_code = $self->bucket->run_command('cmake', @args, $self->{root});
         chdir $cwd;
         return $exit_code == 0;
     }
@@ -218,7 +268,19 @@ sub configure { # first of three building steps
     elsif ($method eq 'qmake') {
         Build::Functions::mkpath($build_root) or die 'could not create build root';
         chdir $build_root;
-        my $exit_code = system('qmake', @args, $self->{root});
+        # TODO: use $self->bucket->path
+        my $exit_code = $self->bucket->run_command('qmake', @args, $self->{root});
+        chdir $cwd;
+        return $exit_code == 0;
+    }
+
+    elsif ($method eq 'amake-s') {
+        my $root = $self->{root};
+        my $configurer = "$self->{root}/autogen.sh";
+        $configurer = "$self->{root}/configure" unless -f $configurer;
+        push @args, '--prefix=' . $self->bucket->path;
+        chdir $root;
+        my $exit_code = $self->bucket->run_command($configurer, @args);
         chdir $cwd;
         return $exit_code == 0;
     }
@@ -229,7 +291,7 @@ sub configure { # first of three building steps
 sub _find_nearest_make_builddir {
     my ($self) = @_;
     return Build::Functions::source_dir($self->{path})
-        if $self->method eq 'make-s';
+        if $self->method eq 'make-s' or $self->method eq 'amake-s';
 
     # Start from the build dir for the selected path, and ascend until a
     # Makefile is found (but stop at the source tree root). Returns the build
@@ -256,7 +318,7 @@ sub build { # second of three building steps
     unshift @args, ('-j' . ($ENV{NUMCPUCORES} + 1));
 
     chdir $build_dir;
-    my $exit_code = system('make', @args);
+    my $exit_code = $self->bucket->run_command('make', @args);
     chdir $cwd;
     return $exit_code == 0;
 }
@@ -292,7 +354,7 @@ sub install {
     my @args = ('-j' . ($ENV{NUMCPUCORES} + 1));
 
     chdir $build_dir;
-    my $exit_code = system('make', @args, $target);
+    my $exit_code = $self->bucket->run_command('make', @args, $target);
     chdir $cwd;
     return $exit_code == 0;
 }
