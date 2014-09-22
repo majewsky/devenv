@@ -1,13 +1,10 @@
 HISTFILE=~/.histfile
 HISTSIZE=100000
 SAVEHIST=100000
-__reset_columns() {
-	PROMPT="\$($HOME/.devenv/bin/prettyprompt.py $COLUMNS 2>/dev/null)"
-}
-__reset_columns
+PROMPT="\$($HOME/.devenv/bin/prettyprompt.py \$COLUMNS 2>/dev/null)"
 export PRETTYPROMPT_SHELL="zsh"
 setopt autocd noautoparamslash autopushd nobeep nobgnice correct extendedglob noflowcontrol globdots histexpiredupsfirst histignoredups nohup incappendhistory longlistjobs nopromptcr promptsubst pushdminus pushdsilent pushdtohome rcquotes recexact
-#setopt appendhistory autocd correct extendedglob histignoredups incappendhistory noflowcontrol nomatch notify promptsubst
+#setopt appendhistory nomatch notify
 unsetopt beep
 bindkey -e
 
@@ -47,10 +44,6 @@ case "$TERM" in
         ;;
 esac
 
-# Aliase für schnellere Verzeichnisnavigation
-# alias -g ...='../..'
-# alias -g ....='../../..'
-# alias -g .....='../../../..'
 # Alias für Detached Launching
 alias -g "\&"="&>/dev/null&|"
 # Aliase für Git-Zugriff aus ~/.gitconfig erstellen
@@ -86,11 +79,6 @@ function find_direct_source_dir() { # argument: path to directory
 	fi
 }
 
-function find_build_dir() { # argument: path to directory, check file name (if given, search will automatically ascend in directory hierarchy as long as that file exists there)
-	#TODO: stub
-	find_direct_build_dir "$1"
-}
-
 function chpwd() { # no arguments (hook; is called by cd)
 	export B="$(find_direct_build_dir "$(pwd)")"
 	export S="$(find_direct_source_dir "$(pwd)")"
@@ -105,97 +93,10 @@ function cs() { # no arguments
 	cd $S
 }
 
-function cmk() { # all arguments are passed to cmake
-	mkdir -p $B || ( echo "Failed to create $B"; return 1 )
-	cd $B
-	if [ ! -f CMakeCache.txt -a -f $S/CMakeLists.txt ]; then
-		if dialog --yesno "No CMake cache found. Initialize cmake now?" 5 50; then
-			cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo $@ $S || ( cd $S; return 1 )
-		else
-			touch CMakeCache.txt # suppress future questions
-		fi
-	elif [ $# -gt 0 ]; then
-		cmake $@ . || ( cd $S; return 1 )
-	fi
-	make -j$(($NUMCPUCORES + 1)) || ( cd $S; return 1 )
-	cd $S
-}
-
-function cmki() { # all arguments are passed to cmake
-	cmk $@ || return 1
-	cd $B || ( echo "Directory $B does not exist"; return 1 )
-	if grep '^install/fast' Makefile &>/dev/null; then
-		CMKI_TARGET=install/fast
-	else
-		CMKI_TARGET=install
-	fi
-	sudo make $CMKI_TARGET -j$(($NUMCPUCORES + 1)) || ( cd $S; return 1 )
-	# TODO: fallback to "make install" if install/fast target is not available
-	cd $S
-}
-
-function cmku() {
-	cd $B || ( echo "Directory $BUILD_DIR does not exist"; return 1 )
-	sudo make uninstall || ( cd $S; return 1 )
-	# TODO: fallback to "xargs sudo rm < install_manifest.txt"
-	cd $S
-}
-
-function qmk() { # all arguments are passed to qmake
-	mkdir -p $B || ( echo "Failed to create $B"; return 1 )
-	cd $B
-	if [ ! -f Makefile -a -f $S/*.pro ]; then
-		qmake $@ $S || ( cd $S; return 1 )
-	elif [ $# -gt 0 ]; then
-		qmake $@ $S || ( cd $S; return 1 )
-	fi
-	make -j$(($NUMCPUCORES + 1)) || ( cd $S; return 1 )
-	cd $S
-}
-
-function mk() { # all arguments are passed to make
-	if lamake show root &> /dev/null; then
-		if lamake $@; then return 0; else return 1; fi
-	fi
-	if [ -d .tup ]; then
-		if tup upd; then return 0; else return 1; fi
-	fi
-	cd $B || return 1
-	[ -f Makefile ] || ( echo "Error: No Makefile present."; cd $S; return 1 )
-	make -j$(($NUMCPUCORES + 1)) $@ || ( cd $S; return 1 )
-	cd $S
-}
-alias mkk="mk -k"
-
-function tup()
-{
-	if [ $# -eq 0 ]; then
-		env tup upd
-	else
-		env tup $@
-	fi
-}
-
 # key bindings
 bindkey '^Z' undo
 
 function psgrep() { # all arguments passed to grep
-	ps aux | grep $* | grep -v grep
+	ps aux | sed -n '1p;/\<sed\>/d;/'"$1"'/p'
 }
 
-rationalise-dot() {
-	if [[ $LBUFFER = *.. ]]; then
-		LBUFFER+=/..
-	else
-		LBUFFER+=.
-	fi
-}
-zle -N rationalise-dot
-bindkey . rationalise-dot
-bindkey -M isearch . self-insert
-
-# ignore hidden files and temporary files as long as possible
-#zstyle ':completion:*:complete:*:(all-|)files' ignored-patterns '?*~' '.*' \
-#	'?*.(o|aux|bbl|blg|idx|ilg|ind|lof|nav|snm|toc|vrb|pyc)' \
-#	'?*.(log|out)(e:'\''test -e ${REPLY:r}.tex'\'':)' # TODO: does not work
-#zstyle ':completion:*:complete:*:(local|path)-directories' ignored-patterns '(*/.*|.*)' # TODO: does not really work either

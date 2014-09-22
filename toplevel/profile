@@ -1,9 +1,4 @@
-test -f /etc/SuSE-release -a -z "$PROFILEREAD" && . /etc/profile || true
-
 rm -rf $HOME/.adobe
-[ -d "$HOME/.adobe_orig" ] && cp -R $HOME/.adobe_orig $HOME/.adobe
-rm -rf $HOME/.macromedia
-[ -d "$HOME/Downloads" ] && rmdir "$HOME/Downloads"
 
 export EDITOR=vim
 export PAGER="less -R"
@@ -11,32 +6,18 @@ export NUMCPUCORES="$(grep '^core id' /proc/cpuinfo | sort -g | uniq | wc -l)"
 export BUILD_ROOT="$(readlink -f "$HOME/tmp/build")" # the equivalent to $HOME, for build directories
 
 if [ -z "$LOCALPROFILEREAD" ]; then
-	if [ -e /etc/SuSE-release ]; then
-		export PATH="$PATH:/sbin:/usr/sbin:/usr/local/sbin"
-	fi
 	# add home directory path
-	export PATH="$PATH:$HOME/bin"
-
-	# Python includes
-	export PYTHONPATH="$PYTHONPATH:$HOME/Code/python/PyXGraph:$HOME/Code/python/PlottingCanvas:$HOME/Code/python/Iterator:$HOME/Code/python/QuantumMaps"
+	export PATH="$HOME/bin:$PATH"
 
 	# KDE installation
 	export KDEDIRS="/usr/local/:$KDEDIRS"
 	export LD_LIBRARY_PATH="/usr/local/lib/:$LD_LIBRARY_PATH"
 fi
 
-# some measures (apart from .inputrc's set bell-style none and modprobe's blacklist pcspkr) to disable the system speaker
-[ x"$DISPLAY" != x ] && xset b 0
-[ x"$TERM" != x ] && env TERM=$TERM setterm -blength 0
-
 # aliases
-alias ack='ack --group --color' # always adjust for screen display, even if writing to pipe
 alias less='less -R'            # recognise color characters
 alias m=mpc
 which ncmpc &>/dev/null || alias ncmpc=ncmpcpp
-if [ -e /etc/SuSE-release ];then
-	alias z='sudo zypper'
-fi
 
 # 256 color support in Konsole
 if [ "$TERM" = "xterm" ]; then
