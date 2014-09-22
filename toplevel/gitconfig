@@ -40,8 +40,6 @@
 	stat = true
 [rerere]
 	enabled = true
-[url "git@ptpcp4:"]
-	insteadOf = cpg:
 [url "git://anongit.kde.org/"]
 	insteadOf = kde:
 [url "git@git.kde.org:"]
