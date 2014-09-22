@@ -1,11 +1,6 @@
 call pathogen#infect()
 filetype plugin on
 
-function! FixCommentsListForCLang()
-	" add :/// to comments, but make sure that it has a higher priority than
-	set comments-=:// comments+=:///,://
-endfunction
-com! FixCommentsListForCLang call FixCommentsListForCLang()
 
 function! LowColor()
 	set t_Co=8
@@ -61,8 +56,6 @@ nmap . .`[
 " after adjusting indentation in visual mode, restore selection for further changes
 vnoremap > >gv
 vnoremap < <gv
-" disable q: command for opening the command line window
-map q: <Nop>
 " change mouse mode with function keys
 nmap <F9> :set mouse=<CR>
 nmap <F10> :set mouse=a<CR>
@@ -73,19 +66,8 @@ if $TERM == "xterm-256color"
 	let g:ConqueTerm_TERM = 'xterm-256color'
 endif
 
-if hostname() == "ptpcp11"
-	autocmd ColorScheme * highlight MyTab ctermbg=242
-	autocmd ColorScheme * highlight MySpace ctermbg=245
-else
-	autocmd ColorScheme * highlight MyTab ctermbg=235
-	autocmd ColorScheme * highlight MySpace ctermbg=238
-endif
-
 let g:gardener_light_comments=1
 colo gardener-transparent
-
-autocmd Syntax * syntax match MyTab /^\t\+/
-autocmd Syntax * syntax match MySpace /\s\+$/
 
 "formatting style for Python code and changelogs in our working group
 autocmd FileType python setlocal expandtab smarttab nocindent tabstop=4 softtabstop=4
@@ -98,3 +80,5 @@ autocmd FileType tex setlocal nocindent
 
 " enable pair matching for angle brackets (e.g. C++ templates)
 autocmd FileType cpp setlocal matchpairs+=<:>
+" add :/// to comments, but make sure that it has a higher priority than ://
+autocmd FileType cpp setlocal comments-=:// comments+=:///,://
