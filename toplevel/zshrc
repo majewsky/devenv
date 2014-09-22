@@ -100,3 +100,4 @@ function psgrep() { # all arguments passed to grep
 	ps aux | sed -n '1p;/\<sed\>/d;/'"$1"'/p'
 }
 
+[ -d "$HOME/GMT" -a -n "$KONSOLE_DBUS_SESSION" -a "$HOME" = "$PWD" ] && cd "$HOME/GMT"

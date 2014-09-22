@@ -1,6 +1,28 @@
+let g:loaded_AlignMapsPlugin = '1' " skip AlignMapsPlugin
+
 call pathogen#infect()
+filetype indent on
 filetype plugin on
 
+function! IdentifySyntax()
+	return synIDattr(synID(line("."),col("."),1), "name")
+endfunction
+function! IdentifyHighlight()
+	return synIDattr(synIDtrans(synID(line("."),col("."),1)), "name")
+endfunction
+function! Identify()
+	let l_syn = IdentifySyntax()
+	let l_hi  = IdentifyHighlight()
+	if l_hi != "" && l_hi != "Normal" && l_hi != l_syn
+		return l_syn . " -> " . l_hi
+	else
+		return l_syn
+	endif
+endfunction
+
+com! IdentifySyntax echo IdentifySyntax()
+com! IdentifyHighlight echo IdentifyHighlight()
+com! Identify echo Identify()
 
 function! LowColor()
 	set t_Co=8
@@ -33,32 +55,58 @@ vnoremap s s
 set autoindent
 set background=dark
 set cindent
+set expandtab
 set fo=tcroq
 set hlsearch
 set incsearch
 set ignorecase smartcase
 set laststatus=2
 set linebreak
+set list listchars=trail:·,nbsp:·,tab:\ \ 
 set mouse=a
 set number
 set shiftwidth=4
 set smarttab
 set statusline=%<%f\ %#Search#\ %Y%M%R\ %*\ %{fugitive#statusline()}%=\ %-14.(%l,%c%V%)\ %P
 set tabstop=4
+set tildeop
 set wildmode=longest:full
 set wildmenu
 syntax enable
+let perl_include_pod="on"
 
 " remove highlighting of search matches
 nmap , :let @/=""<CR>:<BS>
+nmap ,, :let @/=""<CR>:<BS>
 " after repeating commands, put the cursor at the start of the change
 nmap . .`[
 " after adjusting indentation in visual mode, restore selection for further changes
 vnoremap > >gv
 vnoremap < <gv
+" invoke various redraws with function keys
+nmap <F3> :syn sync fromstart<CR>
+nmap <F4> :redraw!<CR>
 " change mouse mode with function keys
 nmap <F9> :set mouse=<CR>
 nmap <F10> :set mouse=a<CR>
+" quick key for Align plugin
+vmap <bar> :Align<Space>
+nmap <bar> :set opfunc=ExecAlign<CR>:<BS>g@
+" quick key for forward/backward search from selection
+vmap * "ty/<C-r>t<CR>
+vmap # "ty?<C-r>t<CR>
+
+function! ExecAlign(type)
+	let sel_save = &selection
+	let &selection = "inclusive"
+	let reg_save = @@
+
+	let seps = input('align on: ')
+	silent exe "'[,']Align " . seps
+
+	let &selection = sel_save
+	let @@ = reg_save
+endfunction
 
 " setup color scheme, highlight interesting whitespace
 set t_Co=256
@@ -82,3 +130,45 @@ autocmd FileType tex setlocal nocindent
 autocmd FileType cpp setlocal matchpairs+=<:>
 " add :/// to comments, but make sure that it has a higher priority than ://
 autocmd FileType cpp setlocal comments-=:// comments+=:///,://
+
+"formatting style for Perl code
+autocmd FileType perl call PerlCustomStuff()
+autocmd Syntax perl call PerlCustomSyntax()
+autocmd BufReadPost * DetectIndent
+
+hi link perlStatement PreCondit
+hi link javaScriptStringS PreProc
+hi link javaScriptStringD PreProc
+
+function! PerlCustomStuff()
+	setlocal expandtab smarttab tabstop=4 softtabstop=4 shiftwidth=3 iskeyword-=:
+	nmap <buffer> gd "tyiw/\%(^sub \\|^\s*function \)\zs<C-r>t\><CR>:let @/=""<CR>:<BS>
+	syntax sync fromstart
+endfunction
+function! PerlCustomSyntax()
+	syn keyword perlStatementList uniq natatime
+	syn region perlStatementIndirObjWrap matchgroup=perlStatementIndirObj start="\<\%(\%(continue\|uireturn\|return\|bless\|else\|eval\|sub\|die\|q[qrw]\|\w\)\>\)\@![a-z_]\+\>\s*{" end="}" contains=@perlTop,perlGenericBlock
+	syn match perlStatementException "\<ui\%(die\|return\)\>"
+	syn keyword perlNew new create
+	syn keyword perlSubNameNew new create containedin=perlSubName
+	hi link perlNew perlOperator
+	hi link perlSubNameNew perlNew
+endfunction
+
+autocmd ColorScheme * call ColorSchemeFixes()
+autocmd Syntax *      call ColorSchemeFixes()
+
+function! ColorSchemeFixes()
+	hi clear SpecialKey
+	hi link SpecialKey LineNr
+	hi ErrorMsg term=none cterm=none
+endfunction
+
+" configuration for Syntastic
+let g:syntastic_check_on_open=1
+let g:syntastic_enable_signs=1
+let g:syntastic_javascript_checkers = ['jsl']
+let g:syntastic_javascript_jsl_conf = "/home/stefan/.jsl.conf"
+let g:syntastic_perl_checkers = [ 'perl', 'perlcritic' ]
+let g:syntastic_perl_lib_path = [ "/home/stefan/GMT/cgi-bin/lib", "/home/stefan/GMT/cgi-bin" ]
+let g:syntastic_enable_perl_checker = 1
