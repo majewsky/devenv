@@ -73,7 +73,6 @@ set tildeop
 set wildmode=longest:full
 set wildmenu
 syntax enable
-let perl_include_pod="on"
 
 " remove highlighting of search matches
 nmap , :let @/=""<CR>:<BS>
