@@ -5,6 +5,7 @@
 	statusHints = false
 	detachedHead = false
 [alias]
+	blame = blame -M -C -w
 	br = branch
 	co = checkout
 	st = status
@@ -25,12 +26,11 @@
 	autosetuprebase = always
 [color]
 	ui = true
-[commit]
-	template = ~/.commit-template
 [core]
 	excludesfile = ~/.gitignore
 [diff]
 	tool = vimdiff
+	algorithm = minimal
 [difftool]
 	prompt = false
 [receive]
@@ -49,3 +49,7 @@
 	pushInsteadOf = git://anongit.kde.org/
 [status]
 	submodulesummary = 1
+[interactive]
+	singlekey = true
+[push]
+	default = current
