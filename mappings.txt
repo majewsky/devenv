@@ -1,4 +1,5 @@
 ./ .devenv
+toplevel/ackrc .ackrc
 toplevel/bash_logout .bash_logout
 toplevel/bashrc .bashrc
 toplevel/commit-template .commit-template
