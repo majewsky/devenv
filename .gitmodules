@@ -13,3 +13,9 @@
 [submodule "vim/bundle/speeddating"]
 	path = vim/bundle/speeddating
 	url = git://github.com/tpope/vim-speeddating.git
+[submodule "vim/bundle/detectindent"]
+	path = vim/bundle/detectindent
+	url = https://github.com/ciaranm/detectindent.git
+[submodule "vim/bundle/syntastic"]
+	path = vim/bundle/syntastic
+	url = https://github.com/scrooloose/syntastic.git
