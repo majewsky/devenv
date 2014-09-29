@@ -147,11 +147,12 @@ endfunction
 function! PerlCustomSyntax()
 	syn keyword perlStatementList uniq natatime
 	syn region perlStatementIndirObjWrap matchgroup=perlStatementIndirObj start="\<\%(\%(continue\|uireturn\|return\|bless\|else\|eval\|sub\|die\|q[qrw]\|\w\)\>\)\@![a-z_]\+\>\s*{" end="}" contains=@perlTop,perlGenericBlock
-	syn match perlStatementException "\<ui\%(die\|return\)\>"
+	syn match perlStatementException "\<\%(die\|croak\|carp\|confess\|cluck\|ui\%(die\|return\)\)\>"
 	syn keyword perlNew new create
 	syn keyword perlSubNameNew new create containedin=perlSubName
 	hi link perlNew perlOperator
 	hi link perlSubNameNew perlNew
+	hi link perlStatementException ErrorMsg
 endfunction
 
 autocmd ColorScheme * call ColorSchemeFixes()
@@ -167,7 +168,7 @@ endfunction
 let g:syntastic_check_on_open=1
 let g:syntastic_enable_signs=1
 let g:syntastic_javascript_checkers = ['jsl']
-let g:syntastic_javascript_jsl_conf = "/home/stefan/.jsl.conf"
+let g:syntastic_javascript_jsl_args = '-conf /home/stefan/.vim/jsl.conf'
 let g:syntastic_perl_checkers = [ 'perl', 'perlcritic' ]
 let g:syntastic_perl_lib_path = [ "/home/stefan/GMT/cgi-bin/lib", "/home/stefan/GMT/cgi-bin" ]
 let g:syntastic_enable_perl_checker = 1
