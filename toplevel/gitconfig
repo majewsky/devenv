@@ -47,7 +47,7 @@
 	pushInsteadOf = git://anongit.kde.org/
 [status]
 	submodulesummary = 1
-[interactive]
-	singlekey = true
 [push]
 	default = current
+[interactive]
+	singlekey = true
