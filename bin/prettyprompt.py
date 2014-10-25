@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python
 
 import os, os.path as op, pwd, re, socket, sys, subprocess as sp
 
@@ -68,37 +68,6 @@ def recognizeGitRepo(path):
         extraInfo = "on %s at %s" % (branchSpec, commit[0:7])
     return basePath, subPath, extraInfo
 
-def recognizeSvnRepo(path):
-    """ Like recognizeGitRepo, but for SVN repos. Repo status message looks like
-        "on revision 42".
-
-        Throws NotARepoException if .svn cannot be found.
-    """
-    basePath = op.realpath(path)
-    subPath = ""
-    # find SVN repo (NOTE: Old SVN repos have .svn dirs at every level, but
-    # newer repos only have one .svn directory at the top, just like Git.
-    # This code should recognize both patterns.
-    while not op.exists(op.join(basePath, ".svn")):
-        # ascend in directory hierarchy if possible
-        basePath, newSubDir = op.split(basePath)
-        subPath = op.join(newSubDir, subPath)
-        # root directory reached? -> not in Git repo
-        if newSubDir == "":
-            raise NotARepoException
-    while op.exists(op.join(op.dirname(basePath), ".svn")):
-        # ascend in directory hierarchy as far as possible
-        basePath, newSubDir = op.split(basePath)
-        subPath = op.join(newSubDir, subPath)
-
-    # ask `svn info` for revision
-    svnInfoOutput = sp.Popen(["svn", "info"], cwd=path, stdout=sp.PIPE).communicate()[0]
-    for line in svnInfoOutput.splitlines():
-        if line.startswith("Revision: "):
-            revision = line[10:]
-
-    return basePath, subPath, "at revision %s" % revision
-
 def toInt(string, default):
     try:
         return int(string)
@@ -130,6 +99,8 @@ commonHosts = {
     "maximegalon": ("stefan", "0;31"),
     "preliumtarn": ("stefan", "0;35"),
     "oglaroon":    ("stefan", "0;35"),
+    "rupert":      ("stefan", "0;32"),
+    "vsa7196":     ("c5170035", "0;31"),
 }
 if hostname in commonHosts:
     commonUser, hostnameColor = commonHosts[hostname]
@@ -208,11 +179,7 @@ if cwdExists:
         repoBase, repoPath, repoStatus = recognizeGitRepo(cwd)
         isRepo = True
     except NotARepoException:
-        try:
-            repoBase, repoPath, repoStatus = recognizeSvnRepo(cwd)
-            isRepo = True
-        except NotARepoException:
-            pass
+        pass
 
     # print cwd, builddir markers and repo status (if any)
     buildDirMarker = colored("BUILD", "1;35")

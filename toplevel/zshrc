@@ -4,7 +4,7 @@ SAVEHIST=1000000
 PROMPT="\$($HOME/.devenv/bin/prettyprompt.py \$COLUMNS 2>/dev/null)"
 export PRETTYPROMPT_SHELL="zsh"
 setopt autocd noautoparamslash autopushd nobeep nobgnice correct extendedglob noflowcontrol globdots histexpiredupsfirst histignoredups nohup incappendhistory longlistjobs nopromptcr promptsubst pushdminus pushdsilent pushdtohome rcquotes recexact
-#setopt appendhistory autocd correct extendedglob histignoredups incappendhistory noflowcontrol nomatch notify promptsubst
+#setopt appendhistory nomatch notify
 unsetopt beep
 bindkey -e
 
@@ -75,5 +75,7 @@ chpwd # initialize $B and $S
 bindkey '^Z' undo
 
 function psgrep() { # all arguments passed to grep
-	ps aux | sed -n '1p;/sed -n/d;/'"$1"'/p'
+	ps aux | sed -n '1p;/\<sed\>/d;/'"$1"'/p'
 }
+
+[ -d "$HOME/GMT" -a -n "$KONSOLE_DBUS_SESSION" -a "$HOME" = "$PWD" ] && cd "$HOME/GMT"

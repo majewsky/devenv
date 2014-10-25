@@ -68,12 +68,8 @@ KfsrView::KfsrView()
 	//hardcoded launcher-key associations
 	typedef QPair<QString, QString> QStringPair;
 	QList<QStringPair> hardcodedAssociations;
-	hardcodedAssociations << QStringPair("rekonq", "k");
 	hardcodedAssociations << QStringPair("Firefox", "f");
-	hardcodedAssociations << QStringPair("Chromium", "c");
 	hardcodedAssociations << QStringPair("Konsole", "o");
-	// hardcodedAssociations << QStringPair("KMail", "m");
-	// hardcodedAssociations << QStringPair("Amarok", "a");
 	//create items
 	foreach (const QStringPair& association, hardcodedAssociations)
 	{
