@@ -125,7 +125,7 @@ elif hostname == "vserver3190":
 
 # don't print username for known hosts
 commonHosts = {
-    "magrathea":   ("stefan", "0;32"),
+    "magrathea":   ("stefan", "0;31"),
     "maximegalon": ("stefan", "0;31"),
     "preliumtarn": ("stefan", "0;35"),
     "oglaroon":    ("stefan", "0;35"),
