@@ -43,6 +43,9 @@ case $1 in
 		install_core
 		install_gui
 		;;
+	install-gui-only)
+		install_gui
+		;;
 	dryrun-install)
 		while read SOURCE DEST; do
 			if [ ! -L $HOME/$DEST ]; then

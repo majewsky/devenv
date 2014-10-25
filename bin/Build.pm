@@ -164,8 +164,8 @@ use Cwd;
 sub new {
     my ($class, $path) = @_;
     croak 'empty source path' unless $path;
-    $path = Build::Functions::source_dir($path);
     croak 'invalid source path' unless -d $path;
+    $path = Build::Functions::source_dir($path);
 
     my ($tree_bucket, $tree_root);
 
@@ -228,7 +228,7 @@ sub is_configured {
 
     # out-of-source builds
     my $build_root = Build::Functions::build_dir($self->{root});
-    return -f "$build_root/Makefile";
+    return (-f "$build_root/Makefile" or -f "$build_root/build.ninja");
 }
 
 sub force_configure {
@@ -302,7 +302,7 @@ sub _find_nearest_make_builddir {
     # starting from $build_path, ascend until a Makefile is found
     # (but not further than $build_root)
     until (Build::Functions::equal_dirs($build_path, $build_root)) {
-        last if -f "$build_path/Makefile";
+        last if -f "$build_path/Makefile" or -f "$build_path/build.ninja";
         $build_path = Build::Functions::parent_dir($build_path);
     }
     return $build_path;
@@ -318,7 +318,12 @@ sub build { # second of three building steps
     unshift @args, ('-j' . ($ENV{NUMCPUCORES} + 1));
 
     chdir $build_dir;
-    my $exit_code = $self->bucket->run_command('make', @args);
+    my $exit_code;
+    if (-f "$build_dir/build.ninja") {
+        $exit_code = $self->bucket->run_command('ninja', @args);
+    } else {
+        $exit_code = $self->bucket->run_command('make', @args);
+    }
     chdir $cwd;
     return $exit_code == 0;
 }
@@ -340,21 +345,27 @@ sub install {
 
     # find which install target to use (CMake-based KDE projects generate an
     # "install/fast" target which is, well, faster)
-    open MF, '<', "$build_dir/Makefile" or die "could not open Makefile: $!";
     my $target = 'install';
-    while (<MF>) {
-        if (m{^install/fast}) {
-            $target = 'install/fast';
-            last;
+    if (open MF, '<', "$build_dir/Makefile") {
+        while (<MF>) {
+            if (m{^install/fast}) {
+                $target = 'install/fast';
+                last;
+            }
         }
+        close MF;
     }
-    close MF;
 
     # adjust to number of CPU cores (defaults to -j1 if $NUMCPUCORES is not set)
     my @args = ('-j' . ($ENV{NUMCPUCORES} + 1));
 
     chdir $build_dir;
-    my $exit_code = $self->bucket->run_command('make', @args, $target);
+    my $exit_code;
+    if (-f "$build_dir/build.ninja") {
+        $exit_code = $self->bucket->run_command('ninja', @args, $target);
+    } else {
+        $exit_code = $self->bucket->run_command('make', @args, $target);
+    }
     chdir $cwd;
     return $exit_code == 0;
 }

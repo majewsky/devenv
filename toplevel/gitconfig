@@ -5,6 +5,7 @@
 	statusHints = false
 	detachedHead = false
 [alias]
+	blame = blame -M -C -w
 	br = branch
 	co = checkout
 	st = status
@@ -25,12 +26,11 @@
 	autosetuprebase = always
 [color]
 	ui = true
-[commit]
-	template = ~/.commit-template
 [core]
 	excludesfile = ~/.gitignore
 [diff]
 	tool = vimdiff
+	algorithm = minimal
 [difftool]
 	prompt = false
 [receive]
@@ -40,8 +40,6 @@
 	stat = true
 [rerere]
 	enabled = true
-[url "git@ptpcp4:"]
-	insteadOf = cpg:
 [url "git://anongit.kde.org/"]
 	insteadOf = kde:
 [url "git@git.kde.org:"]
@@ -49,3 +47,7 @@
 	pushInsteadOf = git://anongit.kde.org/
 [status]
 	submodulesummary = 1
+[push]
+	default = current
+[interactive]
+	singlekey = true

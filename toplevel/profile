@@ -1,9 +1,4 @@
-test -f /etc/SuSE-release -a -z "$PROFILEREAD" && . /etc/profile || true
-
 rm -rf $HOME/.adobe
-[ -d "$HOME/.adobe_orig" ] && cp -R $HOME/.adobe_orig $HOME/.adobe
-rm -rf $HOME/.macromedia
-[ -d "$HOME/Downloads" ] && rmdir "$HOME/Downloads"
 
 export EDITOR=vim
 export PAGER="less -R"
@@ -15,18 +10,12 @@ else
 fi
 
 if [ -z "$LOCALPROFILEREAD" ]; then
-	if [ -e /etc/SuSE-release ]; then
-		export PATH="$PATH:/sbin:/usr/sbin:/usr/local/sbin"
-	fi
 	if grep ID=arch /etc/os-release &> /dev/null; then
 		export PATH="$PATH:/usr/bin/vendor_perl"
 	fi
 	# add home directory path
-	export PATH="$PATH:$HOME/bin"
+	export PATH="$HOME/bin:$PATH"
 	[ -d /usr/bin/vendor_perl ] && export PATH="$PATH:/usr/bin/vendor_perl"
-
-	# Python includes
-	export PYTHONPATH="$PYTHONPATH:$HOME/Code/python/path"
 
 	# KDE installation
 	export KDEDIRS="/usr/local/:$KDEDIRS"
@@ -38,33 +27,35 @@ if [ -z "$LOCALPROFILEREAD" ]; then
 	fi
 
 	if [ -d $HOME/perl5 ]; then
-		export PERL_LOCAL_LIB_ROOT="$HOME/perl5"
-		export PERL_MB_OPT="--install_base $HOME/perl5"
-		export PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"
-		export PERL5LIB="$HOME/perl5/lib/perl5/i686-linux-thread-multi:$HOME/perl5/lib/perl5"
-		export PATH="$HOME/perl5/bin:$PATH"
+		eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
+		# export PERL_LOCAL_LIB_ROOT="$HOME/perl5"
+		# export PERL_MB_OPT="--install_base $HOME/perl5"
+		# export PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"
+		# export PERL5LIB="$HOME/perl5/lib/perl5/i686-linux-thread-multi:$HOME/perl5/lib/perl5"
+		# export PATH="$HOME/perl5/bin:$PATH"
 	fi
 fi
 
-# some measures (apart from .inputrc's set bell-style none and modprobe's blacklist pcspkr) to disable the system speaker
-[ x"$DISPLAY" != x ] && xset b 0
-[ x"$TERM" != x ] && env TERM=$TERM setterm -blength 0
-
 # aliases
-alias ack='ack --group --color' # always adjust for screen display, even if writing to pipe
 alias less='less -R'            # recognise color characters
 alias m=mpc
+alias mi='mpc idle player; mpc'
 alias halt='sudo halt'
+alias reboot='sudo reboot'
 which ncmpc &>/dev/null || alias ncmpc=ncmpcpp
-if [ -e /etc/SuSE-release ];then
-	alias z='sudo zypper'
+if grep ID=arch /etc/os-release &>/dev/null; then
+	alias p='sudo pacman'
+fi
+if [ -d "$HOME/GMT" ]; then
+	alias rpe="perl -I$HOME/GMT/cgi-bin/lib -MData::Dump=pp -Mstrict -Mwarnings -le"
+else
+	alias rpe="perl -MData::Dump=pp -Mstrict -Mwarnings -le"
 fi
 
 # 256 color support in Konsole
 if [ "$TERM" = "xterm" ]; then
 	export TERM=xterm-256color
 fi
-
 
 # this must always be at the end
 export LOCALPROFILEREAD="yes"

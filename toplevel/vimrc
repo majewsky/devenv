@@ -1,3 +1,5 @@
+let g:loaded_AlignMapsPlugin = '1' " skip AlignMapsPlugin
+
 call pathogen#infect()
 filetype indent on
 filetype plugin on
@@ -21,12 +23,6 @@ endfunction
 com! IdentifySyntax echo IdentifySyntax()
 com! IdentifyHighlight echo IdentifyHighlight()
 com! Identify echo Identify()
-
-function! FixCommentsListForCLang()
-	" add :/// to comments, but make sure that it has a higher priority than
-	set comments-=:// comments+=:///,://
-endfunction
-com! FixCommentsListForCLang call FixCommentsListForCLang()
 
 function! LowColor()
 	set t_Co=8
@@ -60,6 +56,7 @@ set autoindent
 set background=dark
 set cindent
 set cinoptions=L0,l1,(0,W4
+set expandtab
 set fo=tcroq
 set hlsearch
 set incsearch
@@ -72,23 +69,52 @@ set number
 set shiftwidth=4
 set expandtab smarttab
 set statusline=%<%f\ %#Search#\ %Y%M%R\ %*\ %{fugitive#statusline()}%=\ %-14.(%l,%c%V%)\ %P
-set tabstop=4
+set tabstop=4 softtabstop=4
+set tildeop
 set wildmode=longest:full
 set wildmenu
 syntax enable
+let perl_include_pod=1
 
 " remove highlighting of search matches
 nmap , :let @/=""<CR>:<BS>
+nmap ,, :let @/=""<CR>:<BS>
 " after repeating commands, put the cursor at the start of the change
 nmap . .`[
 " after adjusting indentation in visual mode, restore selection for further changes
 vnoremap > >gv
 vnoremap < <gv
-" disable q: command for opening the command line window
-map q: <Nop>
+" disable a command that I usually mistype
+map <F1> <Nop>
+" bindings for cld development
+if hostname() == "krikkit"
+    nmap <F7> :wa<CR>:!rsync -vau --exclude '.*.sw?' --delete ~/Code/cld/ /srv/http/cld-devel/<CR><CR>
+    nmap <F8> :wa<CR>:!rsync -vau --exclude '.*.sw?' --delete ~/Code/cld/ magrathea:/srv/http/cld-devel/<CR><CR>
+endif
+" invoke various redraws with function keys
+nmap <F3> :syn sync fromstart<CR>
+nmap <F4> :redraw!<CR>
 " change mouse mode with function keys
 nmap <F9> :set mouse=<CR>
 nmap <F10> :set mouse=a<CR>
+" quick key for Align plugin
+vmap <bar> :Align<Space>
+nmap <bar> :set opfunc=ExecAlign<CR>:<BS>g@
+" quick key for forward/backward search from selection
+vmap * "ty/<C-r>t<CR>
+vmap # "ty?<C-r>t<CR>
+
+function! ExecAlign(type)
+	let sel_save = &selection
+	let &selection = "inclusive"
+	let reg_save = @@
+
+	let seps = input('align on: ')
+	silent exe "'[,']Align " . seps
+
+	let &selection = sel_save
+	let @@ = reg_save
+endfunction
 
 " setup color scheme
 set t_Co=256
@@ -108,20 +134,52 @@ autocmd FileType tex map <F5> :w<CR>:wa<CR>:make<CR>
 autocmd FileType tex map <F6> :!xdg-open %<.pdf &>/dev/null &disown<CR><CR>
 autocmd FileType tex setlocal nocindent
 
+autocmd Syntax {cpp,c} runtime syntax/doxygen.vim
 " enable pair matching for angle brackets (e.g. C++ templates)
 autocmd FileType cpp setlocal matchpairs+=<:> commentstring=//\ %s
+" add :/// to comments, but make sure that it has a higher priority than ://
+autocmd FileType cpp setlocal comments-=:// comments+=:///,://
 
 autocmd BufReadPost * DetectIndent
 
-autocmd Syntax      * hi clear SpecialKey | hi link SpecialKey LineNr
-autocmd Colorscheme * hi clear SpecialKey | hi link SpecialKey LineNr
+"formatting style for Perl code
+autocmd FileType perl call PerlCustomStuff()
+autocmd Syntax perl call PerlCustomSyntax()
 
 hi link perlStatement PreCondit
-autocmd Syntax perl call PerlCustomSyntax()
-function! PerlCustomSyntax()
-    syn keyword perlStatementFlow carp cluck croak confess
-    syn keyword perlOperatorNew new
-    syn keyword perlConstructor new contained containedin=perlSubName
-    hi link perlOperatorNew perlOperator
-    hi link perlConstructor perlOperator
+hi link javaScriptStringS PreProc
+hi link javaScriptStringD PreProc
+
+function! PerlCustomStuff()
+	setlocal expandtab smarttab tabstop=4 softtabstop=4 shiftwidth=3 iskeyword-=:
+	nmap <buffer> gd "tyiw/\%(^sub \\|^\s*function \)\zs<C-r>t\><CR>:let @/=""<CR>:<BS>
+	syntax sync fromstart
 endfunction
+function! PerlCustomSyntax()
+	syn keyword perlStatementList uniq natatime
+	syn region perlStatementIndirObjWrap matchgroup=perlStatementIndirObj start="\<\%(\%(continue\|uireturn\|return\|bless\|else\|eval\|sub\|die\|q[qrw]\|\w\)\>\)\@![a-z_]\+\>\s*{" end="}" contains=@perlTop,perlGenericBlock
+	syn match perlStatementException "\<\%(die\|croak\|carp\|confess\|cluck\|ui\%(die\|return\)\)\>"
+	syn keyword perlNew new create
+	syn keyword perlSubNameNew new create containedin=perlSubName
+	hi link perlNew perlOperator
+	hi link perlSubNameNew perlNew
+	hi link perlStatementException ErrorMsg
+endfunction
+
+autocmd ColorScheme * call ColorSchemeFixes()
+autocmd Syntax *      call ColorSchemeFixes()
+
+function! ColorSchemeFixes()
+	hi clear SpecialKey
+	hi link SpecialKey LineNr
+	hi ErrorMsg term=none cterm=none
+endfunction
+
+" configuration for Syntastic
+let g:syntastic_check_on_open=1
+let g:syntastic_enable_signs=1
+let g:syntastic_javascript_checkers = ['jsl']
+let g:syntastic_javascript_jsl_args = '-conf /home/stefan/.vim/jsl.conf'
+let g:syntastic_perl_checkers = [ 'perl', 'perlcritic' ]
+let g:syntastic_perl_lib_path = [ "/home/stefan/GMT/cgi-bin/lib", "/home/stefan/GMT/cgi-bin" ]
+let g:syntastic_enable_perl_checker = 1

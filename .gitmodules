@@ -15,10 +15,13 @@
 	url = git://github.com/tpope/vim-speeddating.git
 [submodule "vim/bundle/detectindent"]
 	path = vim/bundle/detectindent
-	url = git://github.com/ciaranm/detectindent.git
+	url = https://github.com/ciaranm/detectindent.git
 [submodule "vim/bundle/vimwiki"]
 	path = vim/bundle/vimwiki
 	url = git://github.com/vim-scripts/vimwiki.git
 [submodule "vim/bundle/xterm-color-table"]
 	path = vim/bundle/xterm-color-table
 	url = git://github.com/guns/xterm-color-table.vim.git
+[submodule "vim/bundle/syntastic"]
+	path = vim/bundle/syntastic
+	url = https://github.com/scrooloose/syntastic.git
