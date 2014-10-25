@@ -1,10 +1,7 @@
 HISTFILE=~/.histfile
-HISTSIZE=100000
-SAVEHIST=100000
-__reset_columns() {
-	PROMPT="\$($HOME/.devenv/bin/prettyprompt.py $COLUMNS 2>/dev/null)"
-}
-__reset_columns
+HISTSIZE=1000000
+SAVEHIST=1000000
+PROMPT="\$($HOME/.devenv/bin/prettyprompt.py \$COLUMNS 2>/dev/null)"
 export PRETTYPROMPT_SHELL="zsh"
 setopt autocd noautoparamslash autopushd nobeep nobgnice correct extendedglob noflowcontrol globdots histexpiredupsfirst histignoredups nohup incappendhistory longlistjobs nopromptcr promptsubst pushdminus pushdsilent pushdtohome rcquotes recexact
 #setopt appendhistory autocd correct extendedglob histignoredups incappendhistory noflowcontrol nomatch notify promptsubst
@@ -50,7 +47,7 @@ esac
 # alias for detached launching
 alias -g "\&"="&>/dev/null&|"
 # create aliases for Git commands from ~/.gitconfig
-perl -n -e '$c=$1if/^\[(.*)\]/;print join("\t",($c,$1,$2))if/^\s*(\w*?)\s*=\s*([^=]*$)/;' < $HOME/.gitconfig | grep '^alias\b' | cut -f2- | while read git_alias git_command; do
+perl -pe '$c=$1if/^\[(.*)\]/;$_=join("\t",($c,$1,$2))if/^\s*(\w*?)\s*=\s*([^=]*$)/;' < $HOME/.gitconfig | grep '^alias\b' | cut -f2- | while read git_alias git_command; do
 	alias $git_alias="git $git_command"
 done
 unset git_alias git_command
@@ -62,9 +59,6 @@ alias qg="qgit --all &>/dev/null &|"
 # by default: export WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>'
 # we take out the slash, period, angle brackets here.
 export WORDCHARS='*?_-[]~=&;!#$%^(){}'
-
-# helper functions for KDE development
-# idea from http://techbase.kde.org/Getting_Started/Increased_Productivity_in_KDE4_with_Scripts/.bashrc
 
 function chpwd() { # no arguments (hook; is called by cd)
 	local RELPATH="$(relpath "$BUILD_ROOT" "$PWD")"
@@ -78,55 +72,8 @@ function chpwd() { # no arguments (hook; is called by cd)
 }
 chpwd # initialize $B and $S
 
-function cb() { cd $B }
-function cs() { cd $S }
-
-# NOTE: The actual configuring, building and installing is done by `b` nowadays.
-#       Only running applications in `b` buckets is handled here, because
-#       environment variables need to be changed for that.
-
-function run() {
-	if [ $# -lt 2 ]; then
-		echo 'need bucket and command' >&2
-		return 1
-	fi
-	local BUCKET="$HOME/buckets/$1"; shift
-	if [ -f "$BUCKET/run.sh" ]; then
-		PATH="$BUCKET/bin:$PATH" env LD_LIBRARY_PATH="$BUCKET/lib:$LD_LIBRARY_PATH" sh "$BUCKET/run.sh" $@
-	else
-		PATH="$BUCKET/bin:$PATH" env LD_LIBRARY_PATH="$BUCKET/lib:$LD_LIBRARY_PATH" $@
-	fi
-}
-
-function tup() {
-	if [ $# -eq 0 ]; then
-		env tup upd
-	else
-		env tup $@
-	fi
-}
-
 bindkey '^Z' undo
 
 function psgrep() { # all arguments passed to grep
 	ps aux | sed -n '1p;/sed -n/d;/'"$1"'/p'
 }
-
-rationalise-dot() {
-	if [[ $LBUFFER = *.. ]]; then
-		LBUFFER+=/..
-	else
-		LBUFFER+=.
-	fi
-}
-zle -N rationalise-dot
-bindkey . rationalise-dot
-bindkey -M isearch . self-insert
-
-# ignore hidden files and temporary files as long as possible
-#zstyle ':completion:*:complete:*:(all-|)files' ignored-patterns '?*~' '.*' \
-#	'?*.(o|aux|bbl|blg|idx|ilg|ind|lof|nav|snm|toc|vrb|pyc)' \
-#	'?*.(log|out)(e:'\''test -e ${REPLY:r}.tex'\'':)' # TODO: does not work
-#zstyle ':completion:*:complete:*:(local|path)-directories' ignored-patterns '(*/.*|.*)' # TODO: does not really work either
-
-leosay() { for arg in $@; do mplayer -prefer-ipv4 http://www.leo.org/dict/audio_en/$arg.mp3; done }

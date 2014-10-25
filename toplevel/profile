@@ -1,9 +1,4 @@
-test -f /etc/SuSE-release -a -z "$PROFILEREAD" && . /etc/profile || true
-
 rm -rf $HOME/.adobe
-[ -d "$HOME/.adobe_orig" ] && cp -R $HOME/.adobe_orig $HOME/.adobe
-rm -rf $HOME/.macromedia
-[ -d "$HOME/Downloads" ] && rmdir "$HOME/Downloads"
 
 export EDITOR=vim
 export PAGER="less -R"
@@ -15,18 +10,12 @@ else
 fi
 
 if [ -z "$LOCALPROFILEREAD" ]; then
-	if [ -e /etc/SuSE-release ]; then
-		export PATH="$PATH:/sbin:/usr/sbin:/usr/local/sbin"
-	fi
 	if grep ID=arch /etc/os-release &> /dev/null; then
 		export PATH="$PATH:/usr/bin/vendor_perl"
 	fi
 	# add home directory path
-	export PATH="$PATH:$HOME/bin"
+	export PATH="$HOME/bin:$PATH"
 	[ -d /usr/bin/vendor_perl ] && export PATH="$PATH:/usr/bin/vendor_perl"
-
-	# Python includes
-	export PYTHONPATH="$PYTHONPATH:$HOME/Code/python/path"
 
 	# KDE installation
 	export KDEDIRS="/usr/local/:$KDEDIRS"
@@ -46,25 +35,22 @@ if [ -z "$LOCALPROFILEREAD" ]; then
 	fi
 fi
 
-# some measures (apart from .inputrc's set bell-style none and modprobe's blacklist pcspkr) to disable the system speaker
-[ x"$DISPLAY" != x ] && xset b 0
-[ x"$TERM" != x ] && env TERM=$TERM setterm -blength 0
-
 # aliases
-alias ack='ack --group --color' # always adjust for screen display, even if writing to pipe
 alias less='less -R'            # recognise color characters
 alias m=mpc
+alias mi='mpc idle player; mpc'
 alias halt='sudo halt'
+alias reboot='sudo reboot'
 which ncmpc &>/dev/null || alias ncmpc=ncmpcpp
-if [ -e /etc/SuSE-release ];then
-	alias z='sudo zypper'
+if grep ID=arch /etc/os-release &>/dev/null; then
+	alias p='sudo pacman'
 fi
+alias rpe='perl -w -MModern::Perl -MData::Dump=pp -le'
 
 # 256 color support in Konsole
 if [ "$TERM" = "xterm" ]; then
 	export TERM=xterm-256color
 fi
-
 
 # this must always be at the end
 export LOCALPROFILEREAD="yes"

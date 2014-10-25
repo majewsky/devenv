@@ -72,20 +72,26 @@ set number
 set shiftwidth=4
 set expandtab smarttab
 set statusline=%<%f\ %#Search#\ %Y%M%R\ %*\ %{fugitive#statusline()}%=\ %-14.(%l,%c%V%)\ %P
-set tabstop=4
+set tabstop=4 softtabstop=4
 set wildmode=longest:full
 set wildmenu
 syntax enable
+let perl_include_pod=1
 
 " remove highlighting of search matches
 nmap , :let @/=""<CR>:<BS>
+nmap ,, :let @/=""<CR>:<BS>
 " after repeating commands, put the cursor at the start of the change
 nmap . .`[
 " after adjusting indentation in visual mode, restore selection for further changes
 vnoremap > >gv
 vnoremap < <gv
-" disable q: command for opening the command line window
-map q: <Nop>
+" disable some commands I usually mistype
+nmap q: <Nop>
+map <F1> <Nop>
+" bindings for cld development
+nmap <F7> :wa<CR>:!rsync -vau --exclude '.*.sw?' --delete ~/Code/cld/ /srv/http/cld-devel/<CR><CR>
+nmap <F8> :wa<CR>:!rsync -vau --exclude '.*.sw?' --delete ~/Code/cld/ humbleglow.dnsd.me:/srv/http/cld-devel/<CR><CR>
 " change mouse mode with function keys
 nmap <F9> :set mouse=<CR>
 nmap <F10> :set mouse=a<CR>
@@ -124,4 +130,7 @@ function! PerlCustomSyntax()
     syn keyword perlConstructor new contained containedin=perlSubName
     hi link perlOperatorNew perlOperator
     hi link perlConstructor perlOperator
+    set sw=3 ts=3 sts=3 et sta
 endfunction
+
+autocmd Syntax {cpp,c} runtime syntax/doxygen.vim
