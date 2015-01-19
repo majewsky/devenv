@@ -34,6 +34,9 @@ if [ -z "$LOCALPROFILEREAD" ]; then
 		# export PERL5LIB="$HOME/perl5/lib/perl5/i686-linux-thread-multi:$HOME/perl5/lib/perl5"
 		# export PATH="$HOME/perl5/bin:$PATH"
 	fi
+	if [ -d $HOME/.rbenv ]; then
+		export PATH="$HOME/.rbenv/bin:$PATH"
+	fi
 fi
 
 # aliases
