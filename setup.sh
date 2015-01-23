@@ -24,24 +24,6 @@ install_core()
 		done < mappings.txt
 }
 
-install_rbenv()
-{
-	git_clone https://github.com/sstephenson/rbenv.git $HOME/.rbenv
-	git_clone https://github.com/sstephenson/ruby-build.git $HOME/.rbenv/plugins/ruby-build
-}
-
-git_clone()
-{
-	local REPO="$1"
-	local DEST="$2"
-	if [ -d "$DEST" ]; then
-		git -C "$DEST" pull
-	else
-		mkdir -p "$(dirname "$DEST")"
-		git clone "$REPO" "$DEST"
-	fi
-}
-
 install_gui()
 {
 	# compile kfullscreenrunner
@@ -56,11 +38,9 @@ install_gui()
 case $1 in
 	install-core)
 		install_core
-		install_rbenv
 		;;
 	install-gui)
 		install_core
-		install_rbenv
 		install_gui
 		;;
 	install-gui-only)
