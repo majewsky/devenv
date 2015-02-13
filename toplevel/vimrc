@@ -1,5 +1,3 @@
-let g:loaded_AlignMapsPlugin = '1' " skip AlignMapsPlugin
-
 call pathogen#infect()
 filetype indent on
 filetype plugin on
@@ -97,24 +95,13 @@ nmap <F4> :redraw!<CR>
 " change mouse mode with function keys
 nmap <F9> :set mouse=<CR>
 nmap <F10> :set mouse=a<CR>
-" quick key for Align plugin
-vmap <bar> :Align<Space>
-nmap <bar> :set opfunc=ExecAlign<CR>:<BS>g@
 " quick key for forward/backward search from selection
 vmap * "ty/<C-r>t<CR>
 vmap # "ty?<C-r>t<CR>
-
-function! ExecAlign(type)
-	let sel_save = &selection
-	let &selection = "inclusive"
-	let reg_save = @@
-
-	let seps = input('align on: ')
-	silent exe "'[,']Align " . seps
-
-	let &selection = sel_save
-	let @@ = reg_save
-endfunction
+" quick key for tabular plugin
+vmap <bar><bar> :Tab/
+vmap <bar>:     :Tab/^[^:]*:\zs/l1l0<CR>
+vmap <bar>=     :Tab assignment<CR>
 
 " setup color scheme
 set t_Co=256
