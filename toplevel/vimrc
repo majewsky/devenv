@@ -1,6 +1,16 @@
+" startup Vundle
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+    " let Vundle manage Vundle
+    Plugin 'gmarik/Vundle.vim'
+
+call vundle#end()
+
 call pathogen#infect()
-filetype indent on
-filetype plugin on
+filetype plugin indent on
 
 function! IdentifySyntax()
     return synIDattr(synID(line("."),col("."),1), "name")

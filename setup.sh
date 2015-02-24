@@ -5,6 +5,19 @@ if [ ! -d .git -o ! -f mappings.txt ]; then
 	exit 1
 fi
 
+git_clone()
+{
+	local REPO="$1"
+	local DEST="$2"
+	if [ -d "$DEST" ]; then
+		git -C "$DEST" pull
+	else
+		mkdir -p "$(dirname "$DEST")"
+		git clone "$REPO" "$DEST"
+	fi
+}
+
+
 install_core()
 {
 		INSTALLATION_GOOD=1
@@ -22,6 +35,11 @@ install_core()
 				ln -s $PWD/$SOURCE $HOME/$DEST
 			fi
 		done < mappings.txt
+
+	if [ -d "$HOME/.vim" ]; then
+		git_clone https://github.com/gmarik/Vundle.vim.git "$HOME/.vim/bundle/Vundle.vim"
+	fi
+	vim +PluginInstall +qall
 }
 
 install_gui()
