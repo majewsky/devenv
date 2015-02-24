@@ -91,7 +91,9 @@ set expandtab smarttab
 set statusline=%<%f\ %#Search#\ %Y%M%R\ %*%=\ %-14.(%l,%c%V%)\ %P
 set tabstop=4 softtabstop=4
 set tildeop
-set ttymouse=sgr
+if system("uname") != "Darwin\n"
+    set ttymouse=sgr
+end
 set wildmode=longest:full
 set wildmenu
 syntax enable
