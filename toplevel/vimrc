@@ -18,6 +18,7 @@ call vundle#begin()
     Plugin 'guns/xterm-color-table.vim'
     Plugin 'scrooloose/syntastic'
     Plugin 'godlygeek/tabular'
+    Plugin 'AnsiEsc.vim'
 
 call vundle#end()
 
