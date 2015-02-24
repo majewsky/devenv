@@ -66,9 +66,10 @@ set mouse=a
 set number
 set shiftwidth=4
 set expandtab smarttab
-set statusline=%<%f\ %#Search#\ %Y%M%R\ %*\ %{fugitive#statusline()}%=\ %-14.(%l,%c%V%)\ %P
+set statusline=%<%f\ %#Search#\ %Y%M%R\ %*%=\ %-14.(%l,%c%V%)\ %P
 set tabstop=4 softtabstop=4
 set tildeop
+set ttymouse=sgr
 set wildmode=longest:full
 set wildmenu
 syntax enable
@@ -174,3 +175,6 @@ let g:syntastic_perl_checkers = [ 'perl', 'perlcritic' ]
 let g:syntastic_perl_lib_path = [ "/home/stefan/GMT/cgi-bin/lib", "/home/stefan/GMT/cgi-bin" ]
 let g:syntastic_enable_perl_checker = 1
 let g:syntastic_ruby_checkers = [ 'rubylint', 'mri', 'rubocop' ]
+
+" configuration for DetectIndent
+let g:detectindent_preferred_expandtab = 1
