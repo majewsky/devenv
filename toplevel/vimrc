@@ -19,6 +19,7 @@ call vundle#begin()
     Plugin 'scrooloose/syntastic'
     Plugin 'godlygeek/tabular'
     Plugin 'AnsiEsc.vim'
+    Plugin 'Lokaltog/vim-easymotion'
 
 call vundle#end()
 
@@ -128,6 +129,8 @@ vmap # "ty?<C-r>t<CR>
 vmap <bar><bar> :Tab/
 vmap <bar>:     :Tab/^[^:]*:\zs/l1l0<CR>
 vmap <bar>=     :Tab assignment<CR>
+" quick key for easymotion plugin
+map <Tab> <Plug>(easymotion-prefix)
 
 " setup color scheme
 set t_Co=256
