@@ -5,7 +5,9 @@ export PAGER="less -R"
 if [ -f /proc/cpuinfo ]; then
 	export NUMCPUCORES="$(grep '^core id' /proc/cpuinfo | sort -g | uniq | wc -l)"
 fi
-if [ -d /home/tmp/build ]; then
+if [ -d /home/stefan.devenv/build ]; then
+	export BUILD_ROOT=/home/stefan.devenv/build
+elif [ -d /home/tmp/build ]; then
 	export BUILD_ROOT=/home/tmp/build
 elif [ -e "$HOME/tmp/build" ]; then
 	export BUILD_ROOT="$(readlink -f "$HOME/tmp/build")" # the equivalent to $HOME, for build directories
@@ -14,12 +16,8 @@ else
 fi
 
 if [ -z "$LOCALPROFILEREAD" ]; then
-	if grep ID=arch /etc/os-release &> /dev/null; then
-		export PATH="$PATH:/usr/bin/vendor_perl"
-	fi
 	# add home directory path
 	export PATH="$HOME/bin:$PATH"
-	[ -d /usr/bin/vendor_perl ] && export PATH="$PATH:/usr/bin/vendor_perl"
 
 	# KDE installation
 	export KDEDIRS="/usr/local/:$KDEDIRS"
@@ -32,11 +30,6 @@ if [ -z "$LOCALPROFILEREAD" ]; then
 
 	if [ -d $HOME/perl5 ]; then
 		eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
-		# export PERL_LOCAL_LIB_ROOT="$HOME/perl5"
-		# export PERL_MB_OPT="--install_base $HOME/perl5"
-		# export PERL_MM_OPT="INSTALL_BASE=$HOME/perl5"
-		# export PERL5LIB="$HOME/perl5/lib/perl5/i686-linux-thread-multi:$HOME/perl5/lib/perl5"
-		# export PATH="$HOME/perl5/bin:$PATH"
 	fi
 	if [ -d $HOME/.rbenv ]; then
 		export PATH="$HOME/.rbenv/bin:$PATH"
@@ -47,8 +40,6 @@ fi
 alias less='less -R'            # recognise color characters
 alias m=mpc
 alias mi='mpc idle player; mpc'
-alias halt='sudo halt'
-alias reboot='sudo reboot'
 which ncmpc &>/dev/null || alias ncmpc=ncmpcpp
 if grep ID=arch /etc/os-release &>/dev/null; then
 	alias p='sudo pacman'
