@@ -92,33 +92,17 @@ elif hostname.endswith(".local"):
 elif hostname == "vserver3190":
     hostname = "bethselamin.de"
 
-# don't print username for known hosts
-commonHosts = {
-    "magrathea":   ("stefan", "0;31"),
-    "krikkit":     ("stefan", "0;32"),
-    "maximegalon": ("stefan", "0;31"),
-    "preliumtarn": ("stefan", "0;35"),
-    "oglaroon":    ("stefan", "0;35"),
-    "rupert":      ("stefan", "0;32"),
-    "vsa7196":     ("c5170035", "0;31"),
-}
-if hostname in commonHosts:
-    commonUser, hostnameColor = commonHosts[hostname]
-    printUsername = username != commonUser
-else:
-    hostnameColor = "0;33"
-    printUsername = True
+# select color for hostname, skip username display for my most common non-root user
+commonUser    = os.environ.get("PRETTYPROMPT_COMMONUSER", "stefan")
+hostnameColor = os.environ.get("PRETTYPROMPT_HOSTCOLOR",  "0;33")
 
 # print username (with different color for some contexts)
-if printUsername:
+if username != commonUser:
     usernameColor = { "root": "0;1;41" }.get(username, "0")
     ssw(colored(username, usernameColor) + "@")
 
 # print hostname with different color for most hosts
-if hostname.startswith("ptpcp"):
-    ssw(colored("ptpcp", "0;37") + colored(hostname[5:], hostnameColor))
-else:
-    ssw(colored(hostname, hostnameColor))
+ssw(colored(hostname, hostnameColor))
 
 # print terminal (esp. for identifiying screen)
 termName = os.environ["TERM"]
