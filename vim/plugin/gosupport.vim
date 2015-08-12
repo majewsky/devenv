@@ -44,4 +44,4 @@ endfunction
 " setup commands and autocmd
 command! -nargs=0 GoFmt     call GoFmt(-1)
 command! -nargs=0 GoImports call GoFmt(+1)
-autocmd BufWritePre *.go    call GoFmt(-1)
+autocmd BufWritePre *.go    call GoFmt(+1)
