@@ -8,7 +8,7 @@
 	blame = blame -M -C -w
 	br = branch
 	co = checkout
-	st = status
+	st = status --short --branch
 	ci = commit
 	rb = rebase
 	push = push
@@ -56,3 +56,5 @@
 	default = current
 [interactive]
 	singlekey = true
+[fetch]
+	prune = true

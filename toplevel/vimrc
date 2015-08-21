@@ -28,6 +28,9 @@ call vundle#end()
 call pathogen#infect()
 filetype plugin indent on
 
+" support Ruby block keywords (e.g. do..end) in the % motion
+runtime macros/matchit.vim
+
 function! IdentifySyntax()
     return synIDattr(synID(line("."),col("."),1), "name")
 endfunction
@@ -185,6 +188,11 @@ function! PerlCustomSyntax()
 	hi link perlNew perlOperator
 	hi link perlSubNameNew perlNew
 	hi link perlStatementException ErrorMsg
+endfunction
+
+autocmd Syntax ruby call RubyCustomSyntax()
+function! RubyCustomSyntax()
+	hi link rubyException ErrorMsg
 endfunction
 
 autocmd ColorScheme * call ColorSchemeFixes()
