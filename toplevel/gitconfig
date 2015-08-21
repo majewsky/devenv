@@ -45,6 +45,11 @@
 [url "git@git.kde.org:"]
 	pushInsteadOf = kde:
 	pushInsteadOf = git://anongit.kde.org/
+[url "https://github.com/"]
+	insteadOf = github:
+[url "git@github.com:"]
+	pushInsteadOf = github:
+	pushInsteadOf = https://github.com/
 [status]
 	submodulesummary = 1
 [push]
