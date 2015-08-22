@@ -117,11 +117,11 @@ if buildRoot != "":
 # method to shorten home directory to "~"
 def stripHome(path):
     h = os.environ.get("HOME")
+    if path == h:
+        return ""
     hh = h + "/"
     if path.startswith(hh):
         return path[len(hh):]
-    if path.startswith(h):
-        return path[len(h):]
     else:
         return path
 
