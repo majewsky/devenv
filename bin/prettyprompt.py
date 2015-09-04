@@ -179,6 +179,11 @@ if cwdExists:
             ssw(colored(stripHome(repoBase) + "/", "0;36") + colored(repoPath, "1;36"))
         ssw(" " + repoStatus)
 
+# display currently selected cloud (if any)
+cloudKey = os.environ.get("CURRENT_OS_CLOUD", "")
+if cloudKey != "":
+    ssw(colored(" on cloud " + cloudKey, "0;37"))
+
 # how many actual characters have been written?
 colorSpecRx = "\033\\[[^m]*m"
 printedStr = "".join(re.split(colorSpecRx, stdoutBuffer))

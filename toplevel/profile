@@ -58,7 +58,10 @@ fi
 
 # for OpenStack
 if [ -f "$HOME/.local/bin/openstack" ]; then
-	cloud_is() { eval "$($HOME/.devenv/env_for_cloud.rb $1)" }
+	cloud_is() {
+		eval "$($HOME/.devenv/env_for_cloud.rb $1)"
+		env | grep '^OS_' | sort
+	}
 fi
 
 # 256 color support in Konsole
