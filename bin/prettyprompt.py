@@ -106,10 +106,8 @@ ssw(colored(hostname, hostnameColor))
 
 # print terminal (esp. for identifiying screen)
 termName = os.environ["TERM"]
-if termName == "xterm-256color":
-    ssw(" ")
-else:
-    ssw("-" + termName + " ")
+if termName != "xterm-256color":
+    ssw("-" + termName)
 
 # find root build directory (used for displaying cwd inside build tree in condensed form)
 buildRoot = os.environ["BUILD_ROOT"]
@@ -141,9 +139,9 @@ except OSError:
         subPath = op.join(newSubDir, subPath)
     subPath = subPath.rstrip("/")
     if subPath == "":
-        ssw(colored(stripHome(basePath), "1;36"))
+        ssw(" " + colored(stripHome(basePath), "1;36"))
     else:
-        ssw(colored(stripHome(basePath) + "/", "1;36") + colored(subPath, "1;31"))
+        ssw(" " + colored(stripHome(basePath) + "/", "1;36") + colored(subPath, "1;31"))
     ssw(" " + colored("could not stat cwd", "1;41"))
 
 # is cwd in build tree? -> if so, print and process source dir instead
@@ -168,16 +166,19 @@ if cwdExists:
     # print cwd, builddir markers and repo status (if any)
     buildDirMarker = colored("BUILD", "1;35")
     if isBuildDir:
-        ssw(buildDirMarker + " ")
+        ssw(" " + buildDirMarker)
     if not isRepo:
-        ssw(colored(stripHome(cwd), "1;36"))
+        path = stripHome(cwd)
+        if path != "":
+            ssw(" " + colored(path, "1;36"))
     else:
         if repoPath == "":
-            ssw(colored(stripHome(repoBase), "1;36"))
+            ssw(" " + colored(stripHome(repoBase), "1;36"))
         else:
             repoPath = repoPath.rstrip("/")
-            ssw(colored(stripHome(repoBase) + "/", "0;36") + colored(repoPath, "1;36"))
-        ssw(" " + repoStatus)
+            ssw(" " + colored(stripHome(repoBase) + "/", "0;36") + colored(repoPath, "1;36"))
+        if repoStatus != "":
+            ssw(" " + repoStatus)
 
 # display currently selected cloud (if any)
 cloudKey = os.environ.get("CURRENT_OS_CLOUD", "")
