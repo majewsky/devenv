@@ -7,6 +7,7 @@ toplevel/gitconfig .gitconfig
 toplevel/gitignore .gitignore
 toplevel/profile .profile
 toplevel/vimrc .vimrc
+toplevel/vimperatorrc .vimperatorrc
 toplevel/zshrc .zshrc
 bin/b bin/b
 bin/relpath bin/relpath

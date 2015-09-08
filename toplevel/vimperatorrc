@@ -1,0 +1,10 @@
+"3.5 (created: 2012/08/04 00:41:20)
+
+nmap , :nohl<Return>
+nmap + zI
+nmap -- - zO
+set complete=sl
+set gui=none,navigation,tabs
+source! /home/stefan/.vimperatorrc.local
+
+" vim: set ft=vimperator:
