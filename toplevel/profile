@@ -3,7 +3,7 @@ rm -rf $HOME/.adobe
 export EDITOR=vim
 export PAGER="less -R"
 if [ -f /proc/cpuinfo ]; then
-	export NUMCPUCORES="$(grep '^core id' /proc/cpuinfo | sort -g | uniq | wc -l)"
+	export NUMCPUCORES="$(nproc)"
 fi
 if [ -d /home/stefan.devenv/build ]; then
 	export BUILD_ROOT=/home/stefan.devenv/build
