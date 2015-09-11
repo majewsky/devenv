@@ -41,6 +41,9 @@ alias less='less -R'            # recognise color characters
 alias m=mpc
 alias mi='mpc idle player; mpc'
 which ncmpc &>/dev/null || alias ncmpc=ncmpcpp
+if [ "$(uname)" = "Linux" ]; then
+	alias ls='ls --color=auto'
+fi
 if grep ID=arch /etc/os-release &>/dev/null; then
 	alias p='sudo pacman'
 fi
