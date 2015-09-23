@@ -58,3 +58,6 @@
 	singlekey = true
 [fetch]
 	prune = true
+[gui]
+	fontui = -family \"DejaVu Sans\" -size 12 -weight normal -slant roman -underline 0 -overstrike 0
+	fontdiff = -family \"Liberation Mono\" -size 12 -weight normal -slant roman -underline 0 -overstrike 0
