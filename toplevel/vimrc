@@ -213,7 +213,8 @@ let g:syntastic_tex_checkers = [] "no lacheck/chktex
 let g:syntastic_perl_checkers = [ 'perl', 'perlcritic' ]
 let g:syntastic_perl_lib_path = [ "/home/stefan/GMT/cgi-bin/lib", "/home/stefan/GMT/cgi-bin" ]
 let g:syntastic_enable_perl_checker = 1
-let g:syntastic_ruby_checkers = [ 'rubylint', 'mri', 'rubocop' ]
+let g:syntastic_ruby_checkers = [ 'mri' ]
+let g:syntastic_go_checkers = [ 'go', 'golint' ]
 
 " configuration for DetectIndent
 let g:detectindent_preferred_expandtab = 1
