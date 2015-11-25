@@ -77,7 +77,3 @@ bindkey '^Z' undo
 function psgrep() { # all arguments passed to grep
 	ps aux | sed -n '1p;/\<sed\>/d;/'"$1"'/p'
 }
-
-if [ -d $HOME/.rbenv ]; then
-	eval "$(rbenv init -)"
-fi
