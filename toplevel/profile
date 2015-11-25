@@ -63,7 +63,7 @@ fi
 if [ -f "$HOME/.local/bin/openstack" ]; then
 	cloud_is() {
 		eval "$($HOME/.devenv/env_for_cloud.rb $1)"
-		env | grep '^OS_' | sort
+		env | grep '^OS_' | sed '/^OS_PASSWORD=/s/=.*/=<hidden>/' | sort
 	}
 fi
 
