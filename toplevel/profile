@@ -56,7 +56,8 @@ fi
 # for Go
 if [ -d "$HOME/Code/gopath" ]; then
 	export GOPATH="$HOME/Code/gopath"
-	export PATH="$PATH:$GOPATH/bin"
+	export GOBIN="$GOPATH/bin"
+	export PATH="$PATH:$GOBIN"
 fi
 
 # for OpenStack

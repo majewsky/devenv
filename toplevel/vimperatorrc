@@ -4,7 +4,7 @@ nmap , :nohl<Return>
 nmap + zI
 nmap -- - zO
 set complete=sl
-set gui=none,navigation,tabs
+set! browser.tabs.closeWindowWithLastTab=false
 source! /home/stefan/.vimperatorrc.local
 
 " vim: set ft=vimperator:
