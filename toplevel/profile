@@ -44,6 +44,9 @@ which ncmpc &>/dev/null || alias ncmpc=ncmpcpp
 if [ "$(uname)" = "Linux" ]; then
 	alias ls='ls --color=auto'
 fi
+if [ -f /usr/bin/steam ]; then
+	alias steam="nice -n10 /usr/bin/steam"
+fi
 if grep ID=arch /etc/os-release &>/dev/null; then
 	alias p='sudo pacman'
 fi
