@@ -193,6 +193,7 @@ endfunction
 autocmd Syntax ruby call RubyCustomSyntax()
 function! RubyCustomSyntax()
 	hi link rubyException ErrorMsg
+	hi link rubyPseudoVariable Boolean
 endfunction
 
 autocmd ColorScheme * call ColorSchemeFixes()

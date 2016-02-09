@@ -53,6 +53,7 @@ puts "export OS_REGION_NAME='#{cloud['region_name']}'"
 
 # enforce Identity v3
 puts "export OS_IDENTITY_API_VERSION=3"
+puts "export OS_AUTH_VERSION=3" # for swiftclient
 
 # also store the cloud key (e.g. a custom prompt can display it)
 puts "export CURRENT_OS_CLOUD='#{cloud_key}'"
