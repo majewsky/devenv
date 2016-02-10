@@ -52,6 +52,7 @@ if [ -d "$HOME/GMT" ]; then
 else
 	alias rpe="perl -MData::Dump=pp -Mstrict -Mwarnings -le"
 fi
+which nvim &>/dev/null && alias vim=nvim && alias vimdiff=nvim
 
 # for Go
 if [ -d "$HOME/Code/gopath" ]; then

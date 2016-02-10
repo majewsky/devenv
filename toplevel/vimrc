@@ -99,7 +99,9 @@ set statusline=%<%f\ %#Search#\ %Y%M%R\ %*%=\ %-14.(%l,%c%V%)\ %P
 set tabstop=4 softtabstop=4
 set tildeop
 if system("uname") != "Darwin\n"
-    set ttymouse=sgr
+    if !has('nvim')
+	set ttymouse=sgr
+    end
 end
 set wildmode=longest:full
 set wildmenu
@@ -137,12 +139,12 @@ vmap <bar>=     :Tab assignment<CR>
 " quick key for easymotion plugin
 map <Tab> <Plug>(easymotion-prefix)
 
-" setup color scheme
-set t_Co=256
-if $TERM == "xterm-256color"
-	let g:ConqueTerm_TERM = 'xterm-256color'
-endif
+" quick exit from terminal mode in nvim
+if has('nvim')
+    tnoremap <Esc><Esc> <C-\><C-n>
+end
 
+" setup color scheme
 let g:gardener_light_comments=1
 colo gardener-transparent
 

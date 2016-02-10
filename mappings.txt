@@ -13,3 +13,4 @@ bin/b bin/b
 bin/relpath bin/relpath
 bin/runmoodbar bin/runmoodbar
 vim/ .vim
+vim/ .config/nvim
