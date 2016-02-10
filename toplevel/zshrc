@@ -11,6 +11,12 @@ bindkey -e
 source ~/.profile
 test -s ~/.profile.local && . ~/.profile.local || true
 
+# forward to nvim if requested
+if [ "x$EXEC_NVIM" = "x1" ]; then
+	unset EXEC_NVIM
+	exec nvim term://zsh
+fi
+
 FPATH="$FPATH:$HOME/.zsh-functions"
 autoload compinit
 compinit
