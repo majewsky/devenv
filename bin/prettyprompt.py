@@ -35,6 +35,7 @@ def recognizeGitRepo(path):
             raise NotARepoException
 
     # determine current branch and commit
+    # TODO: rewrite this to just call `git rev-parse --abbrev-ref HEAD` (for the branch) and `git rev-parse HEAD` (for the commit)
     gitDir = op.join(basePath, ".git")
     headRef = catFile(op.join(gitDir, "HEAD")).strip()
     if headRef.startswith("ref: refs/"):
