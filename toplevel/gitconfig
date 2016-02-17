@@ -40,6 +40,10 @@
 	stat = true
 [rerere]
 	enabled = true
+[url "https://aur.archlinux.org/"]
+	insteadOf = aur:
+[url "aur@aur.archlinux.org:"]
+	pushInsteadOf = aur:
 [url "git://anongit.kde.org/"]
 	insteadOf = kde:
 [url "git@git.kde.org:"]
