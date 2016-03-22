@@ -83,15 +83,15 @@ def ssw(string):
     stdoutBuffer += string
     sys.stdout.write(string)
 
-# find username and hostname
+# find username and hostname (hostname display can be customized via environment variable)
 username = pwd.getpwuid(os.getuid())[0]
-hostname = socket.gethostname()
-if hostname.endswith(".site"):
-    hostname = hostname[:-5]
-elif hostname.endswith(".local"):
-    hostname = hostname[:-6]
-elif hostname == "vserver3190":
-    hostname = "bethselamin.de"
+hostname = os.environ.get("PRETTYPROMPT_HOSTNAME", "")
+if hostname == "":
+    hostname = socket.gethostname()
+    if hostname.endswith(".site"):
+        hostname = hostname[:-5]
+    elif hostname.endswith(".local"):
+        hostname = hostname[:-6]
 
 # select color for hostname, skip username display for my most common non-root user
 commonUser    = os.environ.get("PRETTYPROMPT_COMMONUSER", "stefan")
