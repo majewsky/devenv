@@ -54,6 +54,8 @@
 [url "git@github.com:"]
 	pushInsteadOf = github:
 	pushInsteadOf = https://github.com/
+[url "gogs@git.bethselamin.de:"]
+	insteadOf = gogs:
 [status]
 	submodulesummary = 1
 [push]
