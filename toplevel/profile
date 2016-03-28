@@ -56,6 +56,11 @@ else
 	alias rpe="perl -MData::Dump=pp -Mstrict -Mwarnings -le"
 fi
 which nvim &>/dev/null && alias vim=nvim && alias vimdiff=nvim
+if which pwget &>/dev/null; then
+	pwcopy() {
+		pwget "$@" | xsel -bi
+	}
+fi
 
 # for Go
 if [ -d "$HOME/Code/gopath" ]; then
