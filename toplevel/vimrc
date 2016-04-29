@@ -93,6 +93,7 @@ set linebreak
 set list listchars=trail:·,nbsp:·,tab:\ \ 
 set mouse=a
 set number
+set shortmess+=I
 set shiftwidth=4
 set expandtab smarttab
 set statusline=%<%f\ %#Search#\ %Y%M%R\ %*%=\ %-14.(%l,%c%V%)\ %P
