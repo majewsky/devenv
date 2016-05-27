@@ -17,28 +17,28 @@ cloud = YAML.load_file('/home/stefan/.config/openstack/clouds.yaml')['clouds'][c
   or raise ArgumentError, "unknown cloud #{cloud_key}"
 auth = cloud['auth']
 
-# some variables are always set (Identity v3 is always implied)
-  set_vars = %w[auth_url username user_domain_name]
-# domain/project/user IDs are not supported yet
-unset_vars = %w[domain_id user_domain_id project_domain_id project_id]
+# Identity v3 is always implied
+  set_vars = ['auth_url']
+unset_vars = []
+
+include_one_of = lambda do |vars|
+  var = vars.find { |v| auth.has_key?(v) }
+  set_vars   += [var] if var
+  unset_vars += vars.reject { |v| var == v }
+end
+
+# check user
+include_one_of.call(%w[username user_id])
+include_one_of.call(%w[user_domain_name user_domain_id])
 
 # check requested token scope
-if auth.has_key?('domain_name')
-    set_vars += %w[domain_name]
-  unset_vars += %w[project_name project_domain_name]
-elsif auth.has_key?('project_name')
-    set_vars += %w[project_name project_domain_name]
-  unset_vars += %w[domain_name]
-else
-  unset_vars += %w[project_name project_domain_name domain_name]
+include_one_of.call(%w[domain_id domain_name project_id project_name])
+if set_vars.include?('project_name')
+  include_one_of.call(%w[project_domain_id project_domain_name])
 end
 
 # is password given?
-if auth.has_key?('password')
-  set_vars += %w[password]
-else
-  unset_vars += %w[password]
-end
+include_one_of.call(%w[password])
 
 # generate sh code
 set_vars.each do |var|
