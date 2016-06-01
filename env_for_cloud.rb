@@ -35,6 +35,8 @@ include_one_of.call(%w[user_domain_name user_domain_id])
 include_one_of.call(%w[domain_id domain_name project_id project_name])
 if set_vars.include?('project_name')
   include_one_of.call(%w[project_domain_id project_domain_name])
+else
+  unset_vars += %w[project_domain_id project_domain_name]
 end
 
 # is password given?
