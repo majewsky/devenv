@@ -74,6 +74,15 @@ if [ -f "$HOME/.local/bin/openstack" ]; then
 	cloud_is() {
 		eval "$($HOME/.devenv/env_for_cloud.rb $1)"
 		env | grep '^OS_' | sed '/^OS_PASSWORD=/s/=.*/=<hidden>/' | sort
+		if [ -z "$OS_PASSWORD" ]; then
+			echo -n "OS_PASSWORD="
+			read -s OS_PASSWORD && export OS_PASSWORD
+			if [ -n "$OS_PASSWORD" ]; then
+				echo "<hidden>"
+			else
+				echo "<not set>"
+			fi
+		fi
 	}
 fi
 
