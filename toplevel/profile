@@ -50,16 +50,14 @@ fi
 if grep ID=arch /etc/os-release &>/dev/null; then
 	alias p='sudo pacman'
 fi
-if [ -d "$HOME/GMT" ]; then
-	alias rpe="perl -I$HOME/GMT/cgi-bin/lib -MData::Dump=pp -Mstrict -Mwarnings -le"
-else
-	alias rpe="perl -MData::Dump=pp -Mstrict -Mwarnings -le"
-fi
-which nvim &>/dev/null && alias vim=nvim && alias vimdiff=nvim
+alias rpe="perl -MData::Dump=pp -Mstrict -Mwarnings -le"
 if which pwget &>/dev/null; then
 	pwcopy() {
 		pwget "$@" | xsel -bi
 	}
+fi
+if which units &>/dev/null; then
+	alias units="units --verbose"
 fi
 
 # for Go
