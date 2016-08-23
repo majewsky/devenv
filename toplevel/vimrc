@@ -219,7 +219,8 @@ let g:syntastic_perl_lib_path = [ "/home/stefan/GMT/cgi-bin/lib", "/home/stefan/
 let g:syntastic_enable_perl_checker = 1
 let g:syntastic_ruby_checkers = [ 'mri' ]
 let g:syntastic_go_checkers = [ 'go', 'golint' ]
-let g:syntastic_cpp_compiler_options = '-std=c++14 -Wall -Wextra'
+let g:syntastic_c_compiler_options = '-std=gnu99 -Wall -Wextra -pedantic'
+let g:syntastic_cpp_compiler_options = '-std=c++14 -Wall -Wextra -pedantic'
 
 " configuration for DetectIndent
 let g:detectindent_preferred_expandtab = 1
