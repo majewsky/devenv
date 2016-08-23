@@ -10,6 +10,10 @@ toplevel/vimrc .vimrc
 toplevel/vimperatorrc .vimperatorrc
 toplevel/zshrc .zshrc
 bin/b bin/b
+bin/concatpdf bin/concatpdf
+bin/m4a2ogg bin/m4a2ogg
+bin/m4a2opus bin/m4a2opus
+bin/steam bin/steam
 bin/relpath bin/relpath
 bin/runmoodbar bin/runmoodbar
 vim/ .vim
