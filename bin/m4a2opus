@@ -1,0 +1,42 @@
+#!/usr/bin/env perl
+use Modern::Perl;
+
+use autodie qw(:all);
+use Term::Prompt qw(prompt);
+use Try::Tiny;
+
+my @tmp_files;
+END { unlink @tmp_files if @tmp_files }
+
+for my $m4a_file (@ARGV) {
+    my $opus_file = $m4a_file =~ s/\.m4a$/.opus/r;
+    if ($opus_file eq $m4a_file) {
+        $opus_file = prompt('x', "Enter opus file name for $m4a_file (or nothing to skip):", '', '');
+    }
+
+    if (-f $opus_file) {
+        warn "Skipping $m4a_file (output file exists)\n";
+        next;
+    }
+
+    my $wav_file = "$opus_file.wav";
+    $wav_file =~ s/,+//g;
+
+    if (-f $wav_file) {
+        warn "Skipping $m4a_file (intermediate WAV file exists)\n";
+        next;
+    }
+
+    try {
+        push @tmp_files, $wav_file;
+        system(qw(mplayer -ao), "pcm:fast:file=$wav_file", $m4a_file);
+    } catch { next };
+
+    try {
+        system(qw(opusenc), $wav_file, $opus_file);
+    } catch { next };
+}
+continue {
+    unlink @tmp_files if @tmp_files;
+    @tmp_files = ();
+}

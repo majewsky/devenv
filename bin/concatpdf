@@ -1,0 +1,7 @@
+#!/bin/bash
+if [ "$1" = "to" ]; then
+    shift
+    gs -q -sPAPERSIZE=letter -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=$*
+else
+    echo Usage: concatpdf to out.pdf in.pdf in2.pdf in3.pdf
+fi
