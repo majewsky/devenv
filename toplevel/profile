@@ -14,6 +14,9 @@ elif [ -e "$HOME/tmp/build" ]; then
 else
 	export BUILD_ROOT=""
 fi
+if [ -d /home/tmp/git ]; then
+	export RTREE_ROOT=/home/tmp/git
+fi
 
 if [ -z "$LOCALPROFILEREAD" ]; then
 	# add home directory path

@@ -31,6 +31,10 @@ install_core()
 			exit 1
 		fi
 		while read SOURCE DEST; do
+			DEST_DIR="$(dirname "$HOME/$DEST")"
+			if [ ! -d "$DEST_DIR" ]; then
+				mkdir -p "$DEST_DIR"
+			fi
 			if [ ! -L $HOME/$DEST ]; then
 				ln -s $PWD/$SOURCE $HOME/$DEST
 			fi

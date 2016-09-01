@@ -1,0 +1,132 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# check environment
+if [ -z "${RTREE_ROOT:-}" ]; then
+  echo "FATAL: \$RTREE_ROOT not set"
+  exit 1
+fi
+# TODO: index should be in a place where it can be backed up
+INDEX_DIR="${RTREE_ROOT}/index"
+mkdir -p "${INDEX_DIR}"
+
+# prepare URL resolver repo
+RESOLVE_REPO_DIR=${XDG_RUNTIME_DIR}/resolve-git-urls
+if [ ! -d "${RESOLVE_REPO_DIR}" ]; then
+  mkdir -p "${RESOLVE_REPO_DIR}"
+  git -C "${RESOLVE_REPO_DIR}" init --bare >/dev/null
+fi
+
+usage_and_exit() {
+  exec >&2
+  echo "Usage:"
+  echo "  $0 get <url>"
+  # TODO: convert "index build" operation into "index check" that asks before removing an entry, and restores missing repositories after a backup
+  echo "  $0 index [build|show]"
+# echo "  $0 import <path>"
+  exit 1
+}
+
+relpath() {
+    # use like: relpath $target $source
+    if hash python2 &>/dev/null; then
+        python2 -c "import sys, os.path; print os.path.relpath(sys.argv[1], sys.argv[2]) " "$@"
+    else
+        python3 -c "import sys, os.path; print(os.path.relpath(sys.argv[1], sys.argv[2]))" "$@"
+    fi
+}
+
+resolve_url() {
+  local INPUT_URL="$1"
+
+  git -C "${RESOLVE_REPO_DIR}" remote add $$ "${INPUT_URL}" >/dev/null
+  ACTUAL_URL="$(git -C "${RESOLVE_REPO_DIR}" remote get-url $$)"
+  git -C "${RESOLVE_REPO_DIR}" remote rm $$ >/dev/null
+
+  # remove protocol part to obtain a checkout path
+  local SCRIPT
+  set +e
+  read -r -d '' SCRIPT <<'EOF'
+    ($_) = @ARGV;
+    if (/@/) { say s{^.+?@(.+?):(.+)$}{$1/$2}r }
+    else     { say s{^\w+:/+}{}r }
+EOF
+  set -e
+  perl -E "${SCRIPT}" "${ACTUAL_URL}"
+}
+
+index_add() {
+  local REMOTE_URL="$1" REPO_PATH="$2"
+  echo "${REPO_PATH}" > "${INDEX_DIR}/$(echo -n "${REMOTE_URL}" | base64)"
+}
+
+command_get() {
+  local REMOTE_URL="$1"
+
+  # if this remote is indexed, report the associated repository
+  local INDEX_FILE="${INDEX_DIR}/$(echo -n "${REMOTE_URL}" | base64)"
+  if [ -f "${INDEX_FILE}" ]; then
+    echo -n "${RTREE_ROOT}/src/"
+    cat "${INDEX_FILE}"
+    return 0
+  fi
+
+  # not yet indexed - determine local path from remote URL
+  local REPO_PATH="$(resolve_url "${REMOTE_URL}")"
+  local FULL_PATH="${RTREE_ROOT}/src/${REPO_PATH}"
+
+  # clone repository if missing
+  if [ ! -d "${FULL_PATH}/.git" ]; then
+    git clone -- "${REMOTE_URL}" "${FULL_PATH}"
+  fi
+  index_add "${REMOTE_URL}" "${REPO_PATH}"
+
+  # report path
+  echo "${FULL_PATH}"
+}
+
+command_index_show() {
+  find "${INDEX_DIR}" -maxdepth 1 -type f | while read INDEX_FILE; do
+    REMOTE_URL="$(basename "${INDEX_FILE}" | base64 -d)"
+    echo -n "${REMOTE_URL}"
+    echo -en '\t'
+    cat "${INDEX_FILE}"
+  done | sort
+}
+
+command_index_build() {
+  find "${INDEX_DIR}" -maxdepth 1 -type f -delete
+  find "${RTREE_ROOT}" -name .git | xargs dirname | while read DIR; do
+    REPO_PATH="$(relpath "${DIR}" "${RTREE_ROOT}/src")"
+    git -C "${DIR}" config -l | grep -E '^remote.\w+.url' | cut -d= -f2- | while read REMOTE; do
+      index_add "${REMOTE}" "${REPO_PATH}"
+    done
+  done
+}
+
+# read command line
+[ $# -gt 0 ] || usage_and_exit
+case "$1" in
+  get)
+    [ $# -eq 2 ] || usage_and_exit
+    command_get "$2"
+    ;;
+  index)
+    [ $# -eq 2 ] || usage_and_exit
+    case "$2" in
+      build)
+        command_index_build
+        ;;
+      show)
+        command_index_show
+        ;;
+      *)
+        usage_and_exit
+        ;;
+    esac
+    ;;
+  *)
+    usage_and_exit
+    ;;
+esac
