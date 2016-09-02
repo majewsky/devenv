@@ -115,7 +115,10 @@ buildRoot = os.environ["BUILD_ROOT"]
 if buildRoot != "":
     buildRoot = op.realpath(buildRoot)
 # same for rtree root directory
-repoRoot = os.environ["RTREE_ROOT"]
+try:
+    repoRoot = os.environ["RTREE_ROOT"]
+except KeyError:
+    repoRoot = ""
 if repoRoot != "":
     repoRoot = op.realpath(repoRoot + "/src")
 
@@ -133,6 +136,8 @@ def stripHome(path):
 def stripRepoRoot(root, path):
     if path == "":
         return ""
+    if root == "":
+        return path
     rel = op.relpath(path, root)
     if rel.startswith(".."):
         return path
