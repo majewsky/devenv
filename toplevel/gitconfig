@@ -51,9 +51,9 @@
 	pushInsteadOf = kde:
 	pushInsteadOf = git://anongit.kde.org/
 [url "https://github.com/"]
-	insteadOf = github:
+	insteadOf = gh:
 [url "git@github.com:"]
-	pushInsteadOf = github:
+	pushInsteadOf = gh:
 	pushInsteadOf = https://github.com/
 [url "gogs@git.bethselamin.de:"]
 	insteadOf = gogs:
