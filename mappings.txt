@@ -19,4 +19,5 @@ bin/rtree bin/rtree
 bin/runmoodbar bin/runmoodbar
 vim/ .vim
 vim/ .config/nvim
+zsh-functions/_cg .zsh-functions/_cg
 zsh-functions/_rtree .zsh-functions/_rtree

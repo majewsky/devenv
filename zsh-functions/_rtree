@@ -7,23 +7,15 @@ typeset -A opt_args
         local -a _commands
         _commands=(
             'get:Get the local path for a remote URL (and clone if missing)'
-            'index:Operate on the repository index'
+            'index:Rebuild the repository index and offer to restore deleted repos'
+            'repos:List repositories in index'
+            'remotes:List remote URLs in index'
         )
         _describe -t commands 'rtree command' _commands
     elif (( CURRENT == 3 )); then
-        case "$words[2]" in
-            get)
-                _alternative "remotes:remote URLs:($(rtree index show | cut -d"$(echo -en '\t')" -f1))"
-                ;;
-            index)
-                local -a _commands
-                _commands=(
-                    'build:Rebuild the repository index'
-                    'show:Print all index entries (as pairs of remote URL and local path)'
-                )
-                _describe -t commands 'rtree-index command' _commands
-                ;;
-        esac
+        if [ "$words[2]" = get ]; then
+            _alternative "remotes:remote URLs:($(rtree remotes))"
+        fi
     fi
 }
 

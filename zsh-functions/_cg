@@ -1,0 +1,6 @@
+#compdef cg
+typeset -A opt_args
+
+if (( CURRENT == 2 )); then
+    _alternative "remotes:remote URLs:($(rtree remotes))"
+fi

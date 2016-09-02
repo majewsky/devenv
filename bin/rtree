@@ -7,8 +7,7 @@ if [ -z "${RTREE_ROOT:-}" ]; then
   echo "FATAL: \$RTREE_ROOT not set"
   exit 1
 fi
-# TODO: index should be in a place where it can be backed up
-INDEX_DIR="${RTREE_ROOT}/index"
+INDEX_DIR="${HOME}/.rtree"
 mkdir -p "${INDEX_DIR}"
 
 # prepare URL resolver repo
@@ -22,9 +21,7 @@ usage_and_exit() {
   exec >&2
   echo "Usage:"
   echo "  $0 get <url>"
-  # TODO: convert "index build" operation into "index check" that asks before removing an entry, and restores missing repositories after a backup
-  echo "  $0 index [build|show]"
-# echo "  $0 import <path>"
+  echo "  $0 [index|repos|remotes]"
   exit 1
 }
 
@@ -86,22 +83,48 @@ command_get() {
   echo "${FULL_PATH}"
 }
 
-command_index_show() {
+command_remotes() {
   find "${INDEX_DIR}" -maxdepth 1 -type f | while read INDEX_FILE; do
-    REMOTE_URL="$(basename "${INDEX_FILE}" | base64 -d)"
-    echo -n "${REMOTE_URL}"
-    echo -en '\t'
-    cat "${INDEX_FILE}"
+    echo "$(basename "${INDEX_FILE}" | base64 -d)" # echo appends "\n"
   done | sort
 }
 
-command_index_build() {
-  find "${INDEX_DIR}" -maxdepth 1 -type f -delete
-  find "${RTREE_ROOT}" -name .git | xargs dirname | while read DIR; do
+command_repos() {
+  find "${INDEX_DIR}" -maxdepth 1 -type f -exec cat {} + | sort -u
+}
+
+command_index() {
+  # find new index entries
+  find "${RTREE_ROOT}" -name .git -exec dirname {} \; | while read DIR; do
     REPO_PATH="$(relpath "${DIR}" "${RTREE_ROOT}/src")"
     git -C "${DIR}" config -l | grep -E '^remote.\w+.url' | cut -d= -f2- | while read REMOTE; do
       index_add "${REMOTE}" "${REPO_PATH}"
     done
+  done
+
+  # handle old index entries
+  for INDEX_FILE in $(find "${INDEX_DIR}" -maxdepth 1 -type f); do
+    REMOTE_URL="$(basename "${INDEX_FILE}" | base64 -d)"
+    REPO_PATH="$(cat "${INDEX_FILE}")"
+    FULL_PATH="${RTREE_ROOT}/src/${REPO_PATH}"
+    if [ ! -d "${FULL_PATH}/.git" ]; then
+      # handle index entries without repository
+      echo "repository ${REPO_PATH} has been deleted"
+      echo -n ">> (r)estore from ${REMOTE_URL}, (d)elete from index, or (s)kip? "
+      while true; do
+        read -n1 ANSWER; echo
+        case "${ANSWER}" in
+          r|R) git clone -- "${REMOTE_URL}" "${FULL_PATH}" ;;
+          d|D) rm -- "${INDEX_FILE}"                       ;;
+          s|S)                                             ;;
+          *)
+            echo -n "Please type 'r', 'd' or 's': "
+            continue
+            ;;
+        esac
+        break
+      done
+    fi
   done
 }
 
@@ -113,18 +136,16 @@ case "$1" in
     command_get "$2"
     ;;
   index)
-    [ $# -eq 2 ] || usage_and_exit
-    case "$2" in
-      build)
-        command_index_build
-        ;;
-      show)
-        command_index_show
-        ;;
-      *)
-        usage_and_exit
-        ;;
-    esac
+    [ $# -eq 1 ] || usage_and_exit
+    command_index
+    ;;
+  remotes)
+    [ $# -eq 1 ] || usage_and_exit
+    command_remotes
+    ;;
+  repos)
+    [ $# -eq 1 ] || usage_and_exit
+    command_repos
     ;;
   *)
     usage_and_exit

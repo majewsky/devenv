@@ -62,6 +62,10 @@ fi
 if which units &>/dev/null; then
 	alias units="units --verbose"
 fi
+cg() {
+	local REPO_PATH="$(rtree get "$1")"
+	[ $? -eq 0 ] && cd "${REPO_PATH}"
+}
 
 # for Go
 if [ -d "$HOME/Code/gopath" ]; then
