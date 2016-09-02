@@ -114,6 +114,10 @@ if termName != "xterm-256color":
 buildRoot = os.environ["BUILD_ROOT"]
 if buildRoot != "":
     buildRoot = op.realpath(buildRoot)
+# same for rtree root directory
+repoRoot = os.environ["RTREE_ROOT"]
+if repoRoot != "":
+    repoRoot = op.realpath(repoRoot + "/src")
 
 # method to shorten home directory to "~"
 def stripHome(path):
@@ -125,6 +129,15 @@ def stripHome(path):
         return path[len(hh):]
     else:
         return path
+
+def stripRepoRoot(root, path):
+    if path == "":
+        return ""
+    rel = op.relpath(path, root)
+    if rel.startswith(".."):
+        return path
+    else:
+        return rel
 
 # find cwd, does it exist?
 try:
@@ -154,6 +167,15 @@ else:
     if isBuildDir:
         cwd = op.normpath("/" + rel)
 
+# is cwd in rtree? -> if so, process path inside rtree only
+if repoRoot == "":
+    isRepoDir = False
+else:
+    rel = op.relpath(cwd, repoRoot)
+    isRepoDir = not rel.startswith("..")
+    if isRepoDir:
+        cwdForDisplay = op.normpath(rel)
+
 # check if cwd is in a repo?
 if cwdExists:
     isRepo = False
@@ -166,18 +188,21 @@ if cwdExists:
 
     # print cwd, builddir markers and repo status (if any)
     buildDirMarker = colored("BUILD", "1;35")
+    repoDirMarker = colored("REPO", "1;35")
     if isBuildDir:
         ssw(" " + buildDirMarker)
+    if isRepoDir:
+        ssw(" " + repoDirMarker)
     if not isRepo:
-        path = stripHome(cwd)
+        path = stripRepoRoot(repoRoot, stripHome(cwd))
         if path != "":
             ssw(" " + colored(path, "1;36"))
     else:
         if repoPath == "":
-            ssw(" " + colored(stripHome(repoBase), "1;36"))
+            ssw(" " + colored(stripRepoRoot(repoRoot, stripHome(repoBase)), "1;36"))
         else:
             repoPath = repoPath.rstrip("/")
-            ssw(" " + colored(stripHome(repoBase) + "/", "0;36") + colored(repoPath, "1;36"))
+            ssw(" " + colored(stripRepoRoot(repoRoot, stripHome(repoBase)) + "/", "0;36") + colored(repoPath, "1;36"))
         if repoStatus != "":
             ssw(" " + repoStatus)
 
