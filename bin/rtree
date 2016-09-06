@@ -46,7 +46,7 @@ resolve_url() {
   set +e
   read -r -d '' SCRIPT <<'EOF'
     ($_) = @ARGV;
-    if (/@/) { say s{^.+?@(.+?):(.+)$}{$1/$2}r }
+    if (/@/) { say s{^.+?@(.+?)[:/](.+)$}{$1/$2}r }
     else     { say s{^\w+:/+}{}r }
 EOF
   set -e
@@ -95,7 +95,7 @@ command_repos() {
 
 command_index() {
   # find new index entries
-  find "${RTREE_ROOT}" -name .git -exec dirname {} \; | while read DIR; do
+  find "${RTREE_ROOT}" -exec test -d {}/.git \; -print -prune | while read DIR; do
     REPO_PATH="$(relpath "${DIR}" "${RTREE_ROOT}/src")"
     git -C "${DIR}" config -l | grep -E '^remote.\w+.url' | cut -d= -f2- | while read REMOTE; do
       index_add "${REMOTE}" "${REPO_PATH}"

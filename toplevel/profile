@@ -16,6 +16,10 @@ else
 fi
 if [ -d /home/stefan.rtree ]; then
 	export RTREE_ROOT=/home/stefan.rtree
+	# for Golang
+	export GOPATH=$RTREE_ROOT
+	export GOBIN=$GOPATH/bin
+	export PATH="$PATH:$GOBIN"
 fi
 
 if [ -z "$LOCALPROFILEREAD" ]; then
@@ -66,13 +70,6 @@ cg() {
 	local REPO_PATH="$(rtree get "$1")"
 	[ $? -eq 0 ] && cd "${REPO_PATH}"
 }
-
-# for Go
-if [ -d "$HOME/Code/gopath" ]; then
-	export GOPATH="$HOME/Code/gopath"
-	export GOBIN="$GOPATH/bin"
-	export PATH="$PATH:$GOBIN"
-fi
 
 # for OpenStack
 if [ -f "$HOME/.local/bin/openstack" ]; then
