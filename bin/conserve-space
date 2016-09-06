@@ -2,8 +2,9 @@
 
 # list of large directories below $HOME that do not need to be backed up
 LOCATIONS=(
+    ".bundle/cache"
     ".cache"
-    "~/.gem/specs"
+    ".gem/specs"
     ".local/bin"
     ".local/etc"
     ".local/include"
