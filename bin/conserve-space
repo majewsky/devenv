@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# list of large directories below $HOME that do not need to be backed up
+LOCATIONS=(
+    ".cache"
+    "~/.gem/specs"
+    ".local/bin"
+    ".local/etc"
+    ".local/include"
+    ".local/lib"
+    ".phantomjs"
+    ".rbenv"
+)
+
+# if these directories exist in $HOME, move them to the scratch area
+for LOC in "${LOCATIONS[@]}"; do
+    INSIDE_LOC="${HOME}/${LOC}"
+    OUTSIDE_LOC="/home/stefan.devenv/scratch/${LOC}"
+
+    if [ -d "${INSIDE_LOC}" ]; then
+        mkdir -p "$(dirname "${OUTSIDE_LOC}")"
+        mv "${INSIDE_LOC}" "${OUTSIDE_LOC}"
+    fi
+
+    if [ -d "${OUTSIDE_LOC}" ]; then
+        ln -s "${OUTSIDE_LOC}" "${INSIDE_LOC}"
+    fi
+done

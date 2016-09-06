@@ -11,6 +11,7 @@ toplevel/vimperatorrc .vimperatorrc
 toplevel/zshrc .zshrc
 bin/b bin/b
 bin/concatpdf bin/concatpdf
+bin/conserve-space bin/conserve-space
 bin/m4a2ogg bin/m4a2ogg
 bin/m4a2opus bin/m4a2opus
 bin/steam bin/steam
