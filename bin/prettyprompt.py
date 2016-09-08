@@ -192,8 +192,8 @@ if cwdExists:
         pass
 
     # print cwd, builddir markers and repo status (if any)
-    buildDirMarker = colored("BUILD", "1;35")
-    repoDirMarker = colored("REPO", "1;35")
+    buildDirMarker = colored("BUILD", "1;30")
+    repoDirMarker = colored("REPO", "1;30")
     if isBuildDir:
         ssw(" " + buildDirMarker)
     if isRepoDir:
