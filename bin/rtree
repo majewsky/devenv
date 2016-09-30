@@ -121,7 +121,7 @@ command_import() {
   index_add_directory "${FULL_PATH}"
 
   # make a symbolic link from old to new location to ease the transition
-  ln -sT "${FULL_PATH}" "${ORIG_PATH}"
+  ln -sT "${FULL_PATH}" "${ORIG_PATH%/}"
 }
 
 command_remotes() {
