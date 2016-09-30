@@ -22,6 +22,7 @@ usage_and_exit() {
   echo "Usage:"
   echo "  $0 get <url>"
   echo "  $0 [index|repos|remotes]"
+  echo "  $0 import <path>"
   exit 1
 }
 
@@ -58,6 +59,14 @@ index_add() {
   echo "${REPO_PATH}" > "${INDEX_DIR}/$(echo -n "${REMOTE_URL}" | base64)"
 }
 
+index_add_directory() {
+  local DIR="$1"
+  REPO_PATH="$(relpath "${DIR}" "${RTREE_ROOT}/src")"
+  git -C "${DIR}" config -l | grep -E '^remote.\w+.url' | cut -d= -f2- | while read REMOTE; do
+    index_add "${REMOTE}" "${REPO_PATH}"
+  done
+}
+
 command_get() {
   local REMOTE_URL="$1"
 
@@ -83,6 +92,38 @@ command_get() {
   echo "${FULL_PATH}"
 }
 
+command_import() {
+  local ORIG_PATH="$1"
+  local REMOTE_URL="$(git -C "${ORIG_PATH}" config remote.origin.url)"
+  if [ -z "${REMOTE_URL}" ]; then
+    echo "ERROR: no remote \"origin\" found in given repository" >&2
+    return 1
+  fi
+
+  # check if this remote is already checked out in the rtree
+  local INDEX_FILE="${INDEX_DIR}/$(echo -n "${REMOTE_URL}" | base64)"
+  if [ -f "${INDEX_FILE}" ]; then
+    echo "ERROR: not overwriting existing checkout of \"${REMOTE_URL}\" at \"$(cat ${INDEX_FILE})\"" >&2
+    return 1
+  fi
+
+  # determine local path from remote URL
+  local REPO_PATH="$(resolve_url "${REMOTE_URL}")"
+  local FULL_PATH="${RTREE_ROOT}/src/${REPO_PATH}"
+  if [ -d "${FULL_PATH}" ]; then
+    echo "ERROR: directory \"$(cat ${INDEX_FILE})\" already exists (you can try to \`rtree index\`)" >&2
+    return 1
+  fi
+
+  # import repository into rtree
+  mkdir -p "$(dirname "${FULL_PATH}")"
+  mv "${ORIG_PATH}" "${FULL_PATH}"
+  index_add_directory "${FULL_PATH}"
+
+  # make a symbolic link from old to new location to ease the transition
+  ln -sT "${FULL_PATH}" "${ORIG_PATH}"
+}
+
 command_remotes() {
   find "${INDEX_DIR}" -maxdepth 1 -type f | while read INDEX_FILE; do
     echo "$(basename "${INDEX_FILE}" | base64 -d)" # echo appends "\n"
@@ -96,10 +137,7 @@ command_repos() {
 command_index() {
   # find new index entries
   find "${RTREE_ROOT}" -exec test -d {}/.git \; -print -prune | while read DIR; do
-    REPO_PATH="$(relpath "${DIR}" "${RTREE_ROOT}/src")"
-    git -C "${DIR}" config -l | grep -E '^remote.\w+.url' | cut -d= -f2- | while read REMOTE; do
-      index_add "${REMOTE}" "${REPO_PATH}"
-    done
+    index_add_directory "${DIR}"
   done
 
   # handle old index entries
@@ -134,6 +172,10 @@ case "$1" in
   get)
     [ $# -eq 2 ] || usage_and_exit
     command_get "$2"
+    ;;
+  import)
+    [ $# -eq 2 ] || usage_and_exit
+    command_import "$2"
     ;;
   index)
     [ $# -eq 1 ] || usage_and_exit

@@ -10,12 +10,18 @@ typeset -A opt_args
             'index:Rebuild the repository index and offer to restore deleted repos'
             'repos:List repositories in index'
             'remotes:List remote URLs in index'
+            'import:Import a repository from outside the rtree into the rtree'
         )
         _describe -t commands 'rtree command' _commands
     elif (( CURRENT == 3 )); then
-        if [ "$words[2]" = get ]; then
-            _alternative "remotes:remote URLs:($(rtree remotes))"
-        fi
+        case "$words[2]" in
+            get)
+                _alternative "remotes:remote URLs:($(rtree remotes))"
+                ;;
+            import)
+                _directories
+                ;;
+        esac
     fi
 }
 
