@@ -135,7 +135,8 @@ command_repos() {
 }
 
 command_index() {
-  # find new index entries
+  # find new index entries (the particular way in which find(1) is invoked here
+  # ensures that submodules are ignored)
   find "${RTREE_ROOT}" -exec test -d {}/.git \; -print -prune | while read DIR; do
     index_add_directory "${DIR}"
   done
