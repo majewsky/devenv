@@ -48,11 +48,11 @@ install_core()
 
 install_gui()
 {
-	# compile kfullscreenrunner
+	# compile quickstart
 	ORIGPWD=$PWD
-	mkdir -p $ORIGPWD/build/kfullscreenrunner
-	cd $ORIGPWD/build/kfullscreenrunner
-	cmake -DCMAKE_INSTALL_PREFIX=$HOME $ORIGPWD/bin/kfullscreenrunner
+	mkdir -p $ORIGPWD/build/quickstart
+	cd $ORIGPWD/build/quickstart
+	cmake -DCMAKE_INSTALL_PREFIX=$HOME -DCMAKE_BUILD_TYPE=Release $ORIGPWD/bin/quickstart
 	make -j2
 	make install/fast
 }
