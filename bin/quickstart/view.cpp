@@ -26,9 +26,22 @@ void View::focusOutEvent(QFocusEvent* event) {
 }
 
 void View::keyPressEvent(QKeyEvent* event) {
+    //hide on Escape
     if (event->key() == Qt::Key_Escape) {
         hide();
         event->accept();
+    }
+
+    //find if this key is registered as a shortcut (we cannot use the
+    //QAbstractButton::shortcut functionality for this since it will insist on
+    //adding an Alt modifier to the shortcut)
+    const QString text = event->text();
+    for (QObject* obj: children()) {
+        if (QPushButton* btn = qobject_cast<QPushButton*>(obj)) {
+            if (btn->property("qs-shortcut") == text) {
+                btn->animateClick();
+            }
+        }
     }
 }
 
@@ -47,10 +60,7 @@ void View::showEvent(QShowEvent* event) {
 
 static QPushButton* makeButton(const QString& command, const QString& shortcut) {
     QPushButton* btn = new QPushButton(command);
-
-    if (!shortcut.isEmpty()) {
-        btn->setShortcut(QKeySequence(shortcut));
-    }
+    btn->setProperty("qs-shortcut", shortcut);
 
     QObject::connect(btn, &QAbstractButton::clicked, [command, btn]() {
         if (!QProcess::startDetached(command, QStringList(), QDir::homePath())) {
