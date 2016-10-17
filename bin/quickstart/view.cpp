@@ -1,14 +1,12 @@
 #include "view.h"
+#include "entry.h"
 
-#include <QtCore/QDir>
-#include <QtCore/QProcess>
 #include <QtCore/QTimer>
 #include <QtGui/QFocusEvent>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QPainter>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QGridLayout>
-#include <QtWidgets/QMessageBox>
 #include <QtWidgets/QPushButton>
 
 View::View() {
@@ -58,42 +56,15 @@ void View::showEvent(QShowEvent* event) {
     setWindowState(Qt::WindowActive | Qt::WindowMaximized);
 }
 
-static QPushButton* makeButton(const QString& command, const QString& shortcut) {
-    QPushButton* btn = new QPushButton(command);
-    btn->setProperty("qs-shortcut", shortcut);
-
-    QObject::connect(btn, &QAbstractButton::clicked, [command, btn]() {
-        if (!QProcess::startDetached(command, QStringList(), QDir::homePath())) {
-            QMessageBox::critical(0,
-                QStringLiteral("quickstart"),
-                QStringLiteral("Failed to start %1").arg(command)
-            );
-        }
-        btn->window()->hide();
-    });
-
-    return btn;
-}
-
-void View::setupButtons(const QStringList& commands) {
+void View::setupButtons(const QVector<Entry>& entries) {
     QGridLayout* layout = new QGridLayout(this);
 
-    for (int i = 0; i < commands.size(); ++i) {
-        QString command = commands[i];
-        QString shortcut;
-
-        const QChar colon(':');
-        if (command.contains(colon)) {
-            QStringList parts = command.split(colon);
-            shortcut = parts.takeFirst();
-            command = parts.join(colon);
-        }
-
-        layout->addWidget(makeButton(command, shortcut), i + 1, 1);
+    for (int i = 0; i < entries.size(); ++i) {
+        layout->addWidget(entries[i].toButton(), i + 1, 1);
     }
 
     layout->setColumnStretch(0, 1);
     layout->setColumnStretch(2, 1);
     layout->setRowStretch(0, 1);
-    layout->setRowStretch(commands.size() + 1, 1);
+    layout->setRowStretch(entries.size() + 1, 1);
 }

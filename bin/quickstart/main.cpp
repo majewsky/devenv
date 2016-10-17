@@ -1,3 +1,4 @@
+#include "entry.h"
 #include "view.h"
 
 #include <QtWidgets/QApplication>
@@ -10,9 +11,9 @@ int main(int argc, char** argv) {
     ));
 
     View view;
-    view.setupButtons(QStringList()
-        << QStringLiteral("f:firefox")
-        << QStringLiteral("o:konsole")
+    view.setupButtons(QVector<Entry>()
+        << Entry(QStringLiteral("f:firefox"))
+        << Entry(QStringLiteral("o:konsole"))
     );
     view.show();
 

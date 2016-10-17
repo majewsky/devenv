@@ -3,10 +3,12 @@
 
 #include <QtWidgets/QWidget>
 
+class Entry;
+
 class View : public QWidget {
     public:
         View();
-        void setupButtons(const QStringList& commands);
+        void setupButtons(const QVector<Entry>& entries);
     protected:
         virtual void focusOutEvent(QFocusEvent* event);
         virtual void keyPressEvent(QKeyEvent* event);
