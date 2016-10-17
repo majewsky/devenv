@@ -11,10 +11,7 @@ int main(int argc, char** argv) {
     ));
 
     View view;
-    view.setupButtons(QVector<Entry>()
-        << Entry(QStringLiteral("f:firefox"))
-        << Entry(QStringLiteral("o:konsole"))
-    );
+    view.setupButtons(Entry::list());
     view.show();
 
     return app.exec();

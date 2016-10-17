@@ -1,5 +1,6 @@
 #include "entry.h"
 
+#include <cstdlib>
 #include <QtCore/QDir>
 #include <QtCore/QProcess>
 #include <QtCore/QVariant>
@@ -18,7 +19,25 @@ Entry::Entry(const QString& declaration)
 }
 
 QVector<Entry> Entry::list() {
-    return QVector<Entry>();
+    QFile file(QDir::home().filePath(".devenv/quickstartrc"));
+    if (!file.open(QIODevice::ReadOnly)) {
+        QMessageBox::critical(0,
+            QStringLiteral("quickstart"),
+            QStringLiteral("Cannot find quickstartrc")
+        );
+        exit(0);
+    }
+
+    const QByteArray data = file.readAll();
+    QVector<Entry> result;
+    for (const QByteArray& line: data.split('\n')) {
+        if (line.isEmpty()) {
+            continue;
+        }
+        result << Entry(QString::fromUtf8(line));
+    }
+
+    return result;
 }
 
 QPushButton* Entry::toButton() const {
