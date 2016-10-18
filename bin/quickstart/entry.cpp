@@ -40,6 +40,18 @@ QVector<Entry> Entry::list() {
     return result;
 }
 
+bool Entry::isValid() const {
+    //try to find the m_command executable in the $PATH
+    for (const QByteArray& path: qgetenv("PATH").split(':')) {
+        const QDir pathDir(QString::fromLocal8Bit(path));
+        const QFileInfo fi(pathDir, m_command);
+        if (fi.isFile() && fi.isExecutable()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 QPushButton* Entry::toButton() const {
     QPushButton* btn = new QPushButton(m_command);
     btn->setProperty("qs-shortcut", m_shortcut);

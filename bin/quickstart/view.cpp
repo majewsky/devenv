@@ -59,12 +59,15 @@ void View::showEvent(QShowEvent* event) {
 void View::setupButtons(const QVector<Entry>& entries) {
     QGridLayout* layout = new QGridLayout(this);
 
-    for (int i = 0; i < entries.size(); ++i) {
-        layout->addWidget(entries[i].toButton(), i + 1, 1);
+    int entryCount = 0;
+    for (const Entry& entry: entries) {
+        if (entry.isValid()) {
+            layout->addWidget(entry.toButton(), ++entryCount, 1);
+        }
     }
 
     layout->setColumnStretch(0, 1);
     layout->setColumnStretch(2, 1);
     layout->setRowStretch(0, 1);
-    layout->setRowStretch(entries.size() + 1, 1);
+    layout->setRowStretch(entryCount + 1, 1);
 }

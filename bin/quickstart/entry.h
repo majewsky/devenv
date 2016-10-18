@@ -13,6 +13,7 @@ class Entry {
         Entry& operator=(const Entry& other) = default;
         Entry& operator=(Entry&& other) = default;
 
+        bool isValid() const;
         QPushButton* toButton() const;
 
         static QVector<Entry> list();
