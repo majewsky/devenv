@@ -14,7 +14,6 @@ int main(int argc, char** argv) {
 
     View view;
     view.setupButtons(Entry::list());
-    view.show();
 
     return app.exec();
 }

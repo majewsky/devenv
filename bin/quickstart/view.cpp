@@ -1,25 +1,29 @@
 #include "view.h"
 #include "entry.h"
 
-#include <QtCore/QTimer>
 #include <QtGui/QFocusEvent>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QPainter>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QPushButton>
+#include <kwindowsystem.h>
 
 View::View() {
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    setAttribute(Qt::WA_DeleteOnClose, false);
     setAttribute(Qt::WA_MouseTracking); //TODO: necessary?
     setAttribute(Qt::WA_TranslucentBackground);
+    setWindowState(Qt::WindowActive | Qt::WindowMaximized);
+    KWindowSystem::self()->setOnAllDesktops(winId(), true);
+    //TODO: prevent minimizing/maximizing
+    //TODO: do not show on pager
     setFocusPolicy(Qt::StrongFocus);
 }
 
 void View::focusOutEvent(QFocusEvent* event) {
     if (event->reason() == Qt::ActiveWindowFocusReason) {
         hide();
-        QTimer::singleShot(0, QApplication::instance(), SLOT(quit()));
     }
 }
 
