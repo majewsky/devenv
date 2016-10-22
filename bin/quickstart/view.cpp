@@ -1,12 +1,15 @@
 #include "view.h"
 #include "entry.h"
 
+#include <QtWidgets/QAction>
 #include <QtGui/QFocusEvent>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QPainter>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QPushButton>
+
+#include <kglobalaccel.h>
 #include <kwindowsystem.h>
 
 View::View() {
@@ -19,6 +22,14 @@ View::View() {
     //TODO: prevent minimizing/maximizing
     //TODO: do not show on pager
     setFocusPolicy(Qt::StrongFocus);
+
+    //setup the action that triggers this->show()
+    m_action = new QAction(QStringLiteral("Show window"), this);
+    m_action->setObjectName(QStringLiteral("show_window"));
+    m_action->setProperty("componentName", "quickstart");
+    m_action->setProperty("componentDisplayName", "QuickStart");
+    connect(m_action, &QAction::triggered, this, &QWidget::show);
+    KGlobalAccel::self()->setShortcut(m_action, QList<QKeySequence>() << QKeySequence(QStringLiteral("F13")));
 }
 
 void View::focusOutEvent(QFocusEvent* event) {

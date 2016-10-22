@@ -14,6 +14,8 @@ class View : public QWidget {
         virtual void keyPressEvent(QKeyEvent* event);
         virtual void paintEvent(QPaintEvent* event);
         virtual void showEvent(QShowEvent* event);
+    private:
+        QAction* m_action;
 };
 
 #endif // QS_VIEW_H
