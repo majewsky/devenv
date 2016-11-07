@@ -56,7 +56,7 @@ EOF
 
 index_add() {
   local REMOTE_URL="$1" REPO_PATH="$2"
-  echo "${REPO_PATH}" > "${INDEX_DIR}/$(echo -n "${REMOTE_URL}" | base64)"
+  echo "${REPO_PATH}" > "${INDEX_DIR}/$(echo -n "${REMOTE_URL}" | base64 -w 0)"
 }
 
 index_add_directory() {
@@ -71,7 +71,7 @@ command_get() {
   local REMOTE_URL="$1"
 
   # if this remote is indexed, report the associated repository
-  local INDEX_FILE="${INDEX_DIR}/$(echo -n "${REMOTE_URL}" | base64)"
+  local INDEX_FILE="${INDEX_DIR}/$(echo -n "${REMOTE_URL}" | base64 -w 0)"
   if [ -f "${INDEX_FILE}" ]; then
     echo -n "${RTREE_ROOT}/src/"
     cat "${INDEX_FILE}"
@@ -101,7 +101,7 @@ command_import() {
   fi
 
   # check if this remote is already checked out in the rtree
-  local INDEX_FILE="${INDEX_DIR}/$(echo -n "${REMOTE_URL}" | base64)"
+  local INDEX_FILE="${INDEX_DIR}/$(echo -n "${REMOTE_URL}" | base64 -w 0)"
   if [ -f "${INDEX_FILE}" ]; then
     echo "ERROR: not overwriting existing checkout of \"${REMOTE_URL}\" at \"$(cat ${INDEX_FILE})\"" >&2
     return 1
