@@ -47,7 +47,7 @@ def recognizeGitRepo(path):
         else:
             # current HEAD is a remote or tag -> include type specification
             branch = headRef2
-        branchSpec = "branch " + branch
+        branchSpec = branch
         # read corresponding file to find commit
         commit = catFile(op.join(gitDir, refSpec)).strip()
         if commit == "" and op.exists(op.join(gitDir, "packed-refs")):
@@ -59,14 +59,14 @@ def recognizeGitRepo(path):
                     break
     else:
         # current HEAD is detached
-        branchSpec = colored("no branch", "1;41")
+        branchSpec = colored("detached", "1;41")
         commit = headRef
 
+    label = colored("git:", "0;37")
     if commit == "": # before initial commit
-        branchSpec = branchSpec + colored(" before initial commit", "1;30")
-        extraInfo = "on %s" % (branchSpec)
+        extraInfo = "%s%s/%s" % (label, branchSpec, "blank")
     else:
-        extraInfo = "on %s at %s" % (branchSpec, commit[0:7])
+        extraInfo = "%s%s/%s" % (label, branchSpec, commit[0:7])
     return basePath, subPath, extraInfo
 
 def toInt(string, default):
@@ -214,7 +214,7 @@ if cwdExists:
 # display currently selected cloud (if any)
 cloudKey = os.environ.get("CURRENT_OS_CLOUD", "")
 if cloudKey != "":
-    ssw(colored(" on cloud " + cloudKey, "0;37"))
+    ssw(colored(" cloud:", "0;37") + cloudKey)
 
 # how many actual characters have been written?
 colorSpecRx = "\033\\[[^m]*m"
