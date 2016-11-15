@@ -105,3 +105,63 @@ fi
 
 # this must always be at the end
 export LOCALPROFILEREAD="yes"
+
+if hash kubectl &>/dev/null; then
+	export HAS_KUBECTL=true
+
+	kc() {
+		case $# in
+			1)
+				kubectl config use-context "$1"
+				echo "" > ~/.kubectl-namespace
+				;;
+			2)
+				kubectl config use-context "$1"
+				echo "$2" > ~/.kubectl-namespace
+				;;
+			*)
+				echo "usage: kc <context> [namespace]" >&2
+				return 1
+				;;
+		esac
+	}
+
+	kn() {
+		case $# in
+			0)
+				echo "" > ~/.kubectl-namespace
+				;;
+			1)
+				echo "$1" > ~/.kubectl-namespace
+				;;
+			*)
+				echo "usage: kn <namespace>" >&2
+				return 1
+				;;
+		esac
+	}
+
+	k() {
+		local KUBECTL
+		local KUBECTL_NAMESPACE="$(cat ~/.kubectl-namespace)"
+		if [ "${KUBECTL_NAMESPACE}" != "" ]; then
+			KUBECTL=(kubectl --namespace="$KUBECTL_NAMESPACE")
+		else
+			KUBECTL=kubectl
+		fi
+
+		case "$1" in
+		sh)
+			shift
+			${KUBECTL} exec -ti "$@" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM /bin/sh
+			;;
+		bash)
+			shift
+			${KUBECTL} exec -ti "$@" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM /bin/bash
+			;;
+		*)
+			${KUBECTL} "$@"
+			;;
+		esac
+	}
+fi

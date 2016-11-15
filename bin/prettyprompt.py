@@ -216,6 +216,19 @@ cloudKey = os.environ.get("CURRENT_OS_CLOUD", "")
 if cloudKey != "":
     ssw(colored(" cloud:", "0;37") + cloudKey)
 
+# display currently selected kubectl context/namespace
+if "HAS_KUBECTL" in os.environ:
+    ssw(colored(" kube:", "0;37"))
+    try:
+        context_bytes = sp.check_output(["kubectl", "config", "current-context"])
+        context = context_bytes.decode('utf-8').strip()
+    except:
+        context = colored("unknown", "1;31")
+    ssw(context)
+    namespace = catFile(os.environ["HOME"] + "/.kubectl-namespace").strip()
+    if namespace != "":
+        ssw("/" + namespace)
+
 # how many actual characters have been written?
 colorSpecRx = "\033\\[[^m]*m"
 printedStr = "".join(re.split(colorSpecRx, stdoutBuffer))
