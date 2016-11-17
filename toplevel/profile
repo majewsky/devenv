@@ -113,10 +113,12 @@ if hash kubectl &>/dev/null; then
 		case $# in
 			1)
 				kubectl config use-context "$1"
+				unset HELM_HOST
 				echo "" > ~/.kubectl-namespace
 				;;
 			2)
 				kubectl config use-context "$1"
+				unset HELM_HOST
 				echo "$2" > ~/.kubectl-namespace
 				;;
 			*)
@@ -163,5 +165,16 @@ if hash kubectl &>/dev/null; then
 			${KUBECTL} "$@"
 			;;
 		esac
+	}
+fi
+
+if hash helm &>/dev/null; then
+	helm() {
+		if [ -z "$HELM_HOST" ]; then
+			echo -n "Where is Helm? " >&2
+			export HELM_HOST="$(kubectl --namespace=kube-system get services -l name=tiller --no-headers | awk '{print$3}'):44134"
+			echo "${HELM_HOST}" >&2
+		fi
+		env helm "$@"
 	}
 fi
