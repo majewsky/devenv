@@ -5,6 +5,7 @@ LOCATIONS=(
     ".bundle/cache"
     ".cache"
     ".gem/specs"
+    ".glide/cache"
     ".local/bin"
     ".local/etc"
     ".local/include"
