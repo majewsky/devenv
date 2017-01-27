@@ -17,7 +17,7 @@ LOCATIONS=(
 # if these directories exist in $HOME, move them to the scratch area
 for LOC in "${LOCATIONS[@]}"; do
     INSIDE_LOC="${HOME}/${LOC}"
-    OUTSIDE_LOC="/home/stefan.devenv/scratch/${LOC}"
+    OUTSIDE_LOC="/x/scratch/${LOC}"
 
     if [ -d "${INSIDE_LOC}" -a ! -L "${INSIDE_LOC}" ]; then
         mkdir -p "$(dirname "${OUTSIDE_LOC}")"

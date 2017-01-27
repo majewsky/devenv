@@ -5,35 +5,19 @@ export PAGER="less -R"
 if [ -f /proc/cpuinfo ]; then
 	export NUMCPUCORES="$(nproc)"
 fi
-if [ -d /home/stefan.devenv/build ]; then
-	export BUILD_ROOT=/home/stefan.devenv/build
-elif [ -d /home/tmp/build ]; then
-	export BUILD_ROOT=/home/tmp/build
-elif [ -e "$HOME/tmp/build" ]; then
-	export BUILD_ROOT="$(readlink -f "$HOME/tmp/build")" # the equivalent to $HOME, for build directories
-else
-	export BUILD_ROOT=""
-fi
-if [ -d /home/stefan.rtree ]; then
-	export RTREE_ROOT=/home/stefan.rtree
+
+if [ -z "$LOCALPROFILEREAD" ]; then
+	# add home directory path
+	if [ -d "$HOME/bin" ]; then
+		export PATH="$HOME/bin:$PATH"
+	fi
+
+	export BUILD_ROOT=/x/build
+	export RTREE_ROOT=/x
 	# for Golang
 	export GOPATH=$RTREE_ROOT
 	export GOBIN=$GOPATH/bin
 	export PATH="$PATH:$GOBIN"
-fi
-
-if [ -z "$LOCALPROFILEREAD" ]; then
-	# add home directory path
-	export PATH="$HOME/bin:$PATH"
-
-	# KDE installation
-	export KDEDIRS="/usr/local/:$KDEDIRS"
-	export LD_LIBRARY_PATH="/usr/local/lib/:$LD_LIBRARY_PATH"
-
-	# uninstalled manpages
-	if [ -d $HOME/.man ]; then
-		export MANPATH=$HOME/.man:$MANPATH
-	fi
 
 	if [ -d $HOME/perl5 ]; then
 		eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
@@ -135,7 +119,7 @@ if hash kubectl &>/dev/null; then
 				echo "$1" > ~/.kubectl-namespace
 				;;
 			*)
-				echo "usage: kn <namespace>" >&2
+				echo "usage: kn [namespace]" >&2
 				return 1
 				;;
 		esac
