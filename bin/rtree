@@ -23,6 +23,7 @@ usage_and_exit() {
   echo "  $0 get <url>"
   echo "  $0 [index|repos|remotes]"
   echo "  $0 import <path>"
+  echo "  $0 each <command>"
   exit 1
 }
 
@@ -65,6 +66,10 @@ index_add_directory() {
   git -C "${DIR}" config -l | grep -E '^remote.\w+.url' | cut -d= -f2- | while read REMOTE; do
     index_add "${REMOTE}" "${REPO_PATH}"
   done
+}
+
+list_repos() {
+  find "${RTREE_ROOT}" -exec test -d {}/.git \; -print -prune
 }
 
 command_get() {
@@ -137,7 +142,7 @@ command_repos() {
 command_index() {
   # find new index entries (the particular way in which find(1) is invoked here
   # ensures that submodules are ignored)
-  find "${RTREE_ROOT}" -exec test -d {}/.git \; -print -prune | while read DIR; do
+  list_repos | while read DIR; do
     index_add_directory "${DIR}"
   done
 
@@ -167,6 +172,19 @@ command_index() {
   done
 }
 
+command_each() {
+  list_repos | while read DIR; do (
+    echo -e "\e[1;36m>> \e[0;36m${DIR}\e[0m"
+    cd "${DIR}"
+    set +e
+    "$@"
+    STATUS=$?
+    if [ $STATUS -gt 0 ]; then
+      echo -e "\e[1;31m!! Exit status $STATUS\e[0m"
+    fi
+  ); done
+}
+
 # read command line
 [ $# -gt 0 ] || usage_and_exit
 case "$1" in
@@ -189,6 +207,11 @@ case "$1" in
   repos)
     [ $# -eq 1 ] || usage_and_exit
     command_repos
+    ;;
+  each)
+    [ $# -gt 1 ] || usage_and_exit
+    shift # remove leading "each" from $@
+    command_each "$@"
     ;;
   *)
     usage_and_exit
