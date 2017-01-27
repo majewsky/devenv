@@ -46,27 +46,9 @@ install_core()
 	vim +PluginInstall +qall
 }
 
-install_gui()
-{
-	# compile quickstart
-	ORIGPWD=$PWD
-	mkdir -p $ORIGPWD/build/quickstart
-	cd $ORIGPWD/build/quickstart
-	cmake -DCMAKE_INSTALL_PREFIX=$HOME -DCMAKE_BUILD_TYPE=Release $ORIGPWD/bin/quickstart
-	make -j2
-	make install/fast
-}
-
 case $1 in
-	install-core)
+	install)
 		install_core
-		;;
-	install-gui)
-		install_core
-		install_gui
-		;;
-	install-gui-only)
-		install_gui
 		;;
 	dryrun-install)
 		while read SOURCE DEST; do
@@ -77,6 +59,6 @@ case $1 in
 		;;
 	*)
 		echo "Unknown mode of operation: $1"
-		echo "Syntax: ./setup.sh [install-core|install-gui|dryrun-install]"
+		echo "Syntax: ./setup.sh [install|dryrun-install]"
 esac
 
