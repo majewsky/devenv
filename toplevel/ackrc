@@ -1,6 +1,0 @@
---sort-files
---flush
-#--pager=less -R
---type-set=haml:ext:haml
---type-set=log:ext:log
---no-log
