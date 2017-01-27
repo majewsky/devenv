@@ -39,7 +39,7 @@ if [ -f /usr/bin/steam ]; then
 	alias steam="nice -n10 /usr/bin/steam"
 fi
 if grep ID=arch /etc/os-release &>/dev/null; then
-	alias p="perl $HOME/.devenv/bin/pacman_wrapper.pl"
+	alias p="perl /x/src/github.com/majewsky/devenv/bin/pacman_wrapper.pl"
 fi
 alias rpe="perl -MData::Dump=pp -Mstrict -Mwarnings -le"
 if which pwget &>/dev/null; then
