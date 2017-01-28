@@ -13,7 +13,7 @@ use strict; use warnings;
 
 package Build::Config;
 
-our $bucket_dir = "$ENV{HOME}/buckets";
+our $bucket_dir = "/x/buckets";
 
 package Build::Functions;
 
