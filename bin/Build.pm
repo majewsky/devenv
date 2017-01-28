@@ -1,12 +1,6 @@
 use strict; use warnings;
 
-# TODO: add the following pseudo-buckets:
-# 1. one that uses an invalid install location (e.g. "/invalid/prefix"), and
-#    enables build methods that don't have installing logic (e.g. tup, LaTeX)
-# 2. one that installs to /usr/local (like with the old "mk" commands; with the
-#    added advantage that the pseudo-bucket contains a definite list of stuff
-#    installed to /usr or /usr/local without pacman)
-# TODO: add support for tup (configure = tup init, build = tup upd, install = ?)
+# TODO: add support for tup (configure = tup init, build = tup upd; forces bucket "none")
 # TODO: add introspection command for buckets and source trees, e.g.
 # 1. Print source tree root, bucket and build method for this source tree dir.
 # 2. Print source trees registered with this bucket.
@@ -97,7 +91,12 @@ sub new {
     }, $class;
 }
 
-sub path { +shift->{path} }
+sub path {
+    my ($self) = @_;
+    return $self->{name} eq 'none' ? undef : $self->{path};
+}
+
+sub is_installable { (+shift->{name}) ne 'none' }
 
 sub contains_source {
     my ($self, $path) = @_;
@@ -254,9 +253,11 @@ sub configure { # first of three building steps
         if (not -f 'CMakeCache.txt') {
             # initial configuration -> need to add some defaults to @args
             unshift @args, '-DCMAKE_BUILD_TYPE=RelWithDebInfo';
-            # install prefix is pushed instead of unshifted because we don't
-            # want @args to override it
-            push @args, '-DCMAKE_INSTALL_PREFIX=' . $self->bucket->path;
+            if ($self->bucket->is_installable) {
+                # install prefix is pushed instead of unshifted because we don't
+                # want @args to override it
+                push @args, '-DCMAKE_INSTALL_PREFIX=' . $self->bucket->path;
+            }
         }
         Build::Functions::mkpath($build_root) or die 'could not create build root';
         chdir $build_root;
@@ -278,7 +279,9 @@ sub configure { # first of three building steps
         my $root = $self->{root};
         my $configurer = "$self->{root}/autogen.sh";
         $configurer = "$self->{root}/configure" unless -f $configurer;
-        push @args, '--prefix=' . $self->bucket->path;
+        if ($self->bucket->is_installable) {
+            push @args, '--prefix=' . $self->bucket->path;
+        }
         chdir $root;
         my $exit_code = $self->bucket->run_command($configurer, @args);
         chdir $cwd;
@@ -342,6 +345,9 @@ sub install {
     my ($self) = @_;
     my $cwd = Cwd::cwd();
     my $build_dir = $self->_find_nearest_make_builddir();
+
+    croak "cannot install to bucket @{[$self->bucket->name]}"
+        unless $self->bucket->is_installable;
 
     # find which install target to use (CMake-based KDE projects generate an
     # "install/fast" target which is, well, faster)
