@@ -18,6 +18,7 @@ setup_link() {
 find toplevel -type f | while read SOURCE; do
     setup_link "${SOURCE}" "${HOME}/.${SOURCE#*/}"
 done
+mkdir -p /x/bin
 find bin -maxdepth 1 -type f -executable | while read SOURCE; do
     setup_link "${SOURCE}" "/x/bin/${SOURCE#*/}"
 done
