@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#!/usr/bin/ruby
 # This script makes ~/.config/openstack/clouds.yaml sort of available for the
 # legacy OpenStack clients (`nova`, `neutron`, and so on). Together with a
 # shell function in my .profile, it's used like this:
