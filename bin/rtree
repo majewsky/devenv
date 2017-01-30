@@ -69,7 +69,7 @@ index_add_directory() {
 }
 
 list_repos() {
-  find "${RTREE_ROOT}" -exec test -d {}/.git \; -print -prune
+  find "${RTREE_ROOT}/src" -exec test -d {}/.git \; -print -prune
 }
 
 command_get() {
