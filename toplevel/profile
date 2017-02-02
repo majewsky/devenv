@@ -155,4 +155,42 @@ if hash kubectl &>/dev/null; then
 			;;
 		esac
 	}
+
+	if hash helm &>/dev/null; then
+		# Synopsis: hu [chart-directory]
+		#
+		# Call `helm upgrade` on the chart in that directory, using the appropriate
+		# values.yaml from $HELM_SECRETS_REPO. If no directory is given, use the working directory.
+		hu() {
+			(
+				cd "${1:-.}"
+				if [ ! -f Chart.yaml ]; then
+					echo "${1:-.}/Chart.yaml: file not found" >&2
+					return 1
+				fi
+				if [ -n "${HELM_SECRETS_REPO}" ]; then
+					echo "\$HELM_SECRETS_REPO not set!" >&2
+				fi
+
+				git -C "${HELM_SECRETS_REPO}" pull | grep -v 'master is up to date'
+
+				CHART_NAME="$(awk '/name:/{print$2}' Chart.yaml)"
+				CONTEXT_NAME="$(kubectl config current-context)"
+				VALUES_FILE="$(find "${HELM_SECRETS_REPO}/${CONTEXT_NAME}/values" -type f -name "${CHART_NAME}.yaml" | head -n1)"
+				if [ ! -f "${VALUES_FILE}" ]; then
+					echo "no values.yaml found for ${CHART_NAME} in ${CONTEXT_NAME}" >&2
+					return 1
+				fi
+
+				echo "    Chart: ${CHART_NAME}"
+				echo "   Region: ${CONTEXT_NAME}"
+				echo "   Values: ${VALUES_FILE}"
+				echo -n ">> Upgrade chart? [Y/n] "
+				read ANSWER
+				if [[ "${ANSWER}" != *[nN]* ]]; then
+					helm upgrade "${CHART_NAME}" --values "${VALUES_FILE}" .
+				fi
+			)
+		}
+	fi
 fi
