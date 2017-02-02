@@ -97,6 +97,24 @@ fi
 # this must always be at the end
 export LOCALPROFILEREAD="yes"
 
+if hash docker &>/dev/null; then
+	docker() {
+		if [ $# -eq 0 ]; then
+			env docker "$@"
+		fi
+
+		case "$1" in
+			build)
+				shift
+				env docker build --build-arg https_proxy=$HTTP_PROXY --build-arg http_proxy=$HTTP_PROXY --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg HTTPS_PROXY=$HTTP_PROXY --build-arg NO_PROXY=$NO_PROXY --build-arg no_proxy=$NO_PROXY "$@"
+				;;
+			*)
+				env docker "$@"
+				;;
+		esac
+	}
+fi
+
 if hash kubectl &>/dev/null; then
 	export HAS_KUBECTL=true
 
