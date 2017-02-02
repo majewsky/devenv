@@ -55,6 +55,13 @@ cg() {
 	[ $? -eq 0 ] && cd "${REPO_PATH}"
 }
 
+if which rg &>/dev/null; then
+	rg() {
+		# force ripgrep output to look like on a tty, even when sent to less(1)
+		env rg --heading --color always --line-number "$@"
+	}
+fi
+
 # for OpenStack
 if [ -f "$HOME/.local/bin/openstack" ]; then
 	cloud_is() {
