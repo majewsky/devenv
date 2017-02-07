@@ -186,7 +186,7 @@ if hash kubectl &>/dev/null; then
 					echo "${1:-.}/Chart.yaml: file not found" >&2
 					return 1
 				fi
-				if [ -n "${HELM_SECRETS_REPO}" ]; then
+				if [ -z "${HELM_SECRETS_REPO}" ]; then
 					echo "\$HELM_SECRETS_REPO not set!" >&2
 				fi
 
