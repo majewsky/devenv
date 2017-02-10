@@ -159,6 +159,16 @@ if hash kubectl &>/dev/null; then
 			KUBECTL=kubectl
 		fi
 
+		# if there is a jumpserver involved, it is defined in the .ssh/config
+		# as "Host ${CONTEXT_NAME}" and it includes a LocalForward directive
+		# that allows access to a HTTP proxy which we can use to talk to the
+		# k8s apiserver
+		local CONTEXT_NAME="$(kubectl config current-context)"
+		local PROXY_PORT="$(sed -n "/^Host ${CONTEXT_NAME}/,/^Host/{/LocalForward/p}" "${HOME}/.ssh/config" | awk '{print$2}')"
+		if [ -n "${PROXY_PORT}" ]; then
+			KUBECTL=(env -u no_proxy -u NO_PROXY "https_proxy=http://localhost:${PROXY_PORT}" "HTTPS_PROXY=http://localhost:${PROXY_PORT}" ${KUBECTL})
+		fi
+
 		case "$1" in
 		sh)
 			shift
@@ -194,7 +204,7 @@ if hash kubectl &>/dev/null; then
 
 				CHART_NAME="$(awk '/name:/{print$2}' Chart.yaml)"
 				CONTEXT_NAME="$(kubectl config current-context)"
-				VALUES_FILE="$(find "${HELM_SECRETS_REPO}/${CONTEXT_NAME}/values" -type f -name "${CHART_NAME}.yaml" | head -n1)"
+				VALUES_FILE="$(find "${HELM_SECRETS_REPO}/${CONTEXT_NAME}/values" -name "${CHART_NAME}.yaml" | head -n1)"
 				if [ ! -f "${VALUES_FILE}" ]; then
 					echo "no values.yaml found for ${CHART_NAME} in ${CONTEXT_NAME}" >&2
 					return 1
