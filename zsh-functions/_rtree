@@ -6,20 +6,27 @@ typeset -A opt_args
     if (( CURRENT == 2 )); then
         local -a _commands
         _commands=(
+            'drop:Delete a local repository from the rtree'
+            'each:Execute a command in every repository in the rtree'
             'get:Get the local path for a remote URL (and clone if missing)'
+            'import:Import a repository from outside the rtree into the rtree'
             'index:Rebuild the repository index and offer to restore deleted repos'
             'repos:List repositories in index'
             'remotes:List remote URLs in index'
-            'import:Import a repository from outside the rtree into the rtree'
         )
         _describe -t commands 'rtree command' _commands
-    elif (( CURRENT == 3 )); then
+    elif (( CURRENT > 2 )); then
         case "$words[2]" in
-            get)
+            get|drop)
                 _alternative "remotes:remote URLs:($(rtree remotes))"
                 ;;
             import)
                 _directories
+                ;;
+            each)
+                shift 2 words
+                (( CURRENT -= 2 ))
+                _normal
                 ;;
         esac
     fi
