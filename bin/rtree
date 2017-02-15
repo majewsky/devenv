@@ -20,7 +20,7 @@ fi
 usage_and_exit() {
   exec >&2
   echo "Usage:"
-  echo "  $0 get <url>"
+  echo "  $0 [get|drop] <url>"
   echo "  $0 [index|repos|remotes]"
   echo "  $0 import <path>"
   echo "  $0 each <command>"
@@ -129,6 +129,35 @@ command_import() {
   ln -sT "${FULL_PATH}" "${ORIG_PATH%/}"
 }
 
+command_drop() {
+  local REMOTE_URL="$1"
+
+  # find local repo path
+  local INDEX_FILE="${INDEX_DIR}/$(echo -n "${REMOTE_URL}" | base64 -w 0)"
+  local REPO_PATH=""
+  if [ -f "${INDEX_FILE}" ]; then
+    REPO_PATH="$(cat "${INDEX_FILE}")"
+  fi
+  if [ -z "${REPO_PATH}" ]; then
+    echo "error: no such remote in index (you can validate the index with \`rtree index\`)" >&2
+    return 1
+  fi
+  local FULL_PATH="${RTREE_ROOT}/src/${REPO_PATH}"
+  if [ -z "${FULL_PATH}" ]; then
+    echo "error: repo ${FULL_PATH} indexed, but not found on disk (you can validate the index with \`rtree index\`)" >&2
+    return 1
+  fi
+
+  # report repo status and ask for confirmation
+  echo -e "\e[1;36m>> \e[0;36m${FULL_PATH}\e[0m"
+  git -C "${FULL_PATH}" status
+  echo -n ">> Drop this repo? [y/N] "
+  read ANSWER
+  if [ "${ANSWER/y/Y}" == Y ]; then
+    rm -rf -- "${FULL_PATH}" "${INDEX_FILE}"
+  fi
+}
+
 command_remotes() {
   find "${INDEX_DIR}" -maxdepth 1 -type f | while read INDEX_FILE; do
     echo "$(basename "${INDEX_FILE}" | base64 -d)" # echo appends "\n"
@@ -195,6 +224,10 @@ case "$1" in
   import)
     [ $# -eq 2 ] || usage_and_exit
     command_import "$2"
+    ;;
+  drop)
+    [ $# -eq 2 ] || usage_and_exit
+    command_drop "$2"
     ;;
   index)
     [ $# -eq 1 ] || usage_and_exit
