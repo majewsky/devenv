@@ -52,28 +52,10 @@ function! LowColor()
 endfunction
 com! LowColor call LowColor()
 
-function! SwitchSourceHeader()
-	"update!
-	if (expand ("%:e") == "h")
-		if (filereadable(expand("%:r") . ".c"))
-			find %:r.c
-		else
-			find %:r.cpp
-		endif
-	else
-		find %:r.h
-	endif
-endfunction
-nmap ,s :call SwitchSourceHeader()<CR>
-
-"config and keybindings for BufExplorer plugin
-let g:bufExplorerSortBy='name'
-
 "prevent V-s from being mapped by surround plugin
 " (the plugin would just display a deprecation warning anyway)
 vnoremap s s
 
-"filetype plugin on
 set autoindent
 set background=dark
 set cindent
@@ -89,10 +71,10 @@ set list listchars=trail:·,nbsp:·,tab:\ \
 set mouse=a
 set number
 set shortmess+=I
-set shiftwidth=4
+set shiftwidth=2
 set expandtab smarttab
 set statusline=%<%f\ %#Search#\ %Y%M%R\ %*%=\ %-14.(%l,%c%V%)\ %P
-set tabstop=4 softtabstop=4
+set tabstop=2 softtabstop=2
 set tildeop
 if system("uname") != "Darwin\n"
     if !has('nvim')
@@ -150,17 +132,7 @@ end
 let g:gardener_light_comments=1
 colo gardener-transparent
 
-"formatting style for Python code and changelogs in our working group
-autocmd FileType python setlocal expandtab smarttab nocindent tabstop=4 softtabstop=4
-autocmd FileType python map <F5> :w<CR>:!python "%"<CR>
-autocmd FileType changelog setlocal expandtab smarttab tabstop=4 softtabstop=4
-
-"conventional indentation for Ruby seems to be 2 spaces
-autocmd FileType ruby setlocal expandtab smarttab nocindent tabstop=2 softtabstop=2 shiftwidth=2
-
-autocmd FileType tex map <F5> :w<CR>:wa<CR>:make<CR>
-autocmd FileType tex map <F6> :!xdg-open %<.pdf &>/dev/null &disown<CR><CR>
-autocmd FileType tex setlocal nocindent
+autocmd FileType {tex,python,ruby,markdown,gitcommit} setlocal nocindent
 
 autocmd Syntax {cpp,c} runtime syntax/doxygen.vim
 " enable pair matching for angle brackets (e.g. C++ templates)
@@ -212,11 +184,8 @@ endfunction
 " configuration for Syntastic
 let g:syntastic_check_on_open=1
 let g:syntastic_enable_signs=1
-let g:syntastic_javascript_checkers = ['jsl']
-let g:syntastic_javascript_jsl_args = '-conf /home/stefan/.vim/jsl.conf'
 let g:syntastic_tex_checkers = [] "no lacheck/chktex
 let g:syntastic_perl_checkers = [ 'perl', 'perlcritic' ]
-let g:syntastic_perl_lib_path = [ "/home/stefan/GMT/cgi-bin/lib", "/home/stefan/GMT/cgi-bin" ]
 let g:syntastic_enable_perl_checker = 1
 let g:syntastic_ruby_checkers = [ 'mri' ]
 let g:syntastic_rust_checkers = [ 'rustc' ]
