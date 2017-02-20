@@ -8,6 +8,7 @@ call vundle#begin()
     Plugin 'gmarik/Vundle.vim'
 
     " external plugins
+    Plugin 'tpope/vim-sensible'
     Plugin 'tpope/vim-repeat'
     Plugin 'tpope/vim-surround'
     Plugin 'tpope/vim-commentary'
@@ -19,51 +20,31 @@ call vundle#begin()
     Plugin 'rust-lang/rust.vim'
 
 call vundle#end()
-
-call pathogen#infect()
 filetype plugin indent on
 
-" support Ruby block keywords (e.g. do..end) in the % motion
-runtime macros/matchit.vim
-
-function! IdentifySyntax()
-    return synIDattr(synID(line("."),col("."),1), "name")
-endfunction
-function! IdentifyHighlight()
-    return synIDattr(synIDtrans(synID(line("."),col("."),1)), "name")
-endfunction
 function! Identify()
-    let l_syn = IdentifySyntax()
-    let l_hi  = IdentifyHighlight()
+    let l_syn = synIDattr(synID(line("."),col("."),1), "name")
+    let l_hi  = synIDattr(synIDtrans(synID(line("."),col("."),1)), "name")
     if l_hi != "" && l_hi != "Normal" && l_hi != l_syn
         return l_syn . " -> " . l_hi
     else
         return l_syn
     endif
 endfunction
-
-com! IdentifySyntax echo IdentifySyntax()
-com! IdentifyHighlight echo IdentifyHighlight()
 com! Identify echo Identify()
 
-function! LowColor()
-	set t_Co=8
-	colo torte
-endfunction
-com! LowColor call LowColor()
+com! LowColor set t_Co=8 | colo torte
 
 "prevent V-s from being mapped by surround plugin
 " (the plugin would just display a deprecation warning anyway)
 vnoremap s s
 
-set autoindent
 set background=dark
 set cindent
 set cinoptions=L0,l1,(0,W4
-set expandtab
-set fo=tcroq
-set hlsearch
-set incsearch
+set expandtab smarttab
+set formatoptions+=ro
+set hlsearch incsearch
 set ignorecase smartcase
 set laststatus=2
 set linebreak
@@ -71,19 +52,16 @@ set list listchars=trail:·,nbsp:·,tab:\ \
 set mouse=a
 set number
 set shortmess+=I
-set shiftwidth=2
-set expandtab smarttab
+set shiftwidth=2 tabstop=2 softtabstop=2
 set statusline=%<%f\ %#Search#\ %Y%M%R\ %*%=\ %-14.(%l,%c%V%)\ %P
-set tabstop=2 softtabstop=2
 set tildeop
 if system("uname") != "Darwin\n"
     if !has('nvim')
 	set ttymouse=sgr
     end
 end
-set wildmode=longest:full
-set wildmenu
-syntax enable
+set wildmode=longest:full wildmenu
+
 let perl_include_pod=1
 
 " HARD MODE
@@ -92,27 +70,13 @@ noremap <Right> <Nop>
 noremap <Up> <Nop>
 noremap <Down> <Nop>
 
-" remove highlighting of search matches
-nmap , :let @/=""<CR>:<BS>
-nmap ,, :let @/=""<CR>:<BS>
-" after repeating commands, put the cursor at the start of the change
-nmap . .`[
 " after adjusting indentation in visual mode, restore selection for further changes
 vnoremap > >gv
 vnoremap < <gv
 " disable a command that I usually mistype
 map <F1> <Nop>
-" bindings for cld development
-if hostname() == "krikkit"
-    nmap <F7> :wa<CR>:!rsync -vau --exclude '.*.sw?' --delete ~/Code/cld/ /srv/http/cld-devel/<CR><CR>
-    nmap <F8> :wa<CR>:!rsync -vau --exclude '.*.sw?' --delete ~/Code/cld/ magrathea:/srv/http/cld-devel/<CR><CR>
-endif
 " invoke various redraws with function keys
 nmap <F3> :syn sync fromstart<CR>
-nmap <F4> :redraw!<CR>
-" change mouse mode with function keys
-nmap <F9> :set mouse=<CR>
-nmap <F10> :set mouse=a<CR>
 " quick key for forward/backward search from selection
 vmap * "ty/<C-r>t<CR>
 vmap # "ty?<C-r>t<CR>
@@ -143,18 +107,12 @@ autocmd FileType cpp setlocal comments-=:// comments+=:///,://
 autocmd BufReadPost * DetectIndent
 
 "formatting style for Perl code
-autocmd FileType perl call PerlCustomStuff()
+autocmd FileType perl setlocal iskeyword-=: | syntax sync fromstart
 autocmd Syntax perl call PerlCustomSyntax()
 
-hi link perlStatement PreCondit
 hi link javaScriptStringS PreProc
 hi link javaScriptStringD PreProc
 
-function! PerlCustomStuff()
-	setlocal expandtab smarttab tabstop=4 softtabstop=4 shiftwidth=3 iskeyword-=:
-	nmap <buffer> gd "tyiw/\%(^sub \\|^\s*function \)\zs<C-r>t\><CR>:let @/=""<CR>:<BS>
-	syntax sync fromstart
-endfunction
 function! PerlCustomSyntax()
 	syn keyword perlStatementList uniq natatime
 	syn region perlStatementIndirObjWrap matchgroup=perlStatementIndirObj start="\<\%(\%(continue\|uireturn\|return\|bless\|else\|eval\|sub\|die\|q[qrw]\|\w\)\>\)\@![a-z_]\+\>\s*{" end="}" contains=@perlTop,perlGenericBlock
@@ -163,6 +121,7 @@ function! PerlCustomSyntax()
 	syn keyword perlSubNameNew new create containedin=perlSubName
 	hi link perlNew perlOperator
 	hi link perlSubNameNew perlNew
+  hi link perlStatement PreCondit
 	hi link perlStatementException ErrorMsg
 endfunction
 
@@ -195,3 +154,4 @@ let g:syntastic_cpp_compiler_options = '-std=c++14 -Wall -Wextra -pedantic -I/us
 
 " configuration for DetectIndent
 let g:detectindent_preferred_expandtab = 1
+let g:detectindent_preferred_indent = 2
