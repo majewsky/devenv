@@ -57,7 +57,7 @@ set statusline=%<%f\ %#Search#\ %Y%M%R\ %*%=\ %-14.(%l,%c%V%)\ %P
 set tildeop
 if system("uname") != "Darwin\n"
     if !has('nvim')
-	set ttymouse=sgr
+        set ttymouse=sgr
     end
 end
 set wildmode=longest:full wildmenu
@@ -114,30 +114,30 @@ hi link javaScriptStringS PreProc
 hi link javaScriptStringD PreProc
 
 function! PerlCustomSyntax()
-	syn keyword perlStatementList uniq natatime
-	syn region perlStatementIndirObjWrap matchgroup=perlStatementIndirObj start="\<\%(\%(continue\|uireturn\|return\|bless\|else\|eval\|sub\|die\|q[qrw]\|\w\)\>\)\@![a-z_]\+\>\s*{" end="}" contains=@perlTop,perlGenericBlock
-	syn match perlStatementException "\<\%(die\|croak\|carp\|confess\|cluck\|ui\%(die\|return\)\)\>"
-	syn keyword perlNew new create
-	syn keyword perlSubNameNew new create containedin=perlSubName
-	hi link perlNew perlOperator
-	hi link perlSubNameNew perlNew
-  hi link perlStatement PreCondit
-	hi link perlStatementException ErrorMsg
+    syn keyword perlStatementList uniq natatime
+    syn region perlStatementIndirObjWrap matchgroup=perlStatementIndirObj start="\<\%(\%(continue\|uireturn\|return\|bless\|else\|eval\|sub\|die\|q[qrw]\|\w\)\>\)\@![a-z_]\+\>\s*{" end="}" contains=@perlTop,perlGenericBlock
+    syn match perlStatementException "\<\%(die\|croak\|carp\|confess\|cluck\|ui\%(die\|return\)\)\>"
+    syn keyword perlNew new create
+    syn keyword perlSubNameNew new create containedin=perlSubName
+    hi link perlNew perlOperator
+    hi link perlSubNameNew perlNew
+    hi link perlStatement PreCondit
+    hi link perlStatementException ErrorMsg
 endfunction
 
 autocmd Syntax ruby call RubyCustomSyntax()
 function! RubyCustomSyntax()
-	hi link rubyException ErrorMsg
-	hi link rubyPseudoVariable Boolean
+    hi link rubyException ErrorMsg
+    hi link rubyPseudoVariable Boolean
 endfunction
 
 autocmd ColorScheme * call ColorSchemeFixes()
 autocmd Syntax *      call ColorSchemeFixes()
 
 function! ColorSchemeFixes()
-	hi clear SpecialKey
-	hi link SpecialKey LineNr
-	hi ErrorMsg term=none cterm=none
+    hi clear SpecialKey
+    hi link SpecialKey LineNr
+    hi ErrorMsg term=none cterm=none
 endfunction
 
 " configuration for Syntastic
