@@ -22,12 +22,14 @@
 	dt = difftool
 	cy = cherry
 	cyp = cherry-pick
+	cdiff = diff --color-words='[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+'
 [branch]
 	autosetuprebase = always
 [color]
 	ui = true
 [core]
 	excludesfile = ~/.gitignore
+	abbrev = 10
 [diff]
 	tool = vimdiff
 	algorithm = minimal
@@ -50,13 +52,15 @@
 [url "git@git.kde.org:"]
 	pushInsteadOf = kde:
 	pushInsteadOf = git://anongit.kde.org/
-[url "https://github.com/"]
+[url "git://github.com/"]
 	insteadOf = gh:
 [url "git@github.com:"]
 	pushInsteadOf = gh:
 	pushInsteadOf = https://github.com/
 [url "gogs@git.bethselamin.de:"]
 	insteadOf = gogs:
+[url "git@github.wdf.sap.corp:"]
+	insteadOf = ge:
 [status]
 	submodulesummary = 1
 [push]
@@ -68,3 +72,5 @@
 [gui]
 	fontui = -family \"DejaVu Sans\" -size 12 -weight normal -slant roman -underline 0 -overstrike 0
 	fontdiff = -family \"Liberation Mono\" -size 12 -weight normal -slant roman -underline 0 -overstrike 0
+[gitreview]
+	username = majewsky
