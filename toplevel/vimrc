@@ -70,6 +70,8 @@ noremap <Right> <Nop>
 noremap <Up> <Nop>
 noremap <Down> <Nop>
 
+" binding to highlight last inserted text
+nnoremap gV `[v`]
 " after adjusting indentation in visual mode, restore selection for further changes
 vnoremap > >gv
 vnoremap < <gv
