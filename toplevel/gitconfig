@@ -58,7 +58,7 @@
 	insteadOf = ghp:
 	pushInsteadOf = gh:
 	pushInsteadOf = https://github.com/
-[url "gogs@git.bethselamin.de:"]
+[url "git@git.bethselamin.de:"]
 	insteadOf = gogs:
 [url "git@github.wdf.sap.corp:"]
 	insteadOf = ge:
