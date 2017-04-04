@@ -160,7 +160,7 @@ command_drop() {
 
 command_remotes() {
   find "${INDEX_DIR}" -maxdepth 1 -type f | while read INDEX_FILE; do
-    [[ "${INDEX_FILE}" == */index.yaml ]] && continue
+    [[ "${INDEX_FILE}" == */*index.yaml* ]] && continue
     echo "$(basename "${INDEX_FILE}" | base64 -d)" # echo appends "\n"
   done | sort
 }
@@ -178,7 +178,7 @@ command_index() {
 
   # handle old index entries
   for INDEX_FILE in $(find "${INDEX_DIR}" -maxdepth 1 -type f); do
-    [[ "${INDEX_FILE}" == */index.yaml ]] && continue
+    [[ "${INDEX_FILE}" == */*index.yaml* ]] && continue
     REMOTE_URL="$(basename "${INDEX_FILE}" | base64 -d)"
     REPO_PATH="$(cat "${INDEX_FILE}")"
     FULL_PATH="${RTREE_ROOT}/src/${REPO_PATH}"
