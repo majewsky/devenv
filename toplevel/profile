@@ -180,6 +180,20 @@ if hash kubectl &>/dev/null; then
 	}
 
 	if hash helm &>/dev/null; then
+		h() {
+			# if there is a jumpserver involved, it is defined in the .ssh/config
+			# as "Host ${CONTEXT_NAME}" and it includes a LocalForward directive
+			# that allows access to a HTTP proxy which we can use to talk to the
+			# k8s apiserver
+			local CONTEXT_NAME="$(kubectl config current-context)"
+			local PROXY_PORT="$(sed -n "/^Host ${CONTEXT_NAME}/,/^Host/{/LocalForward/p}" "${HOME}/.ssh/config" | awk '{print$2}')"
+			if [ -n "${PROXY_PORT}" ]; then
+				env -u no_proxy -u NO_PROXY "https_proxy=http://localhost:${PROXY_PORT}" "HTTPS_PROXY=http://localhost:${PROXY_PORT}" helm "$@"
+			else
+				helm "$@"
+			fi
+		}
+
 		# Synopsis: hu [chart-directory]
 		#
 		# Call `helm upgrade` on the chart in that directory, using the appropriate
@@ -205,25 +219,13 @@ if hash kubectl &>/dev/null; then
 					return 1
 				fi
 
-				HELM=helm
-				# if there is a jumpserver involved, it is defined in the .ssh/config
-				# as "Host ${CONTEXT_NAME}" and it includes a LocalForward directive
-				# that allows access to a HTTP proxy which we can use to talk to the
-				# k8s apiserver
-				local CONTEXT_NAME="$(kubectl config current-context)"
-				local PROXY_PORT="$(sed -n "/^Host ${CONTEXT_NAME}/,/^Host/{/LocalForward/p}" "${HOME}/.ssh/config" | awk '{print$2}')"
-				if [ -n "${PROXY_PORT}" ]; then
-					HELM=(env -u no_proxy -u NO_PROXY "https_proxy=http://localhost:${PROXY_PORT}" "HTTPS_PROXY=http://localhost:${PROXY_PORT}" ${HELM})
-				fi
-
-
 				echo "    Chart: ${CHART_NAME}"
 				echo "   Region: ${CONTEXT_NAME}"
 				echo "   Values: ${VALUES_FILE}"
 				echo -n ">> Upgrade chart? [Y/n] "
 				read ANSWER
 				if [[ "${ANSWER}" != *[nN]* ]]; then
-					${HELM} upgrade "${CHART_NAME}" --values "${VALUES_FILE}" --reset-values .
+					h upgrade "${CHART_NAME}" --values "${VALUES_FILE}" --reset-values .
 				fi
 			)
 		}
