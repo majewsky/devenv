@@ -173,6 +173,10 @@ if hash kubectl &>/dev/null; then
 			shift
 			${KUBECTL} exec -ti "$@" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM /bin/bash
 			;;
+		yaml)
+			shift
+			${KUBECTL} get "$@" -o yaml
+			;;
 		*)
 			${KUBECTL} "$@"
 			;;
@@ -194,10 +198,11 @@ if hash kubectl &>/dev/null; then
 			fi
 		}
 
-		# Synopsis: hu [chart-directory]
+		# Synopsis: hu [chart-directory] [options]
 		#
 		# Call `helm upgrade` on the chart in that directory, using the appropriate
 		# values.yaml from $HELM_SECRETS_REPO. If no directory is given, use the working directory.
+		# Any additional options are passed on to "helm upgrade".
 		hu() {
 			(
 				cd "${1:-.}"
@@ -205,6 +210,7 @@ if hash kubectl &>/dev/null; then
 					echo "${1:-.}/Chart.yaml: file not found" >&2
 					return 1
 				fi
+				shift
 				if [ -z "${HELM_SECRETS_REPO}" ]; then
 					echo "\$HELM_SECRETS_REPO not set!" >&2
 				fi
@@ -225,8 +231,37 @@ if hash kubectl &>/dev/null; then
 				echo -n ">> Upgrade chart? [Y/n] "
 				read ANSWER
 				if [[ "${ANSWER}" != *[nN]* ]]; then
-					h upgrade "${CHART_NAME}" --values "${VALUES_FILE}" --reset-values .
+					h upgrade "${CHART_NAME}" --values "${VALUES_FILE}" --reset-values "$@" .
 				fi
+			)
+		}
+
+		# Synopsis: hd [chart-directory] [options]
+		#
+		# Like `hu`, but calls `helm diff` instead of `helm upgrade`.
+		hd() {
+			(
+				cd "${1:-.}"
+				if [ ! -f Chart.yaml ]; then
+					echo "${1:-.}/Chart.yaml: file not found" >&2
+					return 1
+				fi
+				shift
+				if [ -z "${HELM_SECRETS_REPO}" ]; then
+					echo "\$HELM_SECRETS_REPO not set!" >&2
+				fi
+
+				git -C "${HELM_SECRETS_REPO}" pull | grep -v 'master is up to date'
+
+				CHART_NAME="$(awk '/name:/{print$2}' Chart.yaml)"
+				CONTEXT_NAME="$(kubectl config current-context)"
+				VALUES_FILE="$(find "${HELM_SECRETS_REPO}/${CONTEXT_NAME}/values" -name "${CHART_NAME}.yaml" | head -n1)"
+				if [ ! -f "${VALUES_FILE}" ]; then
+					echo "no values.yaml found for ${CHART_NAME} in ${CONTEXT_NAME}" >&2
+					return 1
+				fi
+
+				h diff "${CHART_NAME}" --values "${VALUES_FILE}" "$@" .
 			)
 		}
 	fi
