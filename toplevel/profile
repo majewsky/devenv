@@ -205,12 +205,18 @@ if hash kubectl &>/dev/null; then
 		# Any additional options are passed on to "helm upgrade".
 		hu() {
 			(
-				cd "${1:-.}"
+				case "${1:-empty}" in
+					-*|empty)
+						;;
+					*)
+						cd "$1"
+						shift
+						;;
+				esac
 				if [ ! -f Chart.yaml ]; then
-					echo "${1:-.}/Chart.yaml: file not found" >&2
+					echo "Chart.yaml: file not found" >&2
 					return 1
 				fi
-				shift
 				if [ -z "${HELM_SECRETS_REPO}" ]; then
 					echo "\$HELM_SECRETS_REPO not set!" >&2
 				fi
@@ -241,12 +247,18 @@ if hash kubectl &>/dev/null; then
 		# Like `hu`, but calls `helm diff` instead of `helm upgrade`.
 		hd() {
 			(
-				cd "${1:-.}"
+				case "${1:-empty}" in
+					-*|empty)
+						;;
+					*)
+						cd "$1"
+						shift
+						;;
+				esac
 				if [ ! -f Chart.yaml ]; then
-					echo "${1:-.}/Chart.yaml: file not found" >&2
+					echo "Chart.yaml: file not found" >&2
 					return 1
 				fi
-				shift
 				if [ -z "${HELM_SECRETS_REPO}" ]; then
 					echo "\$HELM_SECRETS_REPO not set!" >&2
 				fi
