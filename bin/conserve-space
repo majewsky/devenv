@@ -6,6 +6,8 @@ LOCATIONS=(
     ".cache"
     ".gem/specs"
     ".glide/cache"
+    ".helm/cache"
+    ".kube"
     ".local/bin"
     ".local/etc"
     ".local/include"
