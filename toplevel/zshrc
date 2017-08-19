@@ -1,9 +1,10 @@
 HISTFILE=~/.histfile
 HISTSIZE=10000000
 SAVEHIST=10000000
-PROMPT="\$(/x/src/github.com/majewsky/devenv/bin/prettyprompt.py \$COLUMNS 2>/dev/null)"
+PROMPT="\$(/usr/bin/prettyprompt)"
 export PRETTYPROMPT_SHELL="zsh"
 setopt autocd noautoparamslash autopushd nobeep nobgnice correct extendedglob noflowcontrol globdots histexpiredupsfirst histignoredups nohup incappendhistory longlistjobs nopromptcr promptsubst pushdminus pushdsilent pushdtohome rcquotes recexact
+setopt PROMPT_CR PROMPT_SP
 #setopt appendhistory nomatch notify
 unsetopt beep
 bindkey -e
