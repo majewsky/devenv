@@ -17,6 +17,7 @@ call vundle#begin()
     Plugin 'godlygeek/tabular'
     Plugin 'Lokaltog/vim-easymotion'
     Plugin 'cespare/vim-toml'
+    Plugin 'cespare/vim-go-templates'
     Plugin 'rust-lang/rust.vim'
 
 call vundle#end()
