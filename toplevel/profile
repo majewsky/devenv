@@ -198,6 +198,57 @@ if hash kubectl &>/dev/null; then
 			fi
 		}
 
+		# Synopsis: hi [chart-directory] [options]
+		#
+		# Call `helm install` on the chart in that directory, using the appropriate
+		# values.yaml from $HELM_SECRETS_REPO. If no directory is given, use the working directory.
+		# Any additional options are passed on to "helm install".
+		hi() {
+			(
+				case "${1:-empty}" in
+					-*|empty)
+						;;
+					*)
+						cd "$1"
+						shift
+						;;
+				esac
+				if [ ! -f Chart.yaml ]; then
+					echo "Chart.yaml: file not found" >&2
+					return 1
+				fi
+				if [ -z "${HELM_SECRETS_REPO}" ]; then
+					echo "\$HELM_SECRETS_REPO not set!" >&2
+				fi
+
+				git -C "${HELM_SECRETS_REPO}" pull | grep -v 'master is up to date'
+
+				CHART_NAME="$(awk '/name:/{print$2}' Chart.yaml)"
+				CONTEXT_NAME="$(kubectl config current-context)"
+				KUBE_NAMESPACE="$(cat ~/.kubectl-namespace)"
+				VALUES_FILE="$(find "${HELM_SECRETS_REPO}/${CONTEXT_NAME}/values" -name "${CHART_NAME}.yaml" | head -n1)"
+				if [ ! -f "${VALUES_FILE}" ]; then
+					echo "no values.yaml found for ${CHART_NAME} in ${CONTEXT_NAME}" >&2
+					return 1
+				fi
+				GLOBALS_FILE="${HELM_SECRETS_REPO}/${CONTEXT_NAME}/values/globals.yaml"
+				if [ ! -f "${GLOBALS_FILE}" ]; then
+					echo "no globals.yaml found in ${CONTEXT_NAME}" >&2
+					return 1
+				fi
+
+				echo "    Chart: ${CHART_NAME}"
+				echo "Namespace: ${KUBE_NAMESPACE}"
+				echo "   Region: ${CONTEXT_NAME}"
+				echo "   Values: ${VALUES_FILE}"
+				echo -en '>> \e[1;31mInstall chart?\e[0m [Y/n] '
+				read ANSWER
+				if [[ "${ANSWER}" != *[nN]* ]]; then
+					h install . --name "${CHART_NAME}" --namespace "${KUBE_NAMESPACE}" --values "${GLOBALS_FILE}" --values "${VALUES_FILE}" "$@"
+				fi
+			)
+		}
+
 		# Synopsis: hu [chart-directory] [options]
 		#
 		# Call `helm upgrade` on the chart in that directory, using the appropriate
@@ -230,6 +281,11 @@ if hash kubectl &>/dev/null; then
 					echo "no values.yaml found for ${CHART_NAME} in ${CONTEXT_NAME}" >&2
 					return 1
 				fi
+				GLOBALS_FILE="${HELM_SECRETS_REPO}/${CONTEXT_NAME}/values/globals.yaml"
+				if [ ! -f "${GLOBALS_FILE}" ]; then
+					echo "no globals.yaml found in ${CONTEXT_NAME}" >&2
+					return 1
+				fi
 
 				echo "    Chart: ${CHART_NAME}"
 				echo "   Region: ${CONTEXT_NAME}"
@@ -237,7 +293,7 @@ if hash kubectl &>/dev/null; then
 				echo -n ">> Upgrade chart? [Y/n] "
 				read ANSWER
 				if [[ "${ANSWER}" != *[nN]* ]]; then
-					h upgrade "${CHART_NAME}" --values "${VALUES_FILE}" --reset-values "$@" .
+					h upgrade "${CHART_NAME}" --values "${GLOBALS_FILE}" --values "${VALUES_FILE}" --reset-values "$@" .
 				fi
 			)
 		}
@@ -272,8 +328,13 @@ if hash kubectl &>/dev/null; then
 					echo "no values.yaml found for ${CHART_NAME} in ${CONTEXT_NAME}" >&2
 					return 1
 				fi
+				GLOBALS_FILE="${HELM_SECRETS_REPO}/${CONTEXT_NAME}/values/globals.yaml"
+				if [ ! -f "${GLOBALS_FILE}" ]; then
+					echo "no globals.yaml found in ${CONTEXT_NAME}" >&2
+					return 1
+				fi
 
-				h diff "${CHART_NAME}" --values "${VALUES_FILE}" "$@" .
+				h diff "${CHART_NAME}" --values "${GLOBALS_FILE}" --values "${VALUES_FILE}" "$@" .
 			)
 		}
 	fi
