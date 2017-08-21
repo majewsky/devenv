@@ -12,12 +12,6 @@ bindkey -e
 source ~/.profile
 test -s ~/.profile.local && . ~/.profile.local || true
 
-# forward to nvim if requested
-if [ "x$EXEC_NVIM" = "x1" ]; then
-	unset EXEC_NVIM
-	exec nvim term://zsh
-fi
-
 FPATH="$FPATH:$HOME/.zsh-functions"
 autoload compinit
 compinit
@@ -66,18 +60,6 @@ alias qg="qgit --all &>/dev/null &|"
 # by default: export WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>'
 # we take out the slash, period, angle brackets here.
 export WORDCHARS='*?_-[]~=&;!#$%^(){}'
-
-function chpwd() { # no arguments (hook; is called by cd)
-	local RELPATH="$(relpath "$BUILD_ROOT" "$PWD")"
-	if [ "${RELPATH:0:2}" = .. ]; then
-		export B="$BUILD_ROOT$PWD"
-		export S="$PWD"
-	else
-		export B="$PWD"
-		export S="/$RELPATH"
-	fi
-}
-chpwd # initialize $B and $S
 
 bindkey '^Z' undo
 

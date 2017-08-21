@@ -1,18 +1,7 @@
-# Sample .bashrc for SuSE Linux
-# Copyright (c) SuSE GmbH Nuernberg
-
-# There are 3 different types of shells in bash: the login shell, normal shell
-# and interactive shell. Login shells read ~/.profile and interactive shells
-# read ~/.bashrc; in our setup, /etc/profile sources ~/.bashrc - thus all
-# settings made here will also take effect in a login shell.
-
-test -s ~/.alias && . ~/.alias || true
 source ~/.profile || true
 test -s ~/.profile.local && . ~/.profile.local || true
 
-if [[ -n $PS1 ]]; then
-	PS1="\$(/usr/bin/prettyprompt \$?)"
-fi
+PS1="\$(/usr/bin/prettyprompt \$?)"
 export PRETTYPROMPT_SHELL="bash"
 
 if [ -d $HOME/.rbenv ]; then

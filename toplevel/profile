@@ -1,5 +1,3 @@
-rm -rf $HOME/.adobe
-
 export EDITOR=vim
 export PAGER="less -R"
 if [ -f /proc/cpuinfo ]; then
@@ -7,17 +5,10 @@ if [ -f /proc/cpuinfo ]; then
 fi
 
 if [ -z "$LOCALPROFILEREAD" ]; then
-	# add home directory path
-	if [ -d "$HOME/bin" ]; then
-		export PATH="$HOME/bin:$PATH"
-	fi
-
+	export PATH="$HOME/bin:/x/bin:$PATH"
 	export BUILD_ROOT=/x/build
-	export RTREE_ROOT=/x
-	# for Golang
-	export GOPATH=$RTREE_ROOT
-	export GOBIN=$GOPATH/bin
-	export PATH="$PATH:$GOBIN"
+	export GOPATH=/x
+	export GOBIN=/x/bin
 
 	if [ -d $HOME/perl5 ]; then
 		eval $(perl -I ~/perl5/lib/perl5/ -Mlocal::lib)
@@ -29,9 +20,13 @@ fi
 
 # aliases
 alias less='less -R'            # recognise color characters
-alias m=mpc
-alias mi='mpc idle player; mpc'
-which ncmpc &>/dev/null || alias ncmpc=ncmpcpp
+if hash mpc &>/dev/null; then
+	alias m=mpc
+	alias mi='mpc idle player; mpc'
+fi
+if hash ncmpcpp &>/dev/null; then
+	alias ncmpc=ncmpcpp
+fi
 if [ "$(uname)" = "Linux" ]; then
 	alias ls='ls --color=auto'
 fi
@@ -41,7 +36,6 @@ fi
 if grep ID=arch /etc/os-release &>/dev/null; then
 	alias p=pacman-wrapper
 fi
-alias rpe="perl -MData::Dump=pp -Mstrict -Mwarnings -le"
 if which pwget &>/dev/null; then
 	pwcopy() {
 		pwget "$@" | xsel -bi
@@ -89,30 +83,7 @@ if hash foreman &>/dev/null; then
 	}
 fi
 
-# this must always be at the end
-export LOCALPROFILEREAD="yes"
-
-if hash docker &>/dev/null; then
-	docker() {
-		if [ $# -eq 0 ]; then
-			env docker "$@"
-		fi
-
-		case "$1" in
-			build)
-				shift
-				env docker build --build-arg https_proxy=$HTTP_PROXY --build-arg http_proxy=$HTTP_PROXY --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg HTTPS_PROXY=$HTTP_PROXY --build-arg NO_PROXY=$NO_PROXY --build-arg no_proxy=$NO_PROXY "$@"
-				;;
-			*)
-				env docker "$@"
-				;;
-		esac
-	}
-fi
-
 if hash kubectl &>/dev/null; then
-	export HAS_KUBECTL=true
-
 	kc() {
 		case $# in
 			1)
@@ -154,16 +125,6 @@ if hash kubectl &>/dev/null; then
 			KUBECTL=kubectl
 		fi
 
-		# if there is a jumpserver involved, it is defined in the .ssh/config
-		# as "Host ${CONTEXT_NAME}" and it includes a LocalForward directive
-		# that allows access to a HTTP proxy which we can use to talk to the
-		# k8s apiserver
-		local CONTEXT_NAME="$(kubectl config current-context)"
-		local PROXY_PORT="$(sed -n "/^Host ${CONTEXT_NAME}/,/^Host/{/LocalForward/p}" "${HOME}/.ssh/config" | awk '{print$2}')"
-		if [ -n "${PROXY_PORT}" ]; then
-			KUBECTL=(env -u no_proxy -u NO_PROXY "https_proxy=http://localhost:${PROXY_PORT}" "HTTPS_PROXY=http://localhost:${PROXY_PORT}" ${KUBECTL})
-		fi
-
 		case "$1" in
 		sh)
 			shift
@@ -184,78 +145,16 @@ if hash kubectl &>/dev/null; then
 	}
 
 	if hash helm &>/dev/null; then
-		h() {
-			# if there is a jumpserver involved, it is defined in the .ssh/config
-			# as "Host ${CONTEXT_NAME}" and it includes a LocalForward directive
-			# that allows access to a HTTP proxy which we can use to talk to the
-			# k8s apiserver
-			local CONTEXT_NAME="$(kubectl config current-context)"
-			local PROXY_PORT="$(sed -n "/^Host ${CONTEXT_NAME}/,/^Host/{/LocalForward/p}" "${HOME}/.ssh/config" | awk '{print$2}')"
-			if [ -n "${PROXY_PORT}" ]; then
-				env -u no_proxy -u NO_PROXY "https_proxy=http://localhost:${PROXY_PORT}" "HTTPS_PROXY=http://localhost:${PROXY_PORT}" helm "$@"
-			else
-				helm "$@"
-			fi
-		}
-
-		# Synopsis: hi [chart-directory] [options]
+		# Synopsis: h <upgrade|diff> [chart-directory] [options]
 		#
-		# Call `helm install` on the chart in that directory, using the appropriate
-		# values.yaml from $HELM_SECRETS_REPO. If no directory is given, use the working directory.
-		# Any additional options are passed on to "helm install".
-		hi() {
-			(
-				case "${1:-empty}" in
-					-*|empty)
-						;;
-					*)
-						cd "$1"
-						shift
-						;;
-				esac
-				if [ ! -f Chart.yaml ]; then
-					echo "Chart.yaml: file not found" >&2
-					return 1
-				fi
-				if [ -z "${HELM_SECRETS_REPO}" ]; then
-					echo "\$HELM_SECRETS_REPO not set!" >&2
-				fi
-
-				git -C "${HELM_SECRETS_REPO}" pull | grep -v 'master is up to date'
-
-				CHART_NAME="$(awk '/name:/{print$2}' Chart.yaml)"
-				CONTEXT_NAME="$(kubectl config current-context)"
-				KUBE_NAMESPACE="$(cat ~/.kubectl-namespace)"
-				VALUES_FILE="$(find "${HELM_SECRETS_REPO}/${CONTEXT_NAME}/values" -name "${CHART_NAME}.yaml" | head -n1)"
-				if [ ! -f "${VALUES_FILE}" ]; then
-					echo "no values.yaml found for ${CHART_NAME} in ${CONTEXT_NAME}" >&2
-					return 1
-				fi
-				GLOBALS_FILE="${HELM_SECRETS_REPO}/${CONTEXT_NAME}/values/globals.yaml"
-				if [ ! -f "${GLOBALS_FILE}" ]; then
-					echo "no globals.yaml found in ${CONTEXT_NAME}" >&2
-					return 1
-				fi
-
-				echo "    Chart: ${CHART_NAME}"
-				echo "Namespace: ${KUBE_NAMESPACE}"
-				echo "   Region: ${CONTEXT_NAME}"
-				echo "   Values: ${VALUES_FILE}"
-				echo -en '>> \e[1;31mInstall chart?\e[0m [Y/n] '
-				read ANSWER
-				if [[ "${ANSWER}" != *[nN]* ]]; then
-					h install . --name "${CHART_NAME}" --namespace "${KUBE_NAMESPACE}" --values "${GLOBALS_FILE}" --values "${VALUES_FILE}" "$@"
-				fi
-			)
-		}
-
-		# Synopsis: hu [chart-directory] [options]
-		#
-		# Call `helm upgrade` on the chart in that directory, using the appropriate
+		# Call `helm upgrade` or `helm diff` on the chart in that directory, using the appropriate
 		# values.yaml from $HELM_SECRETS_REPO. If no directory is given, use the working directory.
 		# Any additional options are passed on to "helm upgrade".
 		hu() {
 			(
+				local COMMAND="$1"
+				shift
+
 				case "${1:-empty}" in
 					-*|empty)
 						;;
@@ -270,6 +169,7 @@ if hash kubectl &>/dev/null; then
 				fi
 				if [ -z "${HELM_SECRETS_REPO}" ]; then
 					echo "\$HELM_SECRETS_REPO not set!" >&2
+					return 1
 				fi
 
 				git -C "${HELM_SECRETS_REPO}" pull | grep -v 'master is up to date'
@@ -287,55 +187,15 @@ if hash kubectl &>/dev/null; then
 					return 1
 				fi
 
-				echo "    Chart: ${CHART_NAME}"
-				echo "   Region: ${CONTEXT_NAME}"
-				echo "   Values: ${VALUES_FILE}"
-				echo -n ">> Upgrade chart? [Y/n] "
-				read ANSWER
-				if [[ "${ANSWER}" != *[nN]* ]]; then
-					h upgrade "${CHART_NAME}" --values "${GLOBALS_FILE}" --values "${VALUES_FILE}" --reset-values "$@" .
-				fi
-			)
-		}
-
-		# Synopsis: hd [chart-directory] [options]
-		#
-		# Like `hu`, but calls `helm diff` instead of `helm upgrade`.
-		hd() {
-			(
-				case "${1:-empty}" in
-					-*|empty)
-						;;
-					*)
-						cd "$1"
-						shift
-						;;
-				esac
-				if [ ! -f Chart.yaml ]; then
-					echo "Chart.yaml: file not found" >&2
+				if [ "${CONTEXT_NAME}" != staging -a "${COMMAND}" = upgrade -a "${I_KNOW_THIS_IS_PROD:-}" != yes ]; then
+					echo "Not upgrading a productive region without I_KNOW_THIS_IS_PROD=yes." >&2
 					return 1
 				fi
-				if [ -z "${HELM_SECRETS_REPO}" ]; then
-					echo "\$HELM_SECRETS_REPO not set!" >&2
-				fi
-
-				git -C "${HELM_SECRETS_REPO}" pull | grep -v 'master is up to date'
-
-				CHART_NAME="$(awk '/name:/{print$2}' Chart.yaml)"
-				CONTEXT_NAME="$(kubectl config current-context)"
-				VALUES_FILE="$(find "${HELM_SECRETS_REPO}/${CONTEXT_NAME}/values" -name "${CHART_NAME}.yaml" | head -n1)"
-				if [ ! -f "${VALUES_FILE}" ]; then
-					echo "no values.yaml found for ${CHART_NAME} in ${CONTEXT_NAME}" >&2
-					return 1
-				fi
-				GLOBALS_FILE="${HELM_SECRETS_REPO}/${CONTEXT_NAME}/values/globals.yaml"
-				if [ ! -f "${GLOBALS_FILE}" ]; then
-					echo "no globals.yaml found in ${CONTEXT_NAME}" >&2
-					return 1
-				fi
-
-				h diff "${CHART_NAME}" --values "${GLOBALS_FILE}" --values "${VALUES_FILE}" "$@" .
+				helm "${COMMAND}" "${CHART_NAME}" --values "${GLOBALS_FILE}" --values "${VALUES_FILE}" --reset-values "$@" .
 			)
 		}
 	fi
 fi
+
+# this must always be at the end
+export LOCALPROFILEREAD="yes"
