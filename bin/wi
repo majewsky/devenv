@@ -1,0 +1,45 @@
+#!/bin/bash
+set -euo pipefail
+
+usage() {
+  echo -e "Usage:\n\twi pw [<ssid>]\n\twi qr [<ssid>]" >&2
+}
+
+if [ $# -eq 0 -o $# -gt 2 ]; then
+  usage
+  exit 1
+fi
+
+# determine SSID to use
+sudo -v
+IFACE="$(sudo ip l | grep '^\S' | cut -d: -f2 | awk '$1~/^wl/{print$1}')"
+SSID="${2:-}"
+if [ -z "${SSID}" ]; then
+  SSID="$(sudo iw dev "${IFACE}" link | sed -n '/SSID:/{s/^\s*SSID:\s*//;p}')"
+fi
+if [ -z "${SSID}" ]; then
+  echo "Not connected." >&2
+  exit 1
+fi
+
+# find PSK for this SSID
+PSK="$(grep -C1 -F "ssid=\"${SSID}\"" "/etc/wpa_supplicant/wpa_supplicant-${IFACE}.conf" | grep psk= | cut -d'"' -f2)"
+if [ -z "${PSK}" ]; then
+  echo "Cannot find psk for ssid=\"${SSID}\"." >&2
+  exit 1
+fi
+
+# display in the desired format
+case "$1" in
+  pw)
+    exec sm "${PSK}"
+    ;;
+  qr)
+    qrencode -s 20 -t PNG -o - "WIFI:S:${SSID};T:WPA2;P:${PSK}" > /tmp/wiqr.png
+    exec sxiv -f -s f /tmp/wiqr.png
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+esac
