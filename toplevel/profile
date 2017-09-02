@@ -56,6 +56,13 @@ if hash rg &>/dev/null; then
 	}
 fi
 
+forever() {
+	while true; do
+		"$@"
+		sleep 0.1 # to make ^C work correctly if "$@" does not handle it correctly
+	done
+}
+
 if hash mpv &>/dev/null; then
 	mpv() {
 		if [ $# -eq 0 ]; then
