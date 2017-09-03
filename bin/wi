@@ -32,7 +32,7 @@ fi
 # display in the desired format
 case "$1" in
   pw)
-    exec sm "${PSK}"
+    exec sm -n monospace "${PSK}"
     ;;
   qr)
     qrencode -s 20 -t PNG -o - "WIFI:S:${SSID};T:WPA2;P:${PSK}" > /tmp/wiqr.png
