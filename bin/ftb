@@ -1,0 +1,3 @@
+#!/bin/sh
+cd $HOME/Pakete/FTB
+exec java -jar FTB_Launcher.jar
