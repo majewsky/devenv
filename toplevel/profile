@@ -177,7 +177,7 @@ if hash kubectl &>/dev/null; then
 		# Call `helm upgrade` or `helm diff` on the chart in that directory, using the appropriate
 		# values.yaml from $HELM_SECRETS_REPO. If no directory is given, use the working directory.
 		# Any additional options are passed on to "helm upgrade".
-		hu() {
+		h() {
 			(
 				local COMMAND="$1"
 				shift
@@ -218,7 +218,12 @@ if hash kubectl &>/dev/null; then
 					echo "Not upgrading a productive region without I_KNOW_THIS_IS_PROD=yes." >&2
 					return 1
 				fi
-				helm "${COMMAND}" "${CHART_NAME}" --values "${GLOBALS_FILE}" --values "${VALUES_FILE}" --reset-values "$@" .
+
+				EXTRA_ARGS=""
+				if [ "${COMMAND}" = upgrade ]; then
+					EXTRA_ARGS="--reset-values"
+				fi
+				helm "${COMMAND}" "${CHART_NAME}" --values "${GLOBALS_FILE}" --values "${VALUES_FILE}" ${EXTRA_ARGS} "$@" .
 			)
 		}
 	fi
