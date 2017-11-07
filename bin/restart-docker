@@ -1,0 +1,12 @@
+#!/bin/bash
+set -euo pipefail
+if [ $EUID != 0 ]; then
+  echo "must run as root" >&2
+  exit 1
+fi
+
+systemctl stop docker
+iptables -t nat -F
+ifconfig docker0 down
+brctl delbr docker0
+systemctl start docker
