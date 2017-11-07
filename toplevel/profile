@@ -86,15 +86,18 @@ fi
 # for OpenStack
 if [ -f "$HOME/.local/bin/openstack" ]; then
 	cloud_is() {
-		eval "$(/x/src/github.com/majewsky/devenv/env_for_cloud.rb $1)"
-		env | grep '^OS_' | sed '/^OS_PASSWORD=/s/=.*/=<hidden>/' | sort
-		if [ -z "$OS_PASSWORD" ]; then
-			echo -n "OS_PASSWORD="
-			read -s OS_PASSWORD && export OS_PASSWORD
-			if [ -n "$OS_PASSWORD" ]; then
-				echo "<hidden>"
-			else
-				echo "<not set>"
+		unset $(env | grep '^OS_' | cut -d= -f1) CURRENT_OS_CLOUD
+		eval "$(/x/bin/cloud "$@"; echo "EXIT_CODE=$?")"
+		if [ "$EXIT_CODE" = 0 ]; then
+			env | grep '^OS_' | sed '/^OS_PASSWORD=/s/=.*/=<hidden>/' | sort
+			if [ -z "$OS_PASSWORD" ]; then
+				echo -n "OS_PASSWORD="
+				read -s OS_PASSWORD && export OS_PASSWORD
+				if [ -n "$OS_PASSWORD" ]; then
+					echo "<hidden>"
+				else
+					echo "<not set>"
+				fi
 			fi
 		fi
 	}
