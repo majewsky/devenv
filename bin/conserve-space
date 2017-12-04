@@ -4,6 +4,7 @@
 LOCATIONS=(
     ".bundle/cache"
     ".cache"
+    ".cargo"
     ".gem/specs"
     ".glide/cache"
     ".helm/cache"
