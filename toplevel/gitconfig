@@ -1,6 +1,7 @@
-[user]
-	name = Stefan Majewsky
-	email = majewsky@gmx.net
+# This section has been moved to /etc/gitconfig to allow host-specific overrides.
+# [user]
+# 	name = Stefan Majewsky
+# 	email = majewsky@gmx.net
 [advice]
 	statusHints = false
 	detachedHead = false
