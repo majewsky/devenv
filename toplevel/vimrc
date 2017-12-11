@@ -150,7 +150,7 @@ let g:syntastic_tex_checkers = [] "no lacheck/chktex
 let g:syntastic_perl_checkers = [ 'perl', 'perlcritic' ]
 let g:syntastic_enable_perl_checker = 1
 let g:syntastic_ruby_checkers = [ 'mri' ]
-let g:syntastic_rust_checkers = [ 'rustc' ]
+let g:syntastic_rust_checkers = [ 'cargo' ]
 let g:syntastic_go_checkers = [ 'go', 'golint' ]
 let g:syntastic_c_compiler_options = '-std=gnu99 -Wall -Wextra -pedantic'
 let g:syntastic_cpp_compiler_options = '-std=c++14 -Wall -Wextra -pedantic -I/usr/include/qt'
