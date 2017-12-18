@@ -1,5 +1,15 @@
 export EDITOR=vim
 export PAGER="less -R"
+
+# set colors for man(1)
+export LESS_TERMCAP_mb=$'\e[01;31m'       # start of blinking text
+export LESS_TERMCAP_md=$'\e[01;38;5;74m'  # start of bold text
+export LESS_TERMCAP_me=$'\e[0m'           # end of blinking/bold text
+export LESS_TERMCAP_so=$'\e[30;48;5;246m' # start of statusline text
+export LESS_TERMCAP_se=$'\e[0m'           # end of statusline text
+export LESS_TERMCAP_us=$'\e[04;38;5;146m' # start of underlined text
+export LESS_TERMCAP_ue=$'\e[0m'           # end of underlined text
+
 if [ -f /proc/cpuinfo ]; then
 	export NUMCPUCORES="$(nproc)"
 fi

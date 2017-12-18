@@ -5,6 +5,7 @@ LOCATIONS=(
     ".bundle/cache"
     ".cache"
     ".cargo"
+    ".fontconfig"
     ".gem/specs"
     ".glide/cache"
     ".helm/cache"
@@ -13,6 +14,7 @@ LOCATIONS=(
     ".local/etc"
     ".local/include"
     ".local/lib"
+    ".node-gyp"
     ".phantomjs"
     ".rbenv"
 )
