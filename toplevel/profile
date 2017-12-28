@@ -51,6 +51,11 @@ if hash pwget &>/dev/null; then
 		pwget "$@" | xsel -bi
 	}
 fi
+if hash pwget2 &>/dev/null; then
+	pwcopy2() {
+		pwget2 "$@" | xsel -bi
+	}
+fi
 if hash units &>/dev/null; then
 	alias units="units --verbose"
 fi
