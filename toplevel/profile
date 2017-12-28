@@ -28,6 +28,11 @@ if [ -z "$LOCALPROFILEREAD" ]; then
 	fi
 fi
 
+# fix styling of KDE apps under non-KDE desktop (e.g. Sway)
+if [ "${XDG_CURRENT_DESKTOP}" != KDE -a "${XDG_CURRENT_DESKTOP}" != GNOME ]; then
+	export QT_QPA_PLATFORMTHEME="qt5ct"
+fi
+
 # aliases
 alias less='less -R'            # recognise color characters
 if hash mpc &>/dev/null; then
