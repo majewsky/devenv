@@ -64,6 +64,11 @@ fi
 if hash units &>/dev/null; then
 	alias units="units --verbose"
 fi
+if hash makepkg &>/dev/null; then
+	mksrcinfo() {
+		makepkg --printsrcinfo > .SRCINFO
+	}
+fi
 cg() {
 	local REPO_PATH="$(rtree get "$1")"
 	[ $? -eq 0 ] && cd "${REPO_PATH}"
