@@ -9,6 +9,7 @@ LOCATIONS=(
     ".gem/specs"
     ".glide/cache"
     ".helm/cache"
+    ".helm/repository/cache"
     ".kube"
     ".local/bin"
     ".local/etc"

@@ -247,11 +247,21 @@ if hash kubectl &>/dev/null; then
 					return 1
 				fi
 
-				EXTRA_ARGS=""
-				if [ "${COMMAND}" = upgrade ]; then
-					EXTRA_ARGS="--reset-values"
+				EXTRA_ARGS=()
+				GLOBAL_VALUES_FILE="$(find "${HELM_SECRETS_REPO}/global/values" -name "${CHART_NAME}.yaml" | head -n1)"
+				if [ -f "${GLOBAL_VALUES_FILE}" ]; then
+					EXTRA_ARGS+=(--values "${GLOBAL_VALUES_FILE}")
 				fi
-				helm "${COMMAND}" "${CHART_NAME}" --values "${GLOBALS_FILE}" --values "${VALUES_FILE}" ${EXTRA_ARGS} "$@" .
+				if [ "${COMMAND}" = upgrade ]; then
+					EXTRA_ARGS+=(--reset-values)
+				fi
+
+				FIRST_ARG="${CHART_NAME}"
+				if [ "${COMMAND}" = install ]; then
+					FIRST_ARG=""
+				fi
+
+				helm "${COMMAND}" ${FIRST_ARG} --values "${GLOBALS_FILE}" --values "${VALUES_FILE}" "${EXTRA_ARGS[@]}" "$@" .
 			)
 		}
 	fi
