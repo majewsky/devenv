@@ -13,12 +13,12 @@ call vundle#begin()
     Plugin 'tpope/vim-surround'
     Plugin 'tpope/vim-commentary'
     Plugin 'ciaranm/detectindent'
-    Plugin 'scrooloose/syntastic'
     Plugin 'godlygeek/tabular'
     Plugin 'Lokaltog/vim-easymotion'
     Plugin 'cespare/vim-toml'
     Plugin 'cespare/vim-go-templates'
     Plugin 'rust-lang/rust.vim'
+    Plugin 'w0rp/ale'
 
 call vundle#end()
 filetype plugin indent on
@@ -143,18 +143,9 @@ function! ColorSchemeFixes()
     hi ErrorMsg term=none cterm=none
 endfunction
 
-" configuration for Syntastic
-let g:syntastic_check_on_open=1
-let g:syntastic_enable_signs=1
-let g:syntastic_tex_checkers = [] "no lacheck/chktex
-let g:syntastic_perl_checkers = [ 'perl', 'perlcritic' ]
-let g:syntastic_enable_perl_checker = 1
-let g:syntastic_ruby_checkers = [ 'mri' ]
-let g:syntastic_rust_checkers = [ 'cargo' ]
-let g:syntastic_go_checkers = [ 'go', 'golint' ]
-let g:syntastic_c_compiler_options = '-std=gnu99 -Wall -Wextra -pedantic'
-let g:syntastic_cpp_compiler_options = '-std=c++14 -Wall -Wextra -pedantic -I/usr/include/qt'
-
 " configuration for DetectIndent
 let g:detectindent_preferred_expandtab = 1
 let g:detectindent_preferred_indent = 2
+
+" configuration for ALE
+nmap ga :ALENextWrap<CR>
