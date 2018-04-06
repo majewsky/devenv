@@ -76,8 +76,11 @@ cg() {
 
 if hash rg &>/dev/null; then
 	rg() {
-		# force ripgrep output to look like on a tty, even when sent to less(1)
-		env rg --heading --color always --line-number "$@"
+		if [ -t 1 ]; then
+			command rg -p "$@" | less -RFX
+		else
+			command rg "$@"
+		fi
 	}
 fi
 
