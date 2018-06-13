@@ -264,7 +264,10 @@ if hash kubectl &>/dev/null; then
 					FIRST_ARG=""
 				fi
 
-				helm "${COMMAND}" ${FIRST_ARG} --values "${GLOBALS_FILE}" --values "${VALUES_FILE}" "${EXTRA_ARGS[@]}" "$@" .
+				(
+					set -x
+					helm "${COMMAND}" ${FIRST_ARG} --values "${GLOBALS_FILE}" --values "${VALUES_FILE}" "${EXTRA_ARGS[@]}" "$@" .
+				)
 			)
 		}
 	fi
