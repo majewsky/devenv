@@ -260,7 +260,7 @@ if hash kubectl &>/dev/null; then
 				fi
 
 				FIRST_ARG="${CHART_NAME}"
-				if [ "${COMMAND}" = install ]; then
+				if [ "${COMMAND}" = install -o "${COMMAND}" = template ]; then
 					FIRST_ARG=""
 				fi
 
