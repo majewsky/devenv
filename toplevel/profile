@@ -62,7 +62,7 @@ if hash pwget2 &>/dev/null; then
 	}
 fi
 if hash units &>/dev/null; then
-	alias units="units --verbose"
+	alias units="units --verbose -o %.25g"
 fi
 if hash makepkg &>/dev/null; then
 	mksrcinfo() {
