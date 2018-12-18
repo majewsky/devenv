@@ -59,10 +59,14 @@
 	insteadOf = ghp:
 	pushInsteadOf = gh:
 	pushInsteadOf = https://github.com/
+[url "https://gitlab.com/"]
+	insteadOf = gl:
 [url "git@git.bethselamin.de:"]
 	insteadOf = gogs:
 [url "git@github.wdf.sap.corp:"]
 	insteadOf = ge:
+[url "gitolite@git.c3d2.de:"]
+	insteadOf = c3d2:
 [status]
 	submodulesummary = 1
 [push]
