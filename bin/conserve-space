@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # list of large directories below $HOME that do not need to be backed up
 LOCATIONS=(

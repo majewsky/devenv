@@ -19,6 +19,7 @@ call vundle#begin()
     Plugin 'cespare/vim-go-templates'
     Plugin 'rust-lang/rust.vim'
     Plugin 'w0rp/ale'
+    Plugin 'LnL7/vim-nix'
 
 call vundle#end()
 filetype plugin indent on
