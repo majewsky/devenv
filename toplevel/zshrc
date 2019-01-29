@@ -67,4 +67,6 @@ function psgrep() { # all arguments passed to grep
 	ps aux | sed -n '1p;/\<sed\>/d;/'"$1"'/p'
 }
 
-compdef pacman-wrapper=pacman
+if hash pacman &>/dev/null; then
+	compdef pacman-wrapper=pacman
+fi
