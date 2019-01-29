@@ -1,7 +1,7 @@
 source ~/.profile || true
 test -s ~/.profile.local && . ~/.profile.local || true
 
-PS1="\$(/usr/bin/prettyprompt \$?)"
+PS1="\$($(which prettyprompt || echo prettyprompt) \$?)"
 export PRETTYPROMPT_SHELL="bash"
 
 if [ -d $HOME/.rbenv ]; then
