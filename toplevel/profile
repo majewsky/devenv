@@ -111,6 +111,17 @@ if hash youtube-dl &>/dev/null; then
 	}
 fi
 
+if hash nix-build &>/dev/null; then
+	nb() {
+		if [ $# -eq 1 ]; then
+			nix-build -E "with (import <nixpkgs> {}); callPackage $1 {}"
+		else
+			echo "usage: nb <derivation-source-file>" >&2
+			return 1
+		fi
+	}
+fi
+
 # for OpenStack
 if [ -f "$HOME/.local/bin/openstack" ]; then
 	cloud_is() {
