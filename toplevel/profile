@@ -102,6 +102,15 @@ if hash mpv &>/dev/null; then
 			env mpv "$@"
 		fi
 	}
+	zdf() {
+		env mpv https://www.zdf.de/sender/zdf/zdf-live-beitrag-100.html
+	}
+	zdfinfo() {
+		env mpv https://www.zdf.de/dokumentation/zdfinfo-doku/zdfinfo-live-beitrag-100.html
+	}
+	phoenix() {
+		env mpv https://www.zdf.de/sender/phoenix/phoenix-live-beitrag-100.html
+	}
 fi
 
 if hash youtube-dl &>/dev/null; then
