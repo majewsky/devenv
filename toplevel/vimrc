@@ -116,6 +116,8 @@ autocmd Syntax perl call PerlCustomSyntax()
 
 hi link javaScriptStringS PreProc
 hi link javaScriptStringD PreProc
+hi link tomlTable      Define
+hi link tomlTableArray Define
 
 function! PerlCustomSyntax()
     syn keyword perlStatementList uniq natatime
