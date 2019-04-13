@@ -70,3 +70,8 @@ function psgrep() { # all arguments passed to grep
 if hash pacman &>/dev/null; then
 	compdef pacman-wrapper=pacman
 fi
+
+# when Ctrl-V is pressed, open the current command line in vim for editing
+autoload edit-command-line
+zle -N edit-command-line
+bindkey '^V' edit-command-line
