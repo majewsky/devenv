@@ -48,6 +48,9 @@ fi
 if [ -f /usr/bin/steam ]; then
 	alias steam="nice -n10 /usr/bin/steam"
 fi
+if [ -f /usr/bin/steam-native ]; then
+	alias steam-native="nice -n10 /usr/bin/steam-native"
+fi
 if grep ID=arch /etc/os-release &>/dev/null; then
 	alias p=pacman-wrapper
 fi
