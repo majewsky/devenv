@@ -70,6 +70,8 @@
 	insteadOf = ge:
 [url "gitolite@git.c3d2.de:"]
 	insteadOf = c3d2:
+[url "git@gitea.c3d2.de:"]
+	insteadof = c3g:
 [status]
 	submodulesummary = 1
 [push]
