@@ -110,6 +110,7 @@ hi link javaScriptStringS PreProc
 hi link javaScriptStringD PreProc
 hi link tomlTable      Define
 hi link tomlTableArray Define
+hi link jsonKeyword String
 
 function! PerlCustomSyntax()
     syn keyword perlStatementList uniq natatime
