@@ -57,11 +57,6 @@ set shortmess+=I
 set shiftwidth=2 tabstop=2 softtabstop=2
 set statusline=%<%f\ %#Search#\ %Y%M%R\ %*%=\ %-14.(%l,%c%V%)\ %P
 set tildeop
-if system("uname") != "Darwin\n"
-    if !has('nvim')
-        set ttymouse=sgr
-    end
-end
 set wildmode=longest:full wildmenu
 
 let perl_include_pod=1
@@ -90,11 +85,6 @@ vmap <bar>:     :Tab/^[^:]*:\zs/l1l0<CR>
 vmap <bar>=     :Tab assignment<CR>
 " quick key for easymotion plugin
 map <Tab> <Plug>(easymotion-prefix)
-
-" quick exit from terminal mode in nvim
-if has('nvim')
-    tnoremap <Esc><Esc> <C-\><C-n>
-end
 
 " setup color scheme
 let g:gardener_light_comments=1
