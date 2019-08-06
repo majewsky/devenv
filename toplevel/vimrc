@@ -42,8 +42,7 @@ com! LowColor set t_Co=8 | colo torte
 vnoremap s s
 
 set background=dark
-set cindent
-set cinoptions=L0,l1,(0,W4
+set nocindent smartindent
 set expandtab smarttab
 set formatoptions+=ro
 set hlsearch incsearch
@@ -66,6 +65,9 @@ noremap <Left> <Nop>
 noremap <Right> <Nop>
 noremap <Up> <Nop>
 noremap <Down> <Nop>
+
+" disable smartindent behavior for # symbol (see :help 'smartindent')
+inoremap # X<BS>#
 
 " binding to highlight last inserted text
 nnoremap gV `[v`]
@@ -90,7 +92,7 @@ map <Tab> <Plug>(easymotion-prefix)
 let g:gardener_light_comments=1
 colo gardener-transparent
 
-autocmd FileType {tex,python,ruby,markdown,gitcommit} setlocal nocindent
+autocmd FileType * setlocal nocindent
 
 autocmd Syntax {cpp,c} runtime syntax/doxygen.vim
 " enable pair matching for angle brackets (e.g. C++ templates)
