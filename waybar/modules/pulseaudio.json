@@ -1,0 +1,10 @@
+{
+  "scroll-step": 2,
+  "format": "out {volume}% {format_source}",
+  "format-muted": "out --- {format_source}",
+  "format-source": "in {volume}%",
+  "format-source-muted": "",
+  "format-icons": { "default": "" },
+  "on-click": "pavucontrol",
+  "on-click-right": "ponymix toggle"
+}

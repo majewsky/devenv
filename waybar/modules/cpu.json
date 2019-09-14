@@ -1,0 +1,5 @@
+{
+  "interval": 3,
+  "format": "cpu {usage}%",
+  "tooltip": false
+}

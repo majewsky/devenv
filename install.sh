@@ -41,3 +41,8 @@ if hash sway &> /dev/null; then
     mkdir -p "${HOME}/.config/sway"
     printf "include $PWD/%s\n" $(ls -1 sway/common/*.conf sway/"$(hostname)"/*.conf | sort -t/ -k3) > "${HOME}/.config/sway/config"
 fi
+
+if hash waybar &> /dev/null; then
+    mkdir -p "${HOME}/.config/waybar"
+    ./waybar/compile.sh "$(hostname)" > "${HOME}/.config/waybar/config"
+fi
