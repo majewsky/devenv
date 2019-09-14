@@ -33,3 +33,11 @@ if [ ! -d vim/bundle/Vundle.vim/.git ]; then
     git clone https://github.com/gmarik/Vundle.vim.git vim/bundle/Vundle.vim
     vim +PluginInstall +qall
 fi
+
+################################################################################
+# build Sway config
+
+if hash sway &> /dev/null; then
+    mkdir -p "${HOME}/.config/sway"
+    printf "include $PWD/%s\n" $(ls -1 sway/common/*.conf sway/"$(hostname)"/*.conf | sort -t/ -k3) > "${HOME}/.config/sway/config"
+fi
