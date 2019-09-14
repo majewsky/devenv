@@ -3,5 +3,5 @@
   "height": 32,
   "modules-left": [ "sway/workspaces", "sway/mode" ],
   "modules-center": [],
-  "modules-right": [ "mpd", "pulseaudio", "cpu", "memory", "tray", "clock" ]
+  "modules-right": [ "mpd", "pulseaudio", "network", "cpu", "memory", "battery", "tray", "clock" ]
 }
