@@ -1,5 +1,5 @@
 {
-  "format": "MPD: {artist} - {album} - {title} ({elapsedTime:%M:%S}/{totalTime:%M:%S})",
+  "format": "{title} ({elapsedTime:%M:%S}/{totalTime:%M:%S})",
   "format-stopped": "",
   "tooltip": false,
   "on-click": "mpc toggle",
