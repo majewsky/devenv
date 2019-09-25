@@ -1,0 +1,6 @@
+#compdef mo
+typeset -A opt_args
+
+if (( CURRENT == 2 )); then
+  _alternative "playbooks:playbook names:($( cd /x/src/git.bethselamin.de/stefan/secrets/monastery/; find -type f -name \*.json | sed 's+^./\(.*\)\.json+\1+' ))"
+fi

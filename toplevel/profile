@@ -137,6 +137,17 @@ if hash nix-build &>/dev/null; then
 	}
 fi
 
+if hash monastery &>/dev/null; then
+	mo() {
+		if [ $# -eq 1 ]; then
+			monastery "/x/src/git.bethselamin.de/stefan/secrets/monastery/$1.json"
+		else
+			echo "usage: mo <playbook-name>" >&2
+			return 1
+		fi
+	}
+fi
+
 # for OpenStack
 if hash cloud &>/dev/null; then
 	cloud_is() {
