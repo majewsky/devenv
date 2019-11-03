@@ -12,6 +12,7 @@ setup_link() {
         echo "Conflict with existing non-symlink ${TARGET}" >&2
         return 1
     fi
+    mkdir -p "$(dirname "${TARGET}")"
     ln -sfT "${PWD}/${SOURCE}" "${TARGET}"
 }
 
@@ -45,4 +46,15 @@ fi
 if hash waybar &> /dev/null; then
     mkdir -p "${HOME}/.config/waybar"
     ./waybar/compile.sh "$(hostname)" > "${HOME}/.config/waybar/config"
+fi
+
+################################################################################
+# inject customizations into Firefox profiles
+
+if [ -d "${HOME}/.mozilla/firefox" ]; then
+    for PROFILE_DIR in "${HOME}/.mozilla/firefox"/*.default; do
+        git ls-files firefox | while read SOURCE_FILE; do
+            setup_link "${SOURCE_FILE}" "${PROFILE_DIR}/${SOURCE_FILE#firefox/}"
+        done
+    done
 fi
