@@ -56,12 +56,20 @@ if grep ID=arch /etc/os-release &>/dev/null; then
 fi
 if hash pwget &>/dev/null; then
 	pwcopy() {
-		pwget "$@" | xsel -bi
+		if [ "${WAYLAND_DISPLAY}" != "" ]; then
+			pwget "$@" | wl-copy --type text/plain --paste-once --trim-newline
+		else
+			pwget "$@" | xsel -bi
+		fi
 	}
 fi
 if hash pwget2 &>/dev/null; then
 	pwcopy2() {
-		pwget2 "$@" | xsel -bi
+		if [ "${WAYLAND_DISPLAY}" != "" ]; then
+			pwget2 "$@" | wl-copy --type text/plain --paste-once --trim-newline
+		else
+			pwget2 "$@" | xsel -bi
+		fi
 	}
 fi
 if hash units &>/dev/null; then
