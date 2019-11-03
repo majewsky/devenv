@@ -1,7 +1,7 @@
 {
   "layer": "top",
   "height": 32,
-  "modules-left": [ "sway/workspaces", "sway/mode", "mpd" ],
+  "modules-left": [ "sway/workspaces", "sway/mode" ],
   "modules-center": [],
   "modules-right": [ "pulseaudio", "network", "cpu", "memory", "battery", "tray", "clock" ]
 }
