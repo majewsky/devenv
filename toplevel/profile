@@ -108,7 +108,11 @@ forever() {
 if hash mpv &>/dev/null; then
 	mpv() {
 		if [ $# -eq 0 ]; then
-			env mpv "$(xsel -b)"
+			if [ "${WAYLAND_DISPLAY}" != "" ]; then
+				env mpv "$(wl-paste --type text/plain)"
+			else
+				env mpv "$(xsel -b)"
+			fi
 		else
 			env mpv "$@"
 		fi
@@ -127,7 +131,11 @@ fi
 if hash youtube-dl &>/dev/null; then
 	youtube-dl() {
 		if [ $# -eq 0 ]; then
-			env youtube-dl -f best "$(xsel -b)"
+			if [ "${WAYLAND_DISPLAY}" != "" ]; then
+				env youtube-dl -f best "$(wl-paste --type text/plain)"
+			else
+				env youtube-dl -f best "$(xsel -b)"
+			fi
 		else
 			env youtube-dl "$@"
 		fi
