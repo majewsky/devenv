@@ -40,7 +40,7 @@ user_pref("media.autoplay.default", 5); // 5 = block all autoplay
 // locale settings
 
 user_pref("browser.search.region", "DE");
-user_pref("intl.accept_languages", "de-DE, de, en-US, en");
+user_pref("intl.accept_languages", "en-US, en");
 //respect LC_TIME <https://bugzilla.mozilla.org/show_bug.cgi?id=1464592>
 user_pref("intl.regional_prefs.use_os_locales", true);
 
