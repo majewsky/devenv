@@ -285,7 +285,7 @@ if hash kubectl &>/dev/null; then
 
 				git -C "${HELM_SECRETS_REPO}" pull | grep -v 'master is up to date'
 
-				CHART_NAME="$(awk '/name:/{print$2}' Chart.yaml)"
+				CHART_NAME="$(awk '/^name:/{print$2}' Chart.yaml)"
 				CONTEXT_NAME="$(kubectl config current-context)"
 				VALUES_FILE="$(find "${HELM_SECRETS_REPO}/${CONTEXT_NAME}/values" -name "${CHART_NAME}.yaml" | head -n1)"
 				if [ ! -f "${VALUES_FILE}" ]; then

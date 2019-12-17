@@ -102,6 +102,9 @@ autocmd FileType cpp setlocal comments-=:// comments+=:///,://
 
 autocmd BufReadPost * DetectIndent
 
+" only regular old smartindent for JS, plz
+autocmd FileType javascript setlocal smartindent indentexpr= indentkeys=
+
 "formatting style for Perl code
 autocmd FileType perl setlocal iskeyword-=: | syntax sync fromstart
 autocmd Syntax perl call PerlCustomSyntax()
