@@ -1,6 +1,0 @@
-{
-  "interval": 5,
-  "format-disconnected": "no network",
-  "format": "{ifname}: {ipaddr}/{cidr}",
-  "format-alt": "{ifname}: {ipaddr}/{cidr}"
-}

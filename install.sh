@@ -43,9 +43,11 @@ if hash sway &> /dev/null; then
     printf "include $PWD/%s\n" $(ls -1 sway/common/*.conf sway/"$(hostname)"/*.conf | sort -t/ -k3) > "${HOME}/.config/sway/config"
 fi
 
-if hash waybar &> /dev/null; then
-    mkdir -p "${HOME}/.config/waybar"
-    ./waybar/compile.sh "$(hostname)" > "${HOME}/.config/waybar/config"
+if hash i3status-rs &> /dev/null; then
+    for FILE in $(ls -1 i3status-rust/common/*.toml i3status-rust/"$(hostname)"/*.toml | sort -t/ -k3); do
+        cat "${FILE}"
+        echo
+    done > "${HOME}/.config/i3status-rust.toml"
 fi
 
 ################################################################################

@@ -1,0 +1,8 @@
+icons = "none"
+
+[theme]
+name = "slick"
+[theme.overrides]
+idle_bg = "#000000"
+alternating_tint_bg = "#444444"
+separator = ""

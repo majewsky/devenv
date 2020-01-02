@@ -1,0 +1,15 @@
+[[block]]
+block = "net"
+device = "enp2s0"
+ip = true
+speed_up = false
+speed_down = false
+hide_inactive = true
+
+[[block]]
+block = "net"
+device = "wlp4s0"
+ip = true
+speed_up = false
+speed_down = false
+hide_inactive = true
