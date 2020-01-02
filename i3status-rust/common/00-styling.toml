@@ -1,8 +1,29 @@
-icons = "none"
+[icons]
+name = "none"
+[icons.overrides]
+bat = " bat "
+bat_full = " bat "
+bat_charging = " pwr "
+bat_discharging = " bat "
+bat_quarter = " bat "
+bat_three_quarters = " bat "
+backlight_empty = " bl "
+backlight_partial1 = " bl "
+backlight_partial2 = " bl "
+backlight_partial3 = " bl "
+backlight_full = " bl "
+cpu = " cpu "
+memory_mem = " mem "
+net_wired = " en "
+net_wireless = " wl"
+volume_muted = "×"
+volume_full = " vol "
+volume_half = " vol "
+volume_empty = " vol "
 
 [theme]
 name = "slick"
 [theme.overrides]
 idle_bg = "#000000"
-alternating_tint_bg = "#444444"
+alternating_tint_bg = "#222222"
 separator = ""
