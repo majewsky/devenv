@@ -287,18 +287,19 @@ if hash kubectl &>/dev/null; then
 
 				CHART_NAME="$(awk '/^name:/{print$2}' Chart.yaml)"
 				CONTEXT_NAME="$(kubectl config current-context)"
-				VALUES_FILE="$(find "${HELM_SECRETS_REPO}/${CONTEXT_NAME}/values" -name "${CHART_NAME}.yaml" | head -n1)"
+				REGION_NAME="${CONTEXT_NAME#?-}"
+				VALUES_FILE="$(find "${HELM_SECRETS_REPO}/${REGION_NAME}/values" -name "${CHART_NAME}.yaml" | head -n1)"
 				if [ ! -f "${VALUES_FILE}" ]; then
-					echo "no values.yaml found for ${CHART_NAME} in ${CONTEXT_NAME}" >&2
+					echo "no values.yaml found for ${CHART_NAME} in ${REGION_NAME}" >&2
 					return 1
 				fi
-				GLOBALS_FILE="${HELM_SECRETS_REPO}/${CONTEXT_NAME}/values/globals.yaml"
+				GLOBALS_FILE="${HELM_SECRETS_REPO}/${REGION_NAME}/values/globals.yaml"
 				if [ ! -f "${GLOBALS_FILE}" ]; then
-					echo "no globals.yaml found in ${CONTEXT_NAME}" >&2
+					echo "no globals.yaml found in ${REGION_NAME}" >&2
 					return 1
 				fi
 
-				if [ "${CONTEXT_NAME}" != staging -a "${CONTEXT_NAME}" != qa-de-1 -a "${COMMAND}" = upgrade -a "${I_KNOW_THIS_IS_PROD:-}" != yes ]; then
+				if [ "${REGION_NAME}" != staging -a "${REGION_NAME}" != qa-de-1 -a "${COMMAND}" = upgrade -a "${I_KNOW_THIS_IS_PROD:-}" != yes ]; then
 					echo "Not upgrading a productive region without I_KNOW_THIS_IS_PROD=yes." >&2
 					return 1
 				fi
