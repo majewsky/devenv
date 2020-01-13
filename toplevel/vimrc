@@ -21,6 +21,10 @@ call vundle#begin()
     Plugin 'w0rp/ale'
     Plugin 'LnL7/vim-nix'
 
+    " override broken Markdown syntax highlighting shipping with Vim 8.2
+    " ref: https://github.com/tpope/vim-markdown/issues/151
+    Plugin 'tpope/vim-markdown'
+
 call vundle#end()
 filetype plugin indent on
 
