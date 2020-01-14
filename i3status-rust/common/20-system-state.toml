@@ -1,13 +1,13 @@
 [[block]]
+block = "cpu"
+interval = 1
+
+[[block]]
 block = "memory"
 display_type = "memory"
 format_mem = "{Mupi}%"
 format_swap = "{SUp}%"
 clickable = false
-
-[[block]]
-block = "cpu"
-interval = 1
 
 [[block]]
 block = "sound"
