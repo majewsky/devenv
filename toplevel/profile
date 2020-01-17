@@ -91,9 +91,9 @@ cg() {
 if hash rg &>/dev/null; then
 	rg() {
 		if [ -t 1 ]; then
-			command rg -p "$@" | less -RFX
+			command rg --sort-files -g '!/vendor/' -p "$@" | less -RFX
 		else
-			command rg "$@"
+			command rg --sort-files -g '!/vendor/' "$@"
 		fi
 	}
 fi
