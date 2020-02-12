@@ -153,3 +153,5 @@ let g:detectindent_preferred_indent = 2
 " configuration for ALE
 nmap ga :ALENextWrap<CR>
 let g:ale_haskell_ghc_options = '-fno-code -v0 -dynamic'
+
+let g:ale_linters = { 'go': [ 'gobuild', 'govet', 'golint' ] }
