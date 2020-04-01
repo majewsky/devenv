@@ -155,3 +155,4 @@ nmap ga :ALENextWrap<CR>
 let g:ale_haskell_ghc_options = '-fno-code -v0 -dynamic'
 
 let g:ale_linters = { 'go': [ 'gobuild', 'govet', 'golint' ] }
+let g:ale_linters_ignore = { 'javascriptreact': ['eslint'] }

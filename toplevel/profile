@@ -249,6 +249,12 @@ if hash kubectl &>/dev/null; then
 			shift
 			${KUBECTL} get "$@" -o yaml
 			;;
+		psql)
+			shift
+			local DB_NAME="$1"
+			shift
+			${KUBECTL} exec -ti -c postgres "$(${KUBECTL} get pods -l "app=${DB_NAME}-postgresql" -o jsonpath='{.items[*].metadata.name}')" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM psql -U postgres -d "$DB_NAME" "$@"
+			;;
 		*)
 			${KUBECTL} "$@"
 			;;
