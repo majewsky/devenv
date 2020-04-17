@@ -175,7 +175,7 @@ if hash cloud &>/dev/null; then
 				echo -n "OS_PASSWORD="
 				read -s OS_PASSWORD && export OS_PASSWORD
 				if [ -n "$OS_PASSWORD" ]; then
-					echo "<hidden>"
+					echo "<sha256:$(echo "$OS_PASSWORD" | sha256sum | cut -c1-16)...>"
 				else
 					echo "<not set>"
 				fi
