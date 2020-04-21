@@ -91,6 +91,8 @@ vmap <bar>:     :Tab/^[^:]*:\zs/l1l0<CR>
 vmap <bar>=     :Tab assignment<CR>
 " quick key for easymotion plugin
 map <Tab> <Plug>(easymotion-prefix)
+" quick key for ALE plugin
+nmap ga :ALENextWrap<CR>
 
 " setup color scheme
 let g:gardener_light_comments=1
@@ -150,9 +152,20 @@ endfunction
 let g:detectindent_preferred_expandtab = 1
 let g:detectindent_preferred_indent = 2
 
-" configuration for ALE
-nmap ga :ALENextWrap<CR>
-let g:ale_haskell_ghc_options = '-fno-code -v0 -dynamic'
+" configuration for ALE: enable OmniComplete integration for languages that have a language server
+let g:ale_completion_enabled = 1
+set completeopt=menu,menuone,popup,noinsert
+autocmd FileType go,rust set omnifunc=ale#completion#OmniFunc
 
-let g:ale_linters = { 'go': [ 'gobuild', 'govet', 'golint' ] }
-let g:ale_linters_ignore = { 'javascriptreact': ['eslint'] }
+" configuration for ALE: fix on leaving insert mode
+let g:ale_fixers = { 'go': [ 'goimports' ], 'rust': [ 'rustfmt' ] }
+autocmd FileType go,rust autocmd InsertLeave <buffer=abuf> ALEFix
+
+" configuration for ALE: lint on save
+let g:ale_linters = {
+    \ 'go': [ 'gobuild', 'govet', 'golint', 'gopls' ],
+    \ 'rust': [ 'cargo', 'rls' ],
+    \ }
+autocmd BufEnter /x/src/github.com/sapcc/*.js,/x/src/github.com/sapcc/*.jsx let b:ale_linters_ignore = { 'javascriptreact': ['eslint'] }
+let g:ale_haskell_ghc_options = '-fno-code -v0 -dynamic'
+let g:ale_rust_cargo_use_clippy = 1
