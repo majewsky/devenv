@@ -154,7 +154,7 @@ let g:detectindent_preferred_indent = 2
 
 " configuration for ALE: enable OmniComplete integration for languages that have a language server
 let g:ale_completion_enabled = 1
-set completeopt=menu,menuone,popup,noinsert
+set completeopt=menu,menuone,popup,noselect
 autocmd FileType go,rust set omnifunc=ale#completion#OmniFunc
 
 " configuration for ALE: fix on leaving insert mode
