@@ -19,31 +19,22 @@ compinit
 #zstyle :compinstall filename '/home/stefan/.zshrc'
 # End of lines added by compinstall
 
-# Keybindings für Sondertasten
-bindkey "^[[2~" yank		    # Insert
-bindkey "^[[3~" delete-char	     # Del
-bindkey "^[[5~" up-line-or-history      # PageUp
-bindkey "^[[6~" down-line-or-history    # PageDown
-bindkey "^E"    expand-cmd-path	 # C-e for expanding path of typed command.
-bindkey "^[[A"  history-beginning-search-backward       # Up arrow for back-history-search.
-bindkey "^[[B"  history-beginning-search-forward	# Down arrow for fwd-history-search.
-bindkey " "     magic-space	     # Do history expansion on space.
-case "$TERM" in
-	linux|screen)
-		bindkey "^[[1~" beginning-of-line       # Pos1
-		bindkey "^[[4~" end-of-line	     # End
-	;;
-	*xterm*|(dt|k)term)
-		bindkey "^[[H"  beginning-of-line       # Pos1
-		bindkey "^[[F"  end-of-line	     # End
-		bindkey "^[[7~" beginning-of-line       # Pos1
-		bindkey "^[[8~" end-of-line	     # End
-	;;
-	rxvt|Eterm)
-		bindkey "^[[7~" beginning-of-line       # Pos1
-		bindkey "^[[8~" end-of-line	     # End
-	;;
-esac
+# key bindings
+bindkey "^[[1~" beginning-of-line                 # Pos1 (linux tty, screen)
+bindkey "^[[2~" yank                              # Insert
+bindkey "^[[3~" delete-char                       # Del
+bindkey "^[[4~" end-of-line                       # End (linux tty, screen)
+bindkey "^[[5~" up-line-or-history                # PageUp
+bindkey "^[[6~" down-line-or-history              # PageDown
+bindkey "^[[7~" beginning-of-line                 # Pos1 (rxvt supposedly)
+bindkey "^[[8~" end-of-line                       # End (rxvt supposedly)
+bindkey "^[[A"  history-beginning-search-backward # Up arrow for back-history-search.
+bindkey "^[[B"  history-beginning-search-forward  # Down arrow for fwd-history-search.
+bindkey "^[[H"  beginning-of-line                 # Pos1 (xterm, Konsole)
+bindkey "^[[F"  end-of-line                       # End (xterm, Konsole)
+bindkey "^E"    expand-cmd-path                   # C-e for expanding path of typed command.
+bindkey "^Z"    undo
+bindkey " "     magic-space                       # Do history expansion on space.
 
 # alias for detached launching
 alias -g "\&"="&>/dev/null&|"
@@ -53,15 +44,13 @@ perl -pe '$c=$1if/^\[(.*)\]/;$_=join("\t",($c,$1,$2))if/^\s*(\w*?)\s*=\s*([^=]*$
 done
 unset git_alias git_command
 
-# misc. Aliase (hier anstelle von .profile wegen Verwendung von zsh-Funktionen)
+# more aliases that cannot go in .profile because of zsh-isms
 alias qg="qgit --all &>/dev/null &|"
 
 # taken from http://zshwiki.org/home/zle/bindkeys
 # by default: export WORDCHARS='*?_-.[]~=/&;!#$%^(){}<>'
 # we take out the slash, period, angle brackets here.
 export WORDCHARS='*?_-[]~=&;!#$%^(){}'
-
-bindkey '^Z' undo
 
 function psgrep() { # all arguments passed to grep
 	ps aux | sed -n '1p;/\<sed\>/d;/'"$1"'/p'
