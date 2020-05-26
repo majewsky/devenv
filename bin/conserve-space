@@ -18,6 +18,7 @@ LOCATIONS=(
     ".node-gyp"
     ".phantomjs"
     ".rbenv"
+    ".rustup"
 )
 
 # if these directories exist in $HOME, move them to the scratch area
