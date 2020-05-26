@@ -75,8 +75,14 @@ fi
 if hash units &>/dev/null; then
 	alias units="units --verbose -o %.25g"
 fi
-if hash pinfo &>/dev/null; then
-	alias info=pinfo
+if hash info &>/dev/null; then
+	info() {
+		if [ -t 1 ]; then
+			command info --subnodes "$@" | less -RFX
+		else
+			command info --subnodes "$@"
+		fi
+	}
 fi
 if hash makepkg &>/dev/null; then
 	mksrcinfo() {
