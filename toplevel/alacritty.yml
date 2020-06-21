@@ -15,9 +15,32 @@ font:
     family: Iosevka
     style:  Bold Italic
 
-background_opacity: 0.9
+# background_opacity: 0.9
 
 key_bindings:
   - key: N
     mods: Control|Shift
     action: SpawnNewInstance
+
+colors:
+  primary:
+    background: '#000000'
+    foreground: '#dddddd'
+  normal:
+    black:   '#000000'
+    red:     '#cc0403'
+    green:   '#19cb00'
+    yellow:  '#cecb00'
+    blue:    '#0d73cc'
+    magenta: '#cb1ed1'
+    cyan:    '#0dcdcd'
+    white:   '#bbbbbb'
+  bright:
+    black:   '#767676'
+    red:     '#f2201f'
+    green:   '#23fd00'
+    yellow:  '#fffd00'
+    blue:    '#1a8fff'
+    magenta: '#fd28ff'
+    cyan:    '#14ffff'
+    white:   '#cccccc'
