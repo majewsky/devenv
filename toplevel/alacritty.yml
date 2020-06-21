@@ -1,0 +1,23 @@
+scrolling:
+  history: 32768
+font:
+  size: 16.0
+  normal:
+    family: Iosevka
+    style:  Regular
+  italic:
+    family: Iosevka
+    style:  Italic
+  bold:
+    family: Iosevka
+    style:  Bold
+  bold_italic:
+    family: Iosevka
+    style:  Bold Italic
+
+background_opacity: 0.9
+
+key_bindings:
+  - key: N
+    mods: Control|Shift
+    action: SpawnNewInstance

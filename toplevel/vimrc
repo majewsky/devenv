@@ -62,6 +62,10 @@ set statusline=%<%f\ %#Search#\ %Y%M%R\ %*%=\ %-14.(%l,%c%V%)\ %P
 set tildeop
 set wildmode=longest:full wildmenu
 
+if &term == 'alacritty'
+    set ttymouse=xterm2
+endif
+
 let perl_include_pod=1
 
 " HARD MODE
