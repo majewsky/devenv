@@ -60,6 +60,11 @@ if hash pacman &>/dev/null; then
 	compdef pacman-wrapper=pacman
 fi
 
+if hash kubectl &>/dev/null; then
+	eval "$(kubectl completion zsh)"
+	compdef k=kubectl
+fi
+
 # when Ctrl-V is pressed, open the current command line in vim for editing
 autoload edit-command-line
 zle -N edit-command-line

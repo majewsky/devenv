@@ -15,6 +15,7 @@ LOCATIONS=(
     ".local/etc"
     ".local/include"
     ".local/lib"
+    ".local/share/helm"
     ".node-gyp"
     ".phantomjs"
     ".rbenv"

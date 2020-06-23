@@ -250,6 +250,18 @@ if hash kubectl &>/dev/null; then
 			shift
 			${KUBECTL} get "$@" -o yaml
 			;;
+		ll)
+			shift
+			local SELECTOR="$1"
+			shift
+			${KUBECTL} logs "$(${KUBECTL} get pods -o jsonpath='{.items[*].metadata.name}' -l "${SELECTOR}")" "$@"
+			;;
+		lfl)
+			shift
+			local SELECTOR="$1"
+			shift
+			${KUBECTL} logs --tail=10 -f "$(${KUBECTL} get pods -o jsonpath='{.items[*].metadata.name}' -l "${SELECTOR}")" "$@"
+			;;
 		psql)
 			shift
 			local DB_NAME="$1"
