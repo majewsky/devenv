@@ -109,6 +109,27 @@ map <Tab> <Plug>(easymotion-prefix)
 " quick key for ALE plugin
 nmap ga :ALENextWrap<CR>
 
+" the clipboard register is annoying to type
+nmap gy "+y
+nmap gp "+p
+nmap gP "+P
+vmap gy "+y
+vmap gp "+p
+vmap gP "+P
+map! <C-R><C-R> <C-R>+
+
+" get rid of the fakeclip keybindings that block <C-R><C-R> from evaluating
+" immediately (we do remap-then-unmap to avoid 'mapping not defined' errors)
+autocmd BufEnter * call KillFakeclipKeybindings()
+function! KillFakeclipKeybindings()
+    map! <C-R><C-R>+ <Nop>
+    unmap! <C-R><C-R>+
+    map! <C-R><C-R>* <Nop>
+    unmap! <C-R><C-R>*
+    map! <C-R><C-R>& <Nop>
+    unmap! <C-R><C-R>&
+endfunction
+
 " setup color scheme
 let g:gardener_light_comments=1
 colo gardener-transparent
