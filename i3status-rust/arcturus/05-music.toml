@@ -1,0 +1,6 @@
+[[block]]
+block = "music"
+buttons = []
+max_width = 100
+smart_trim = true
+
