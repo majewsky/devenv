@@ -199,7 +199,7 @@ autocmd FileType go,rust autocmd InsertLeave <buffer=abuf> ALEFix
 
 " configuration for ALE: lint on save
 let g:ale_linters = {
-    \ 'go': [ 'gobuild', 'govet', 'golint', 'gopls' ],
+    \ 'go': [ 'gobuild', 'govet', 'golint' ],
     \ 'rust': [ 'cargo', 'rls' ],
     \ }
 autocmd BufEnter /x/src/github.com/sapcc/*.js,/x/src/github.com/sapcc/*.jsx let b:ale_linters_ignore = { 'javascriptreact': ['eslint'] }
