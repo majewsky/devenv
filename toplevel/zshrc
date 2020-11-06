@@ -61,8 +61,15 @@ if hash pacman &>/dev/null; then
 fi
 
 if hash kubectl &>/dev/null; then
-	eval "$(kubectl completion zsh)"
+	[ -f ~/.cache/completion-zsh-kubectl ] || kubectl completion zsh > ~/.cache/completion-zsh-kubectl
+	source ~/.cache/completion-zsh-kubectl
 	compdef k=kubectl
+fi
+
+if hash helm3 &>/dev/null; then
+	[ -f ~/.cache/completion-zsh-helm3 ] || helm3 completion zsh > ~/.cache/completion-zsh-helm3
+	source ~/.cache/completion-zsh-helm3
+	compdef h=helm3
 fi
 
 # when Ctrl-V is pressed, open the current command line in vim for editing
