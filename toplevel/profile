@@ -195,16 +195,14 @@ if hash foreman &>/dev/null; then
 	}
 fi
 
-if hash kubectl &>/dev/null; then
+if hash u8s &>/dev/null; then
 	kc() {
 		case $# in
 			1)
-				kubectl config use-context "$1"
-				echo "" > ~/.kubectl-namespace
+				u8s set --context "$1" --namespace default
 				;;
 			2)
-				kubectl config use-context "$1"
-				echo "$2" > ~/.kubectl-namespace
+				u8s set --context "$1" --namespace "$2"
 				;;
 			*)
 				echo "usage: kc <context> [namespace]" >&2
@@ -213,95 +211,61 @@ if hash kubectl &>/dev/null; then
 		esac
 	}
 
-	kn() {
-		case $# in
-			0)
-				echo "" > ~/.kubectl-namespace
-				;;
-			1)
-				echo "$1" > ~/.kubectl-namespace
-				;;
-			*)
-				echo "usage: kn [namespace]" >&2
-				return 1
-				;;
-		esac
-	}
-
 	k() {
-		local KUBECTL
-		local KUBECTL_NAMESPACE="$(cat ~/.kubectl-namespace)"
-		if [ "${KUBECTL_NAMESPACE}" != "" ]; then
-			KUBECTL=(kubectl --namespace="$KUBECTL_NAMESPACE")
-		else
-			KUBECTL=kubectl
-		fi
-
 		case "$1" in
 		sh)
 			shift
-			${KUBECTL} exec -ti "$@" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM /bin/sh
+			u8s kubectl -- exec -ti "$@" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM /bin/sh
 			;;
 		bash)
 			shift
-			${KUBECTL} exec -ti "$@" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM /bin/bash
+			u8s kubectl -- exec -ti "$@" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM /bin/bash
 			;;
 		json)
 			shift
-			${KUBECTL} get "$@" -o json
+			u8s kubectl -- get "$@" -o json
 			;;
 		yaml)
 			shift
-			${KUBECTL} get "$@" -o yaml
+			u8s kubectl -- get "$@" -o yaml
 			;;
 		ll)
 			shift
 			local SELECTOR="$1"
 			shift
-			${KUBECTL} logs "$(${KUBECTL} get pods -o jsonpath='{.items[*].metadata.name}' -l "${SELECTOR}")" "$@"
+			u8s kubectl -- logs "$(u8s kubectl -- get pods -o jsonpath='{.items[*].metadata.name}' -l "${SELECTOR}")" "$@"
 			;;
 		lfl)
 			shift
 			local SELECTOR="$1"
 			shift
-			${KUBECTL} logs --tail=10 -f "$(${KUBECTL} get pods -o jsonpath='{.items[*].metadata.name}' -l "${SELECTOR}")" "$@"
+			u8s kubectl -- logs --tail=10 -f "$(u8s kubectl -- get pods -o jsonpath='{.items[*].metadata.name}' -l "${SELECTOR}")" "$@"
 			;;
 		psql)
 			shift
 			local DB_NAME="$1"
 			shift
-			${KUBECTL} exec -ti -c postgres "$(${KUBECTL} get pods -l "app=${DB_NAME}-postgresql" -o jsonpath='{.items[*].metadata.name}')" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM psql -U postgres -d "$DB_NAME" "$@"
+			u8s kubectl -- exec -ti -c postgres "$(u8s kubectl -- get pods -l "app=${DB_NAME}-postgresql" -o jsonpath='{.items[*].metadata.name}')" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM psql -U postgres -d "$DB_NAME" "$@"
 			;;
 		mysql)
 			shift
 			local DB_NAME="$1"
 			shift
-			${KUBECTL} exec -ti -c mariadb "$(${KUBECTL} get pods -l "app=${DB_NAME}-mariadb" -o jsonpath='{.items[*].metadata.name}')" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM mysql --user="$DB_NAME" --password="$(get_mysql_password "${DB_NAME}")" --database="$DB_NAME"
+			u8s kubectl -- exec -ti -c mariadb "$(u8s kubectl -- get pods -l "app=${DB_NAME}-mariadb" -o jsonpath='{.items[*].metadata.name}')" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM mysql --user="$DB_NAME" --password="$(get_mysql_password "${DB_NAME}")" --database="$DB_NAME"
 			;;
 		*)
-			${KUBECTL} "$@"
+			u8s kubectl -- "$@"
 			;;
 		esac
 	}
 
 	# s = search - return the name of the pod matching the given label selector
 	ks() {
-		k get pods "$@" -o jsonpath='{.items[*].metadata.name}'
+		u8s kubectl -- get pods "$@" -o jsonpath='{.items[*].metadata.name}'
 	}
 
-	if hash helm3 &>/dev/null; then
-		h() {
-			local HELM3
-			local KUBECTL_NAMESPACE="$(cat ~/.kubectl-namespace)"
-			if [ "${KUBECTL_NAMESPACE}" != "" ]; then
-				HELM3=(helm3 --namespace="$KUBECTL_NAMESPACE")
-			else
-				HELM3=helm3
-			fi
-
-			${HELM3} "$@"
-		}
-	fi
+	alias h='u8s helm3 --'
+	alias helm2='u8s helm1 --'
 fi
 
 # this must always be at the end
