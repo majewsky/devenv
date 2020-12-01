@@ -20,6 +20,10 @@ volume_muted = " vol ×"
 volume_full = " vol "
 volume_half = " vol "
 volume_empty = " vol "
+music_prev = " <<"
+music_next = ">> "
+music_play = " ++ "
+music_pause = " -- "
 
 [theme]
 name = "slick"
