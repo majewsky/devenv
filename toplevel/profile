@@ -265,7 +265,7 @@ if hash u8s &>/dev/null; then
 	}
 
 	alias h='u8s helm3 --'
-	alias helm2='u8s helm1 --'
+	alias helm2='u8s helm2 --'
 fi
 
 # this must always be at the end
