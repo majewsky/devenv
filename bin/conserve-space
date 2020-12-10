@@ -16,6 +16,7 @@ LOCATIONS=(
     ".local/include"
     ".local/lib"
     ".local/share/helm"
+    ".local/share/virtualenv/wheel"
     ".node-gyp"
     ".phantomjs"
     ".rbenv"
