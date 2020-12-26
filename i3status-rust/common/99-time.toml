@@ -1,5 +1,5 @@
 [[block]]
 block = "time"
 interval = 1
-format = "%a %Y-%m-%d %H:%M:%S"
+format = "%a #%V %Y-%m-%d %H:%M:%S"
 locale = "ja_JP"
