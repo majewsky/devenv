@@ -85,3 +85,5 @@
 	fontdiff = -family \"Liberation Mono\" -size 12 -weight normal -slant roman -underline 0 -overstrike 0
 [gitreview]
 	username = majewsky
+[init]
+	defaultBranch = main

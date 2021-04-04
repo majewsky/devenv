@@ -5,6 +5,7 @@ LOCATIONS=(
     ".bundle/cache"
     ".cache"
     ".cargo"
+    ".debug"
     ".fontconfig"
     ".gem/specs"
     ".glide/cache"
