@@ -210,6 +210,17 @@ if hash u8s &>/dev/null; then
 				;;
 		esac
 	}
+	kn() {
+		case $# in
+			1)
+				u8s set --namespace "$1"
+				;;
+			*)
+				echo "usage: kn <namespace>" >&2
+				return 1
+				;;
+		esac
+	}
 
 	k() {
 		case "$1" in
