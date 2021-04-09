@@ -69,7 +69,16 @@ fi
 if hash helm3 &>/dev/null; then
 	[ -f ~/.cache/completion-zsh-helm3 ] || helm3 completion zsh > ~/.cache/completion-zsh-helm3
 	source ~/.cache/completion-zsh-helm3
-	compdef h=helm3
+	compdef h=helm
+fi
+
+if hash u8s &>/dev/null; then
+	[ -f ~/.cache/completion-zsh-kubectl ] || u8s kubectl completion zsh > ~/.cache/completion-zsh-kubectl
+	source ~/.cache/completion-zsh-kubectl
+	compdef k=kubectl
+	[ -f ~/.cache/completion-zsh-helm3 ] || u8s helm3 completion zsh > ~/.cache/completion-zsh-helm3
+	source ~/.cache/completion-zsh-helm3
+	compdef h=helm
 fi
 
 # when Ctrl-V is pressed, open the current command line in vim for editing

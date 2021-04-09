@@ -275,7 +275,11 @@ if hash u8s &>/dev/null; then
 		u8s kubectl -- get pods "$@" -o jsonpath='{.items[*].metadata.name}'
 	}
 
-	alias h='u8s helm3 --'
+	# This needs to be a function rather than an alias, otherwise `compdef h=helm` does not work.
+	h() {
+		u8s helm3 -- "$@"
+	}
+
 	alias helm2='u8s helm2 --'
 fi
 
