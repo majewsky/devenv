@@ -1,12 +1,13 @@
 [[block]]
 block = "cpu"
+format = "{utilization:02}"
 interval = 1
 
 [[block]]
 block = "memory"
 display_type = "memory"
-format_mem = "{Mupi}%"
-format_swap = "{SUp}%"
+format_mem = "{mem_used_percents:02}"
+format_swap = "{swap_used_percents:02}"
 clickable = false
 
 [[block]]

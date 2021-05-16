@@ -1,3 +1,5 @@
+icons_format = "{icon}"
+
 [icons]
 name = "none"
 [icons.overrides]
@@ -20,14 +22,16 @@ volume_muted = " vol × "
 volume_full = " vol "
 volume_half = " vol "
 volume_empty = " vol "
-music_prev = " <<"
-music_next = ">> "
+music_prev = "  << "
+music_next = " >>  "
 music_play = " ++ "
 music_pause = " -- "
+music = " "
+time = " "
 
 [theme]
 name = "slick"
 [theme.overrides]
 idle_bg = "#000000"
-alternating_tint_bg = "#222222"
+alternating_tint_bg = "#444444"
 separator = ""
