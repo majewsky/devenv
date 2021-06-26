@@ -1,0 +1,66 @@
+#!/bin/bash
+set -euo pipefail
+
+usage() {
+  echo 'Usage:'
+  printf '\t%s\n' \
+    "$0" \
+    "    -- List brightness for all supported devices." \
+    "$0 set <device> <value>" \
+    "    -- Set brightness. <value> can be relative with a +/- prefix."
+}
+
+case "${1:-notgiven}" in
+  notgiven)
+    # list devices
+    (
+      echo DEVICE CUR MAX
+      for DEVPATH in /sys/class/backlight/*; do
+        DEVICE="${DEVPATH##*/}"
+        echo "${DEVICE}" "$(cat "${DEVPATH}/brightness")" "$(cat "${DEVPATH}/max_brightness")"
+      done
+    ) | tabulate -f plain
+    ;;
+  set)
+    if [ $# -ne 3 ]; then
+      usage
+      exit 1
+    fi
+    DEVICE="$2"
+    VALSPEC="$3"
+    DEVPATH="/sys/class/backlight/${DEVICE}"
+    if [ ! -e "${DEVPATH}" ]; then
+      echo "no such device: ${DEVICE}" >&2
+      exit 1
+    fi
+    CURRENT="$(cat "${DEVPATH}/brightness")"
+    MAX="$(cat "${DEVPATH}/max_brightness")"
+    case "$VALSPEC" in
+      -*)
+        DELTA="${VALSPEC:1}"
+        VALUE=$(( CURRENT - DELTA ))
+        ;;
+      +*)
+        DELTA="${VALSPEC:1}"
+        VALUE=$(( CURRENT + DELTA ))
+        ;;
+      *)
+        VALUE="${VALSPEC}"
+        ;;
+    esac
+    if [ "${VALUE}" -lt 0 ]; then
+      VALUE=0
+    fi
+    if [ "${VALUE}" -gt "${MAX}" ]; then
+      VALUE="${MAX}"
+    fi
+    exec qdbus --system org.freedesktop.login1 /org/freedesktop/login1/session/auto org.freedesktop.login1.Session.SetBrightness backlight "${DEVICE}" "${VALUE}"
+    ;;
+  help|--help)
+    usage
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+esac
