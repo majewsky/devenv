@@ -35,7 +35,7 @@ case "$1" in
     exec sm -n monospace "$(printf 'SSID: %s\n\n%s' "${SSID}" "${PSK}")"
     ;;
   qr)
-    qrencode -s 20 -t PNG -o - "WIFI:S:${SSID};T:WPA2;P:${PSK}" > /tmp/wiqr.png
+    qrencode -s 20 -t PNG -o - "WIFI:S:${SSID};T:WPA2;P:${PSK};" > /tmp/wiqr.png
     exec sxiv -f -s f /tmp/wiqr.png
     ;;
   *)
