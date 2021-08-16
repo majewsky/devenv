@@ -75,6 +75,8 @@ set wildmode=longest:full wildmenu
 
 if &term == 'alacritty'
     set ttymouse=xterm2
+else
+    set ttymouse=sgr
 endif
 
 let perl_include_pod=1

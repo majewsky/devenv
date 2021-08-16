@@ -198,11 +198,8 @@ fi
 if hash u8s &>/dev/null; then
 	kc() {
 		case $# in
-			1)
-				u8s set --context "$1" --namespace default
-				;;
-			2)
-				u8s set --context "$1" --namespace "$2"
+			1|2)
+				u8s set --context "$1" --namespace "${2:-default}" >/dev/null && printf '\x1B[1;36m=> \x1B[0;36m%s/%s\x1B[0m\n' "$1" "${2:-default}"
 				;;
 			*)
 				echo "usage: kc <context> [namespace]" >&2
@@ -213,7 +210,7 @@ if hash u8s &>/dev/null; then
 	kn() {
 		case $# in
 			1)
-				u8s set --namespace "$1"
+				u8s set --namespace "$1" >/dev/null && printf '\x1B[1;36m=> \x1B[0;36m%s/%s\x1B[0m\n' "$(u8s env | awk -F= '/U8S_CONTEXT/{print$2}')" "$1"
 				;;
 			*)
 				echo "usage: kn <namespace>" >&2
@@ -256,13 +253,21 @@ if hash u8s &>/dev/null; then
 			shift
 			local DB_NAME="$1"
 			shift
-			u8s kubectl -- exec -ti -c postgres "$(u8s kubectl -- get pods -l "app=${DB_NAME}-postgresql" -o jsonpath='{.items[*].metadata.name}')" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM psql -U postgres -d "$DB_NAME" "$@"
+			if [ -t 1 ]; then
+				u8s kubectl -- exec -ti -c postgres "$(u8s kubectl -- get pods -l "app=${DB_NAME}-postgresql" -o jsonpath='{.items[*].metadata.name}')" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM psql -U postgres -d "$DB_NAME" "$@"
+			else
+				u8s kubectl -- exec -c postgres "$(u8s kubectl -- get pods -l "app=${DB_NAME}-postgresql" -o jsonpath='{.items[*].metadata.name}')" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM psql -U postgres -d "$DB_NAME" "$@"
+			fi
 			;;
 		mysql)
 			shift
 			local DB_NAME="$1"
 			shift
-			u8s kubectl -- exec -ti -c mariadb "$(u8s kubectl -- get pods -l "app=${DB_NAME}-mariadb" -o jsonpath='{.items[*].metadata.name}')" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM mysql --user="$DB_NAME" --password="$(get_mysql_password "${DB_NAME}")" --database="$DB_NAME"
+			if [ -t 1 ]; then
+				u8s kubectl -- exec -ti -c mariadb "$(u8s kubectl -- get pods -l "app=${DB_NAME}-mariadb" -o jsonpath='{.items[*].metadata.name}')" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM mysql --user="$DB_NAME" --password="$(get_mysql_password "${DB_NAME}")" --database="$DB_NAME"
+			else
+				u8s kubectl -- exec -c mariadb "$(u8s kubectl -- get pods -l "app=${DB_NAME}-mariadb" -o jsonpath='{.items[*].metadata.name}')" -- env COLUMNS=$COLUMNS LINES=$LINES TERM=$TERM mysql --user="$DB_NAME" --password="$(get_mysql_password "${DB_NAME}")" --database="$DB_NAME"
+			fi
 			;;
 		*)
 			u8s kubectl -- "$@"
