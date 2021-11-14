@@ -20,7 +20,7 @@ user_pref("network.cookie.cookieBehavior", 1);
 //clear most state on shutdown
 user_pref("privacy.sanitize.sanitizeOnShutdown", true);
 user_pref("privacy.clearOnShutdown.cache", true);
-user_pref("privacy.clearOnShutdown.cookies", true);
+user_pref("privacy.clearOnShutdown.cookies", false); // to enable use of Cookie Autodelete extension for fine-grained control esp. over localStorage retention
 user_pref("privacy.clearOnShutdown.downloads", true);
 user_pref("privacy.clearOnShutdown.formdata", true);
 user_pref("privacy.clearOnShutdown.history", false); // KEEP browsing history
