@@ -12,3 +12,4 @@ clickable = false
 
 [[block]]
 block = "sound"
+driver = "pulseaudio"
