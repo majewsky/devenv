@@ -1,5 +1,11 @@
 [[block]]
 block = "time"
 interval = 1
-format = "%a #%V %Y-%m-%d %H:%M:%S"
+# Without \u2800, the leading space before the block contents is not shown
+# (which is possibly a Sway bug, i3status-rs definitely renders it). Putting
+# any space other than " " in front of the message either does not work or
+# displays as a centered dot (?!?), but \u2800 (braille pattern blank) has the
+# unique property of not being a space and also not having a glyph, so it adds
+# the desired padding.
+format = "\u2800%a #%V %Y-%m-%d %H:%M:%S"
 locale = "ja_JP"
