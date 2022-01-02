@@ -121,5 +121,8 @@ user_pref("beacon.enabled", false);
 user_pref("browser.cache.offline.enable", false);
 user_pref("offline-apps.allow_by_default", false);
 
-user_pref("privacy.resistFingerprinting", true);
+//note to self: disabled now because of too many annoyances (being forced into
+//UTC timezone, being forced into light mode, etc.; arkenfox/user.js has full
+//list of restrictions in a comment)
+user_pref("privacy.resistFingerprinting", false);
 
