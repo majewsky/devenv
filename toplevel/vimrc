@@ -29,6 +29,7 @@ call vundle#begin()
     Plugin 'rust-lang/rust.vim'
     Plugin 'w0rp/ale'
     Plugin 'LnL7/vim-nix'
+    Plugin 'jvirtanen/vim-hcl'
     " for "+ register on Wayland
     Plugin 'kana/vim-fakeclip'
 
