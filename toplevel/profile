@@ -165,6 +165,21 @@ if hash monastery &>/dev/null; then
 	}
 fi
 
+if [ -d /usr/share/doc/rfc ]; then
+	rfc() {
+		if [ $# -eq 1 ]; then
+			if [ -t 1 ]; then
+				less "/usr/share/doc/rfc/txt/rfc$1.txt"
+			else
+				echo "/usr/share/doc/rfc/txt/rfc$1.txt"
+			fi
+		else
+			echo "usage: rfc <number>" >&2
+			return 1
+		fi
+	}
+fi
+
 # for OpenStack
 if hash cloud &>/dev/null; then
 	cloud_is() {
