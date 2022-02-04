@@ -15,7 +15,8 @@ font:
     family: Iosevka
     style:  Bold Italic
 
-background_opacity: 0.9
+window:
+  opacity: 0.9
 
 key_bindings:
   - key: N
