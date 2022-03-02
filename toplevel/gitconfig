@@ -44,6 +44,7 @@
 	stat = true
 [rerere]
 	enabled = true
+	autoUpdate = true
 [url "https://aur.archlinux.org/"]
 	insteadOf = aur:
 [url "aur@aur.archlinux.org:"]
