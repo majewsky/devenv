@@ -21,4 +21,9 @@ case "$(awk 'match($0, /^\s*(\S+)\)$/, a){print a[1]}' /x/bin/bemenu-shortcuts |
   3840-content)
     swaymsg resize set width 3360px height 1890px
     ;;
+  stream-ui)
+    qutebrowser --target window http://localhost:8123/ui/left &
+    sleep 1
+    qutebrowser --target window http://localhost:8123/ui/bottom &
+    ;;
 esac
