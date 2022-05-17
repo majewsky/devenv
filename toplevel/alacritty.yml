@@ -16,7 +16,7 @@ font:
     style:  Bold Italic
 
 window:
-  opacity: 0.9
+  opacity: 0.95
 
 key_bindings:
   - key: N
