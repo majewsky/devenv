@@ -1,0 +1,5 @@
+[[block]]
+block = "net"
+device = "wlp170s0"
+format = "{signal_strength} {ip}"
+hide_inactive = true
