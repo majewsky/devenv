@@ -1,5 +1,7 @@
 [[block]]
 block = "backlight"
+step_width = 2 # percent
+minimum = 1    # percent
 
 [[block]]
 block = "battery"
