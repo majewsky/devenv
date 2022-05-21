@@ -1,0 +1,7 @@
+[[block]]
+block = "music"
+interface_name_exclude = ["kdeconnect"]
+buttons = ["prev","play","next"]
+max_width = 64
+smart_trim = true
+
