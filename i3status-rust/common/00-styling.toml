@@ -40,8 +40,7 @@ music = " "
 time = " "
 
 [theme]
-name = "slick"
+name = "gruvbox-dark"
 [theme.overrides]
-idle_bg = "#000000"
-alternating_tint_bg = "#444444"
+alternating_tint_bg = "#141414"
 separator = ""
