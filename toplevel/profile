@@ -210,6 +210,10 @@ if hash foreman &>/dev/null; then
 	}
 fi
 
+git-all-sapcc() {
+	for DIR in /x/src/github.com/sapcc/*; do git -C $DIR -c color.ui=always "$@" | sed "s/^/[$(printf '% 25s' "$(basename "${DIR}")")] /"; done
+}
+
 if hash u8s &>/dev/null; then
 	kc() {
 		case $# in
