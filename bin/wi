@@ -23,7 +23,7 @@ if [ -z "${SSID}" ]; then
 fi
 
 # find PSK for this SSID
-PSK="$(grep -C1 -F "ssid=\"${SSID}\"" "/etc/wpa_supplicant/wpa_supplicant-${IFACE}.conf" | grep psk= | cut -d'"' -f2)"
+PSK="$(grep -C1 -F "ssid=\"${SSID}\"" "/home/stefan/.wpa_supplicant.conf" | grep psk= | cut -d'"' -f2)"
 if [ -z "${PSK}" ]; then
   echo "Cannot find psk for ssid=\"${SSID}\"." >&2
   exit 1
