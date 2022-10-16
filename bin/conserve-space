@@ -5,6 +5,8 @@ LOCATIONS=(
     ".bundle/cache"
     ".cache"
     ".cargo"
+    ".config/discord/Cache"
+    ".config/discord/Code Cache"
     ".debug"
     ".fontconfig"
     ".gem/specs"

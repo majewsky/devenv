@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# This resumes videos played back in mpv, then stopped with Q. The
+# "write-filename-in-watch-later-config" option must be enabled in mpv because
+# we need to look up the media file path from the savefile.
+
+SAVEFILE="$(find ~/.config/mpv/watch_later -type f | sort | head -n1)"
+if [ -z "${SAVEFILE}" ]; then
+  exit 0
+fi
+MEDIAFILE="$(head -n1 < "${SAVEFILE}" | sed 's/^# //')"
+mpv "${MEDIAFILE}"
