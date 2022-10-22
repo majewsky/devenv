@@ -3,13 +3,11 @@ set -euo pipefail
 
 case "$(awk 'match($0, /^\s*(\S+)\)$/, a){print a[1]}' /x/bin/bemenu-shortcuts | sort | bemenu "$@")" in
   game-on)
-    swaymsg output DP-3 mode 1920x1080
-    swaymsg output DP-1 pos 1920 0 mode 3840x2160
-    swaymsg bar main output DP-1
+    swaymsg output DP-1 mode 1920x1080
+    swaymsg bar main output DP-3
     ;;
   game-off)
-    swaymsg output DP-3 mode 3840x2160
-    swaymsg output DP-1 pos 3840 0 mode 3840x2160
+    swaymsg output DP-1 mode 3840x2160
     swaymsg bar main output '*'
     ;;
   vertical-videoplayer)
