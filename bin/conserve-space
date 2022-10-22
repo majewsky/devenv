@@ -6,6 +6,8 @@ LOCATIONS=(
     ".cache"
     ".cargo"
     ".config/discord/Cache"
+    ".config/Electron/Cache"
+    ".config/Element/Cache"
     ".config/discord/Code Cache"
     ".debug"
     ".fontconfig"
@@ -19,11 +21,13 @@ LOCATIONS=(
     ".local/include"
     ".local/lib"
     ".local/share/helm"
+    ".local/share/TelegramDesktop/tdata/user_data/cache"
     ".local/share/virtualenv/wheel"
     ".node-gyp"
     ".phantomjs"
     ".rbenv"
     ".rustup"
+    ".var/app/com.obsproject.Studio/config/obs-studio/plugin_config/obs-browser/Code Cache"
 )
 
 # if these directories exist in $HOME, move them to the scratch area
