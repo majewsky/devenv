@@ -137,49 +137,10 @@ let g:gardener_light_comments=1
 colo gardener-transparent
 
 autocmd FileType * setlocal nocindent
-
-autocmd Syntax {cpp,c} runtime syntax/doxygen.vim
-" enable pair matching for angle brackets (e.g. C++ templates)
-autocmd FileType cpp setlocal matchpairs+=<:> commentstring=//\ %s
-" add :/// to comments, but make sure that it has a higher priority than ://
-autocmd FileType cpp setlocal comments-=:// comments+=:///,://
-
 autocmd BufReadPost * DetectIndent
-
-" only regular old smartindent for JS, plz
-autocmd FileType javascript setlocal smartindent indentexpr= indentkeys=
-
-"formatting style for Perl code
-autocmd FileType perl setlocal iskeyword-=: | syntax sync fromstart
-autocmd Syntax perl call PerlCustomSyntax()
-
-hi link javaScriptStringS PreProc
-hi link javaScriptStringD PreProc
-hi link tomlTable      Define
-hi link tomlTableArray Define
-hi link jsonKeyword String
-
-function! PerlCustomSyntax()
-    syn keyword perlStatementList uniq natatime
-    syn region perlStatementIndirObjWrap matchgroup=perlStatementIndirObj start="\<\%(\%(continue\|uireturn\|return\|bless\|else\|eval\|sub\|die\|q[qrw]\|\w\)\>\)\@![a-z_]\+\>\s*{" end="}" contains=@perlTop,perlGenericBlock
-    syn match perlStatementException "\<\%(die\|croak\|carp\|confess\|cluck\|ui\%(die\|return\)\)\>"
-    syn keyword perlNew new create
-    syn keyword perlSubNameNew new create containedin=perlSubName
-    hi link perlNew perlOperator
-    hi link perlSubNameNew perlNew
-    hi link perlStatement PreCondit
-    hi link perlStatementException ErrorMsg
-endfunction
-
-autocmd Syntax ruby call RubyCustomSyntax()
-function! RubyCustomSyntax()
-    hi link rubyException ErrorMsg
-    hi link rubyPseudoVariable Boolean
-endfunction
 
 autocmd ColorScheme * call ColorSchemeFixes()
 autocmd Syntax *      call ColorSchemeFixes()
-
 function! ColorSchemeFixes()
     hi clear SpecialKey
     hi link SpecialKey LineNr
