@@ -109,13 +109,23 @@ forever() {
 if hash mpv &>/dev/null; then
 	mpv() {
 		if [ $# -eq 0 ]; then
+			# no args given: paste target from clipboard
 			if [ "${WAYLAND_DISPLAY}" != "" ]; then
 				env mpv "$(wl-paste --type text/plain)"
 			else
 				env mpv "$(xsel -b)"
 			fi
 		else
-			env mpv "$@"
+			# ignore *.description files that a glob picked up (unless there are no other args)
+			local -a MPV_ARGS
+			for MPV_ARG in "$@"; do
+				[[ "$MPV_ARG" != *.description ]] && MPV_ARGS+=("$MPV_ARG")
+			done
+			if [ "${#MPV_ARGS}" = 0 ]; then
+				echo env mpv "$@"
+			else
+				echo env mpv "${MPV_ARGS[@]}"
+			fi
 		fi
 	}
 	zdf() {
