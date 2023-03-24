@@ -31,6 +31,7 @@ call vundle#begin()
     Plugin 'LnL7/vim-nix'
     " for "+ register on Wayland
     Plugin 'kana/vim-fakeclip'
+    Plugin 'towolf/vim-helm'
 
     " override broken Markdown syntax highlighting shipping with Vim 8.2
     " ref: https://github.com/tpope/vim-markdown/issues/151
