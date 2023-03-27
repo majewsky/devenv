@@ -1,13 +1,16 @@
 #!/bin/sh
 set -euo pipefail
 
+LEFT_SCREEN="$(awk  '$1 == "set" && $2 == "$leftscreen"  { print $3 }' < /x/src/github.com/majewsky/devenv/sway/arcturus/01-output.conf)"
+RIGHT_SCREEN="$(awk '$1 == "set" && $2 == "$rightscreen" { print $3 }' < /x/src/github.com/majewsky/devenv/sway/arcturus/01-output.conf)"
+
 case "$(awk 'match($0, /^\s*(\S+)\)$/, a){print a[1]}' /x/bin/bemenu-shortcuts | sort | bemenu "$@")" in
   game-on)
-    swaymsg output DP-1 mode 1920x1080
-    swaymsg bar main output DP-3
+    swaymsg output "${RIGHT_SCREEN}" mode 1920x1080
+    swaymsg bar main output "${LEFT_SCREEN}"
     ;;
   game-off)
-    swaymsg output DP-1 mode 3840x2160
+    swaymsg output "${RIGHT_SCREEN}" mode 3840x2160
     swaymsg bar main output '*'
     ;;
   vertical-videoplayer)
