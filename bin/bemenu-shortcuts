@@ -6,11 +6,9 @@ RIGHT_SCREEN="$(awk '$1 == "set" && $2 == "$rightscreen" { print $3 }' < /x/src/
 
 case "$(awk 'match($0, /^\s*(\S+)\)$/, a){print a[1]}' /x/bin/bemenu-shortcuts | sort | bemenu "$@")" in
   game-on)
-    swaymsg output "${RIGHT_SCREEN}" mode 1920x1080
     swaymsg bar main output "${LEFT_SCREEN}"
     ;;
   game-off)
-    swaymsg output "${RIGHT_SCREEN}" mode 3840x2160
     swaymsg bar main output '*'
     ;;
   vertical-videoplayer)
