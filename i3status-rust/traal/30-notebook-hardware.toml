@@ -1,7 +1,0 @@
-[[block]]
-block = "backlight"
-
-[[block]]
-block = "battery"
-interval = 2
-format = "{percentage} {power}"

@@ -1,5 +1,5 @@
 [[block]]
 block = "net"
-device = "wlp170s0"
-format = "{signal_strength} {ip}"
-hide_inactive = true
+device = "wl.*"
+format = " wl $signal_strength $ip "
+missing_format = " wl × "

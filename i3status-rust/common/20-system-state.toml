@@ -1,15 +1,13 @@
 [[block]]
 block = "cpu"
-format = "{utilization:02}"
+format = " cpu $utilization.eng(w:2,pad_with:0) "
 interval = 1
 
 [[block]]
 block = "memory"
-display_type = "memory"
-format_mem = "{mem_used_percents:02}"
-format_swap = "{swap_used_percents:02}"
-clickable = false
+format = " mem $mem_used_percents.eng(w:2,pad_with:0) "
 
 [[block]]
 block = "sound"
 driver = "pulseaudio"
+format = " vol {$volume|×} "

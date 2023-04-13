@@ -7,5 +7,4 @@ interval = 1
 # displays as a centered dot (?!?), but \u2800 (braille pattern blank) has the
 # unique property of not being a space and also not having a glyph, so it adds
 # the desired padding.
-format = "\u2800%a #%V %Y-%m-%d %H:%M:%S"
-locale = "ja_JP"
+format = "\u2800$timestamp.datetime(f:'%a #%V %Y-%m-%d %H:%M:%S', l:ja_JP) "
