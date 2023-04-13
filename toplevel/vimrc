@@ -72,13 +72,8 @@ set shortmess+=I
 set shiftwidth=2 tabstop=2 softtabstop=2
 set statusline=%<%f\ %#Search#\ %Y%M%R\ %*%=\ %-14.(%l,%c%V%)\ %P
 set tildeop
+set ttymouse=sgr
 set wildmode=longest:full wildmenu
-
-if &term == 'alacritty'
-    set ttymouse=xterm2
-else
-    set ttymouse=sgr
-endif
 
 let perl_include_pod=1
 
