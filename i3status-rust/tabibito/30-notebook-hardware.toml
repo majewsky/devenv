@@ -6,7 +6,7 @@ minimum = 1    # percent
 [[block]]
 block = "battery"
 interval = 2
-format = " $icon $percentage $power "
-full_format = " $icon $percentage $power "
-empty_format = " $icon $percentage $power "
-not_charging_format = " $icon $percentage $power "
+format = " $icon $percentage {$power| 0W} "
+full_format = " $icon $percentage {$power| 0W} "
+empty_format = " $icon $percentage {$power| 0W} "
+not_charging_format = " $icon $percentage {$power| 0W} "
