@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 current_epoch=$(date +%s)
-target_epoch=$(date -d $1 +%s)
+target_epoch=$(date -d "$1" +%s)
 sleep_seconds=$(( $target_epoch - $current_epoch ))
 echo "Sleeping for $sleep_seconds seconds..."
 sleep $sleep_seconds
