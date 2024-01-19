@@ -3,6 +3,7 @@ set -euo pipefail
 
 LEFT_SCREEN="$(awk  '$1 == "set" && $2 == "$leftscreen"  { print $3 }' < /x/src/github.com/majewsky/devenv/sway/arcturus/01-output.conf)"
 RIGHT_SCREEN="$(awk '$1 == "set" && $2 == "$rightscreen" { print $3 }' < /x/src/github.com/majewsky/devenv/sway/arcturus/01-output.conf)"
+COUCH_SCREEN="$(awk '$1 == "set" && $2 == "$couchscreen" { print $3 }' < /x/src/github.com/majewsky/devenv/sway/arcturus/01-output.conf)"
 
 case "$(awk 'match($0, /^\s*(\S+)\)$/, a){print a[1]}' /x/bin/bemenu-shortcuts | sort | bemenu "$@")" in
   game-on)
@@ -19,6 +20,20 @@ case "$(awk 'match($0, /^\s*(\S+)\)$/, a){print a[1]}' /x/bin/bemenu-shortcuts |
     ;;
   3840-content)
     swaymsg resize set width 3360px height 1890px
+    ;;
+  mirror-left)
+    swaymsg output "${COUCH_SCREEN}" enable
+    sleep 5
+    wl-mirror --fullscreen-output "${COUCH_SCREEN}" "${LEFT_SCREEN}"
+    ;;
+  mirror-right)
+    swaymsg output "${COUCH_SCREEN}" enable
+    sleep 5
+    wl-mirror --fullscreen-output "${COUCH_SCREEN}" "${RIGHT_SCREEN}"
+    ;;
+  mirror-off)
+    killall wl-mirror
+    swaymsg output "${COUCH_SCREEN}" disable
     ;;
   stream-ui)
     qutebrowser --target window http://localhost:8123/ui/left &
