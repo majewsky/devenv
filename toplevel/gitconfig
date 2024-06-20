@@ -67,6 +67,8 @@
 	pushInsteadOf = gl:
 [url "gitea@git.bethselamin.de:"]
 	insteadOf = gogs:
+[url "ssh://git@github.wdf.sap.corp/"]
+	insteadOf = https://github.wdf.sap.corp/
 [url "git@github.wdf.sap.corp:"]
 	insteadOf = ge:
 [url "gitolite@git.c3d2.de:"]
@@ -93,3 +95,10 @@
 	username = majewsky
 [init]
 	defaultBranch = main
+[user]
+	email = stefan.majewsky@sap.com
+	signingkey = /home/stefan/.ssh/id_github.pub
+[gpg]
+	format = ssh
+[commit]
+	gpgsign = true
