@@ -88,3 +88,10 @@
 	username = majewsky
 [init]
 	defaultBranch = main
+[user]
+	email = stefan.majewsky@sap.com
+	signingkey = /home/stefan/.ssh/id_github.pub
+[gpg]
+	format = ssh
+[commit]
+	gpgsign = true
