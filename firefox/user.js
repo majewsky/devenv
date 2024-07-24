@@ -94,7 +94,7 @@ user_pref("security.ssl.require_safe_negotiation", true);
 user_pref("security.tls.version.min", 3); // 3 = TLS 1.2
 user_pref("security.ssl.disable_session_identifiers", true);
 user_pref("security.tls.enable_0rtt_data", false);
-user_pref("security.OCSP.require", true);
+user_pref("security.OCSP.require", false);
 
 //would like to have `security.mixed_content.block_display_content = true`,
 //but it breaks too much stuff
