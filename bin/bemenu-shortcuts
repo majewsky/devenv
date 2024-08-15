@@ -32,8 +32,12 @@ case "$(awk 'match($0, /^\s*(\S+)\)$/, a){print a[1]}' /x/bin/bemenu-shortcuts |
     wl-mirror --fullscreen-output "${COUCH_SCREEN}" "${RIGHT_SCREEN}"
     ;;
   mirror-off)
-    killall wl-mirror
+    killall wl-mirror || true
     swaymsg output "${COUCH_SCREEN}" disable
+    ;;
+  mirror-none)
+    killall wl-mirror || true
+    swaymsg output "${COUCH_SCREEN}" enable
     ;;
   stream-ui)
     qutebrowser --target window http://localhost:8123/ui/left &
