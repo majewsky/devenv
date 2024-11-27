@@ -12,6 +12,20 @@ case "$(awk 'match($0, /^\s*(\S+)\)$/, a){print a[1]}' /x/bin/bemenu-shortcuts |
   game-off)
     swaymsg bar main output '*'
     ;;
+  game-1920)
+    swaymsg output "${RIGHT_SCREEN}" mode 1920x1080
+    ;;
+  game-3840)
+    swaymsg output "${RIGHT_SCREEN}" mode 3840x2160
+    ;;
+  flip-on)
+    swaymsg output "${LEFT_SCREEN}" pos 3840 0
+    swaymsg output "${RIGHT_SCREEN}" pos 0 0
+    ;;
+  flip-off)
+    swaymsg output "${LEFT_SCREEN}" pos 0 0
+    swaymsg output "${RIGHT_SCREEN}" pos 3840 0
+    ;;
   vertical-videoplayer)
     swaymsg resize set width 1255px
     ;;

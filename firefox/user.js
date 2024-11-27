@@ -110,8 +110,9 @@ user_pref("media.gmp-widevinecdm.visible", false);
 user_pref("media.gmp-widevinecdm.enabled", false);
 user_pref("media.eme.enabled", false);
 
-user_pref("dom.event.clipboardevents.enabled", false);
-user_pref("dom.allow_cut_copy", false);
+// NOTE: reenabled because it's increasingly breaking sites (e.g. Nextcloud *shakes fist*)
+user_pref("dom.event.clipboardevents.enabled", true);
+user_pref("dom.allow_cut_copy", true);
 
 user_pref("dom.targetBlankNoOpener.enabled", true);
 
