@@ -73,6 +73,7 @@ set shiftwidth=2 tabstop=2 softtabstop=2
 set statusline=%<%f\ %#Search#\ %Y%M%R\ %*%=\ %-14.(%l,%c%V%)\ %P
 set tildeop
 set ttymouse=sgr
+set notermguicolors " force 256-color mode because my colorscheme (gardener) does not work with True Color
 set wildmode=longest:full wildmenu
 
 let perl_include_pod=1
