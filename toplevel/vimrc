@@ -99,9 +99,13 @@ nmap <F3> :syn sync fromstart<CR>
 " quick key for forward/backward search from selection
 vmap * "ty/<C-r>t<CR>
 vmap # "ty?<C-r>t<CR>
-" quick key for tabular plugin
+" quick keys for tabular plugin
+" - the command with ":" aligns things like YAML fields
+" - the command with "s" aligns type names in a multi-line SQL "CREATE TABLE" statement
+"   (assuming that the type name is the first upper-cased keyword on the line)
 vmap <bar><bar> :Tab/
 vmap <bar>:     :Tab/^[^:]*:\zs/l1l0<CR>
+vmap <bar>s     :Tab/\0[^A-Z]*\zs\s[A-Z]\w*\s/<CR>
 vmap <bar>=     :Tab assignment<CR>
 " quick key for easymotion plugin
 map <Tab> <Plug>(easymotion-prefix)
