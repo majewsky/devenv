@@ -20,6 +20,7 @@ LOCATIONS=(
     ".local/etc"
     ".local/include"
     ".local/lib"
+    ".local/share/gem"
     ".local/share/helm"
     ".local/share/TelegramDesktop/tdata/user_data/cache"
     ".local/share/virtualenv/wheel"
