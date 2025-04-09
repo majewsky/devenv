@@ -24,6 +24,7 @@ LOCATIONS=(
     ".local/share/TelegramDesktop/tdata/user_data/cache"
     ".local/share/virtualenv/wheel"
     ".node-gyp"
+    ".npm"
     ".phantomjs"
     ".rbenv"
     ".rustup"
