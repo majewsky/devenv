@@ -1,0 +1,34 @@
+#!/bin/bash
+set -euo pipefail
+cd ~/.steam/steam/steamapps
+
+OPTIONS=""
+
+for FILE in appmanifest_*.acf; do
+  STEAM_ID="$(basename "${FILE#appmanifest_}" .acf)"
+
+  # skip Steam/Proton runtime components
+  NAME="$(awk -F '"' '$2=="name"{print$4}' < "$FILE")"
+  if [[ "$NAME" == Proton* || "$NAME" == Steam\ Linux* || "$NAME" == Steamworks* ]]; then
+    continue
+  fi
+
+  # skip soundtracks
+  INSTALL_DIR="$(awk -F '"' '$2=="installdir"{print$4}' < "$FILE")"
+  if [ -d "music/${INSTALL_DIR}" ]; then
+    continue
+  fi
+
+  # add this app to the list of options
+  OPTION="$(jq -c --null-input --arg name "$NAME" --arg id "$STEAM_ID" '{"name":$name,"id":$id}')"
+  OPTIONS="$OPTIONS $OPTION"
+done
+
+# let the user pick a name
+NAME="$(echo "$OPTIONS" | jq -r '"\(.name) "' | sort | bemenu --ignorecase --prompt bemenu-steam "$@")"
+
+# run the respective app if one was selected
+STEAM_ID="$(echo "$OPTIONS" | jq -r --arg name "$NAME" 'select("\(.name) " == $name) | .id')"
+if [[ "$STEAM_ID" =~ ^[0-9]+$ ]]; then
+  nice -n 10 steam "steam://rungameid/$STEAM_ID"
+fi

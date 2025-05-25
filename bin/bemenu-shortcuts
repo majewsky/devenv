@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -euo pipefail
 
 LEFT_SCREEN="$(awk  '$1 == "set" && $2 == "$leftscreen"  { print $3 }' < /x/src/github.com/majewsky/devenv/sway/arcturus/01-output.conf)"
@@ -18,22 +18,18 @@ case "$(awk 'match($0, /^\s*(\S+)\)$/, a){print a[1]}' /x/bin/bemenu-shortcuts |
   game-3840)
     swaymsg output "${RIGHT_SCREEN}" mode 3840x2160
     ;;
-  flip-on)
+  place-flipped)
     swaymsg output "${LEFT_SCREEN}" pos 3840 0
     swaymsg output "${RIGHT_SCREEN}" pos 0 0
     ;;
-  flip-off)
+  place-normal)
     swaymsg output "${LEFT_SCREEN}" pos 0 0
     swaymsg output "${RIGHT_SCREEN}" pos 3840 0
     ;;
-  vertical-videoplayer)
-    swaymsg resize set width 1255px
-    ;;
-  1920-content)
-    swaymsg resize set width 1680px height 945px
-    ;;
-  3840-content)
-    swaymsg resize set width 3360px height 1890px
+  place-separated)
+    # ensure that cursor movements cannot cross between screens (only Meta+[1..0] can)
+    swaymsg output "${LEFT_SCREEN}" pos 0 0
+    swaymsg output "${RIGHT_SCREEN}" pos 4000 0
     ;;
   mirror-left)
     swaymsg output "${COUCH_SCREEN}" enable
@@ -52,10 +48,5 @@ case "$(awk 'match($0, /^\s*(\S+)\)$/, a){print a[1]}' /x/bin/bemenu-shortcuts |
   mirror-none)
     killall wl-mirror || true
     swaymsg output "${COUCH_SCREEN}" enable
-    ;;
-  stream-ui)
-    qutebrowser --target window http://localhost:8123/ui/left &
-    sleep 1
-    qutebrowser --target window http://localhost:8123/ui/bottom &
     ;;
 esac
