@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1003
 set -euo pipefail
 cd ~/.steam/steam/steamapps
 
@@ -7,14 +8,17 @@ OPTIONS=""
 for FILE in appmanifest_*.acf; do
   STEAM_ID="$(basename "${FILE#appmanifest_}" .acf)"
 
+  # read relevant attributes from app manifest (this is slightly convoluted to allow reading multiple attributes in one go)
+  eval "$(awk -F '"' 'function shquote(s) { gsub("'\''", "'\''\\'\'''\''", s); return "'\''" s "'\''" } $2=="name"{print"NAME="shquote($4)} $2=="installdir"{print"INSTALL_DIR="shquote($4)}' < "$FILE")"
+  NAME="${NAME:-unset}"
+  INSTALL_DIR="${INSTALL_DIR:-unset}"
+
   # skip Steam/Proton runtime components
-  NAME="$(awk -F '"' '$2=="name"{print$4}' < "$FILE")"
   if [[ "$NAME" == Proton* || "$NAME" == Steam\ Linux* || "$NAME" == Steamworks* ]]; then
     continue
   fi
 
   # skip soundtracks
-  INSTALL_DIR="$(awk -F '"' '$2=="installdir"{print$4}' < "$FILE")"
   if [ -d "music/${INSTALL_DIR}" ]; then
     continue
   fi
@@ -30,5 +34,5 @@ NAME="$(echo "$OPTIONS" | jq -r '"\(.name) "' | sort | bemenu --ignorecase --pro
 # run the respective app if one was selected
 STEAM_ID="$(echo "$OPTIONS" | jq -r --arg name "$NAME" 'select("\(.name) " == $name) | .id')"
 if [[ "$STEAM_ID" =~ ^[0-9]+$ ]]; then
-  nice -n 10 steam "steam://rungameid/$STEAM_ID"
+  steam "steam://rungameid/$STEAM_ID"
 fi
