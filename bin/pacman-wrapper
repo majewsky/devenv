@@ -9,18 +9,18 @@ my $options = $ARGV[0] // '';
 exec 'pacman', @ARGV unless $options =~ /^-/;
 
 # decide whether to sudo or not
-my $sudo = 0;
+my $as_root = 0;
 if ($options =~ /D/) {
-   $sudo = $options !~ /k/;
+   $as_root = $options !~ /k/;
 }
 elsif ($options =~ /S/) {
-   $sudo = $options =~ /y/ || $options !~ /[gilps]/;
+   $as_root = $options =~ /y/ || $options !~ /[gilps]/;
 }
 elsif ($options =~ /[RU]/) {
-   $sudo = $options !~ /p/;
+   $as_root = $options !~ /p/;
 }
 elsif ($options =~ /F/) {
-   $sudo = $options =~ /y/;
+   $as_root = $options =~ /y/;
 }
 
-exec($sudo ? 'sudo' : (), 'pacman', @ARGV);
+exec($as_root ? ('run0', '--background=') : (), 'pacman', @ARGV);
