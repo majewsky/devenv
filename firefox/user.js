@@ -127,3 +127,5 @@ user_pref("offline-apps.allow_by_default", false);
 //list of restrictions in a comment)
 user_pref("privacy.resistFingerprinting", false);
 
+// disable AI crap
+user_pref("browser.ml.chat.enabled", false);
