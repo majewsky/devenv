@@ -128,4 +128,6 @@ user_pref("offline-apps.allow_by_default", false);
 user_pref("privacy.resistFingerprinting", false);
 
 // disable AI crap
+user_pref("browser.ml.enable", false);
 user_pref("browser.ml.chat.enabled", false);
+user_pref("browser.ml.linkPreview.enabled", false);
