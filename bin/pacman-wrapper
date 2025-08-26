@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# This is like pacman(1), but prepends "sudo" when necessary.
+# This is like pacman(1), but prepends "sudo" or "run0" when necessary.
 use strict;
 use warnings;
 use v5.20;
@@ -23,4 +23,10 @@ elsif ($options =~ /F/) {
    $as_root = $options =~ /y/;
 }
 
-exec($as_root ? ('run0', '--background=') : (), 'pacman', @ARGV);
+if ($as_root) {
+   my @root_tool = (`which sudo 2>/dev/null` eq '') ? ('run0', '--background=') : ('sudo');
+   exec @root_tool, 'pacman', @ARGV;
+}
+else {
+   exec 'pacman', @ARGV;
+}
