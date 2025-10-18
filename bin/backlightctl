@@ -54,7 +54,7 @@ case "${1:-notgiven}" in
     if [ "${VALUE}" -gt "${MAX}" ]; then
       VALUE="${MAX}"
     fi
-    exec qdbus --system org.freedesktop.login1 /org/freedesktop/login1/session/auto org.freedesktop.login1.Session.SetBrightness backlight "${DEVICE}" "${VALUE}"
+    exec qdbus6 --system org.freedesktop.login1 /org/freedesktop/login1/session/auto org.freedesktop.login1.Session.SetBrightness backlight "${DEVICE}" "${VALUE}"
     ;;
   help|--help)
     usage
