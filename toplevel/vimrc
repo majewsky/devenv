@@ -63,6 +63,7 @@ set expandtab smarttab
 set formatoptions+=ro
 set hlsearch incsearch
 set ignorecase smartcase
+set nojoinspaces
 set laststatus=2
 set linebreak
 set list listchars=trail:·,nbsp:·,tab:\ \ 
