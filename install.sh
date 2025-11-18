@@ -64,3 +64,10 @@ if [ -d "${HOME}/.mozilla/firefox" ]; then
         done
     done
 fi
+
+################################################################################
+# misc. hardening
+
+if hash npm &> /dev/null; then
+    npm config set ignore-scripts true --global
+fi
