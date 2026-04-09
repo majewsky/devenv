@@ -73,6 +73,10 @@
 	insteadOf = c3d2:
 [url "gitea.c3d2.de:"]
 	insteadof = c3g:
+[url "https://git.xyrillian.de/"]
+	insteadOf = xy:
+[url "git.xyrillian.de:/var/lib/cgit/"]
+	pushInsteadOf = xy:
 [status]
 	submodulesummary = 1
 [push]
