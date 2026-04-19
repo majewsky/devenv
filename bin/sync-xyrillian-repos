@@ -1,0 +1,18 @@
+#!/bin/bash
+set -euo pipefail
+
+_sync() {
+  local XY_REPO="$1" GH_REPO="$2"
+  cd "$(rtree get "$XY_REPO")"
+  if git remote | grep -qw github; then
+    git remote set-url github "$GH_REPO"
+  else
+    git remote add github "$GH_REPO"
+  fi
+  git push github --all
+  git push github --tags
+}
+
+_sync xy:go-gg      gh:majewsky/gg
+_sync xy:go-oblast  gh:majewsky/go-oblast
+_sync xy:go-schwift gh:majewsky/schwift
