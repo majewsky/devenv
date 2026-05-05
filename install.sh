@@ -23,7 +23,7 @@ mkdir -p /x/bin
 find bin -maxdepth 1 -type f -executable | while read SOURCE; do
     setup_link "${SOURCE}" "/x/bin/${SOURCE#*/}"
 done
-for DIR in vim zsh-functions; do
+for DIR in vim zsh-functions config/opencode; do
     setup_link "${DIR}" "${HOME}/.${DIR}"
 done
 
