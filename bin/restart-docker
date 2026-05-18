@@ -7,6 +7,6 @@ fi
 
 systemctl stop docker
 iptables -t nat -F
-ifconfig docker0 down
-brctl delbr docker0
+ip link set docker0 down
+ip link delete docker0 type bridge
 systemctl start docker
