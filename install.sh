@@ -8,7 +8,7 @@ cd "$(readlink -f "$(dirname "$0")")"
 setup_link() {
     SOURCE="$1"
     TARGET="$2"
-    if [ -e "${TARGET}" -a ! -L "${TARGET}" ]; then
+    if [ -e "${TARGET}" ] && [ ! -L "${TARGET}" ]; then
         echo "Conflict with existing non-symlink ${TARGET}" >&2
         return 1
     fi
@@ -16,11 +16,11 @@ setup_link() {
     ln -sfT "${PWD}/${SOURCE}" "${TARGET}"
 }
 
-find toplevel -type f | while read SOURCE; do
+find toplevel -type f | while read -r SOURCE; do
     setup_link "${SOURCE}" "${HOME}/.${SOURCE#*/}"
 done
 mkdir -p /x/bin
-find bin -maxdepth 1 -type f -executable | while read SOURCE; do
+find bin -maxdepth 1 -type f -executable | while read -r SOURCE; do
     setup_link "${SOURCE}" "/x/bin/${SOURCE#*/}"
 done
 for DIR in vim zsh-functions config/opencode; do
@@ -59,7 +59,7 @@ fi
 
 if [ -d "${HOME}/.mozilla/firefox" ]; then
     for PROFILE_DIR in "${HOME}/.mozilla/firefox"/*.default; do
-        git ls-files firefox | while read SOURCE_FILE; do
+        git ls-files firefox | while read -r SOURCE_FILE; do
             setup_link "${SOURCE_FILE}" "${PROFILE_DIR}/${SOURCE_FILE#firefox/}"
         done
     done
