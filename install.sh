@@ -38,13 +38,17 @@ fi
 ################################################################################
 # build Sway config
 
+collect_snippets() {
+    find "${1%.*}/" -maxdepth 2 -name \*."${1#*.}" | awk -F/ -v hostname="$(hostname)" '$2 == "common" || $2 == hostname' | sort -t/ -k3
+}
+
 if hash sway &> /dev/null; then
     mkdir -p "${HOME}/.config/sway"
-    printf "include $PWD/%s\n" $(ls -1 sway/common/*.conf sway/"$(hostname)"/*.conf | sort -t/ -k3) > "${HOME}/.config/sway/config"
+    collect_snippets sway.conf | xargs printf "include $PWD/%s\n" > "${HOME}/.config/sway/config"
 fi
 
 if hash i3status-rs &> /dev/null; then
-    for FILE in $(ls -1 i3status-rust/common/*.toml i3status-rust/"$(hostname)"/*.toml | sort -t/ -k3); do
+    for FILE in $(collect_snippets i3status-rust.toml); do
         cat "${FILE}"
         echo
     done > "${HOME}/.config/i3status-rust.toml"
