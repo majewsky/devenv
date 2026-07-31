@@ -10,6 +10,9 @@ export LESS_TERMCAP_se=$'\e[0m'           # end of statusline text
 export LESS_TERMCAP_us=$'\e[04;38;5;146m' # start of underlined text
 export LESS_TERMCAP_ue=$'\e[0m'           # end of underlined text
 
+# config for <https://pkg.go.dev/go.xyrillian.de/gg/pgruntime>
+export PGRUNTIME_TESTDB_PATH='/tmp/testdb/%MODULE%'
+
 if [ -z "$LOCALPROFILEREAD" ]; then
 	export PATH="$HOME/bin:/x/bin:$PATH"
 	export GOPATH=/x
