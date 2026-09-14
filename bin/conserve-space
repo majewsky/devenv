@@ -26,6 +26,7 @@ LOCATIONS=(
     ".local/share/helm"
     ".local/share/lutris"
     ".local/share/opencode"
+    ".local/share/pnpm"
     ".local/share/TelegramDesktop/tdata/user_data/cache"
     ".local/share/virtualenv/wheel"
     ".node-gyp"
